@@ -1,0 +1,2985 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#050608" id="metaThemeColor">
+<title>WebKit.uz — Free Online Developer Tools JSON formatter, UUID generator, Base64 decoder, IP info, QR Code</title>
+<meta name="description" content="Free online developer tools: format, validate and syntax-highlight JSON with real-time error detection. Generate cryptographically valid UUIDs v1/v4/v5/v6/v7. No sign-up required.">
+<meta name="keywords" content="json formatter, json validator, json highlighter, uuid generator, uuid v7, uuid v4, uuid v1, online dev tools, json beautifier, json minifier, developer tools">
+<meta name="author" content="webkit.uz">
+<link rel="canonical" href="https://webkit.uz/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://webkit.uz/">
+<meta property="og:title" content="DevTools — JSON Formatter &amp; UUID Generator">
+<meta property="og:description" content="Format, validate and highlight JSON. Generate UUIDs v1/v4/v5/v6/v7. Free, fast, no sign-up.">
+<meta property="og:image" content="https://webkit.uz/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="DevTools — JSON Formatter &amp; UUID Generator">
+<meta name="twitter:description" content="Format, validate and highlight JSON. Generate UUIDs v1–v7. Free, fast, no sign-up.">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"DevTools","url":"https://webkit.uz/","applicationCategory":"DeveloperApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ── RESET ── */
+*,*::before,*::after{-webkit-box-sizing:border-box;box-sizing:border-box;margin:0;padding:0}
+
+
+/* ── WCAG 2.4.11 – Focus appearance improvements ── */
+.conv-tab:focus-visible,
+.uuid-ver-btn:focus-visible,
+.m-btn:focus-visible,
+.btn:focus-visible,
+.top-btn:focus-visible,
+.btn-uuid:focus-visible,
+.modal-close:focus-visible,
+.search-nav-btn:focus-visible,
+.conv-quick-btn:focus-visible,
+.conv-now-btn:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+}
+/* Ensure focus ring is visible on conv-panel when focused (tabindex=0) */
+.conv-panel:focus{outline:none}
+.conv-panel:focus-visible{outline:2px dashed var(--accent);outline-offset:-2px;border-radius:4px}
+
+/* Drop zones – keyboard focus ring */
+.b64-drop:focus-visible,
+.qr-drop:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+  border-color:var(--accent2);
+  background:var(--accent-bg);
+}
+
+/* ── SKIP LINK (WCAG 2.4.1) ── */
+.skip-link{
+  position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;
+  background:var(--accent);color:#000;font-family:var(--font-ui);font-size:.85rem;
+  font-weight:600;padding:.6rem 1.2rem;border-radius:0 0 8px 8px;
+  text-decoration:none;z-index:9999;white-space:nowrap;
+}
+.skip-link:focus{
+  position:fixed;left:50%;top:0;width:auto;height:auto;
+  -webkit-transform:translateX(-50%);transform:translateX(-50%);overflow:visible;
+  outline:3px solid #fff;outline-offset:2px;
+}
+
+/* ── SCREEN READER ONLY ── */
+.sr-only{
+  position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+  overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;
+}
+
+/* ── GLOBAL FOCUS RING (WCAG 2.4.7) ── */
+:focus-visible{
+  outline:2px solid var(--accent);
+  outline-offset:2px;
+  border-radius:4px;
+}
+:focus:not(:focus-visible){ outline:none; }
+
+/* ── DARK TOKENS ── */
+:root{
+  --bg:#050608;--bg2:#080a0e;--bg3:#0f1219;
+  --panel:#0b0d14;--panel2:#0d1018;
+  --border:#1e2535;--border2:#252d3e;
+  --txt:#c8d0e0;--txt2:#7a8499;--txt3:#3e4557;
+  --accent:#00b4d8;--accent2:#0077a8;--accent-bg:rgba(0,180,216,.1);
+  --t-key:#61dafb;--t-str:#7ec98f;--t-num:#f4a261;--t-flt:#ffb347;
+  --t-bool:#c084fc;--t-null:#fb7185;--t-punc:#546478;
+  --err:#ff4d6d;--err-bg:rgba(255,77,109,.08);--err-bd:rgba(255,77,109,.25);
+  --badge-bg:#1a2235;--badge-txt:#4a7fa5;
+  --ok:#34d399;--lnum:#2a3245;
+  --seg-time:#60c8f8;--seg-ver:#f4a261;--seg-rand:#7ec98f;
+  --seg-node:#c084fc;--seg-clk:#f472b6;--sep-clr:#546478;
+  --hist-clr:#2e3a50;
+  --modal-overlay:rgba(0,0,0,.7);
+  --shadow:0 8px 32px rgba(0,0,0,.45);
+  --body-bg:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(0,100,160,.07) 0%,transparent 60%),
+            radial-gradient(ellipse 60% 80% at 80% 90%,rgba(0,60,120,.06) 0%,transparent 60%),
+            linear-gradient(180deg,#050608 0%,#07090f 40%,#060810 100%);
+  --font-code:'JetBrains Mono',Consolas,'Courier New',monospace;
+  --font-ui:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+}
+
+/* ── LIGHT TOKENS ── */
+[data-theme="light"]{
+  --bg:#f4f6fb;--bg2:#eef1f8;--bg3:#e4e9f4;
+  --panel:#ffffff;--panel2:#f7f8fc;
+  --border:#dde3ef;--border2:#c6d0e4;
+  --txt:#1a2236;--txt2:#4a5568;--txt3:#8896aa;
+  --accent:#0077a8;--accent2:#005580;--accent-bg:rgba(0,119,168,.08);
+  --t-key:#0369a1;--t-str:#166534;--t-num:#9a3412;--t-flt:#b45309;
+  --t-bool:#6d28d9;--t-null:#be123c;--t-punc:#94a3b8;
+  --err:#dc2626;--err-bg:rgba(220,38,38,.05);--err-bd:rgba(220,38,38,.2);
+  --badge-bg:#e8edf8;--badge-txt:#375a9e;
+  --ok:#059669;--lnum:#b4c0d4;
+  --seg-time:#0369a1;--seg-ver:#9a3412;--seg-rand:#166534;
+  --seg-node:#6d28d9;--seg-clk:#be123c;--sep-clr:#94a3b8;
+  --hist-clr:#94a3b8;
+  --modal-overlay:rgba(0,0,0,.4);
+  --shadow:0 8px 32px rgba(0,0,0,.15);
+  --body-bg:radial-gradient(ellipse 80% 60% at 20% 10%,rgba(0,119,168,.04) 0%,transparent 60%),
+            linear-gradient(180deg,#f4f6fb 0%,#eef1f8 100%);
+}
+
+/* ── BASE ── */
+html{height:100%;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{
+  min-height:100vh;display:-webkit-flex;display:flex;
+  -webkit-flex-direction:column;flex-direction:column;
+  background:var(--bg);background-image:var(--body-bg);
+  font-family:var(--font-ui);color:var(--txt);
+  -webkit-transition:background .25s,color .2s;transition:background .25s,color .2s;
+  -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;
+}
+
+/* ── SITE HEADER ── */
+.site-header{
+  position:sticky;top:0;z-index:900;
+  display:-webkit-flex;display:flex;
+  -webkit-align-items:center;align-items:center;
+  -webkit-justify-content:space-between;justify-content:space-between;
+  padding:0 1rem;height:52px;
+  background:var(--panel);border-bottom:1px solid var(--border);
+  -webkit-box-shadow:0 2px 16px rgba(0,0,0,.18);box-shadow:0 2px 16px rgba(0,0,0,.18);
+  -webkit-flex-shrink:0;flex-shrink:0;
+  -webkit-transition:background .25s,border-color .25s;transition:background .25s,border-color .25s;
+}
+.site-logo{
+  display:-webkit-flex;display:flex;
+  -webkit-align-items:center;align-items:center;
+  gap:10px;text-decoration:none;-webkit-flex-shrink:0;flex-shrink:0;
+}
+.site-logo svg{width:32px;height:32px;-webkit-flex-shrink:0;flex-shrink:0}
+.site-logo-text{
+  font-family:var(--font-code);font-size:.92rem;font-weight:500;
+  color:var(--txt);letter-spacing:.04em;
+  display:-webkit-flex;display:flex;
+  -webkit-align-items:baseline;align-items:baseline;gap:3px;
+}
+.site-logo-text .logo-accent{color:var(--accent)}
+.site-logo-text .logo-dim{color:var(--txt3);font-size:.78rem}
+
+/* ── TOP CONTROLS (in header) ── */
+.top-controls{
+  display:-webkit-flex;display:flex;
+  -webkit-align-items:center;align-items:center;
+  gap:5px;-webkit-flex-wrap:nowrap;flex-wrap:nowrap;
+}
+.top-btn{
+  display:-webkit-inline-flex;display:inline-flex;
+  -webkit-align-items:center;align-items:center;gap:5px;
+  background:transparent;border:1px solid var(--border2);border-radius:8px;
+  padding:.28rem .62rem;font-family:var(--font-ui);font-size:.71rem;font-weight:500;
+  color:var(--txt2);cursor:pointer;
+  -webkit-transition:all .18s;transition:all .18s;
+  white-space:nowrap;
+}
+.top-btn:hover{color:var(--accent);border-color:var(--accent2);background:var(--accent-bg)}
+.top-btn svg{
+  width:13px;height:13px;stroke:currentColor;fill:none;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;
+}
+
+/* ── UUID SECTION ── */
+.uuid-section{
+  display:-webkit-flex;display:flex;
+  -webkit-flex-direction:column;flex-direction:column;
+  -webkit-align-items:center;align-items:center;
+  padding:1.4rem 1rem 1.2rem;gap:.65rem;border-bottom:1px solid var(--border);
+}
+.uuid-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--txt3);font-weight:500}
+.uuid-ver-track{display:-webkit-flex;display:flex;gap:5px;-webkit-flex-wrap:wrap;flex-wrap:wrap;-webkit-justify-content:center;justify-content:center}
+.uuid-ver-btn{
+  font-family:var(--font-code);font-size:.67rem;font-weight:500;letter-spacing:.03em;
+  background:var(--panel2);border:1px solid var(--border2);border-radius:6px;
+  padding:.22rem .58rem;color:var(--txt3);cursor:pointer;
+  -webkit-transition:all .17s;transition:all .17s;
+  -webkit-appearance:none;appearance:none;
+}
+.uuid-ver-btn:hover{color:var(--txt);border-color:var(--border)}
+.uuid-ver-btn.active{background:var(--accent-bg);border-color:var(--accent2);color:var(--accent)}
+.uuid-display{
+  display:-webkit-flex;display:flex;
+  -webkit-flex-direction:column;flex-direction:column;
+  background:var(--panel);border:1px solid var(--border2);border-radius:10px;
+  overflow:hidden;width:min(580px,calc(100vw - 2rem));
+}
+.uuid-main-row{
+  display:-webkit-flex;display:flex;
+  -webkit-align-items:center;align-items:center;
+  gap:10px;padding:.58rem .95rem .58rem 1.2rem;
+}
+.uuid-val{
+  -webkit-flex:1;flex:1;font-family:var(--font-code);font-size:.95rem;letter-spacing:.04em;
+  -webkit-user-select:all;user-select:all;word-break:break-all;min-width:0;
+}
+.uuid-val .seg-time{color:var(--seg-time)}.uuid-val .seg-ver{color:var(--seg-ver)}
+.uuid-val .seg-rand{color:var(--seg-rand)}.uuid-val .seg-node{color:var(--seg-node)}
+.uuid-val .seg-clk{color:var(--seg-clk)}.uuid-val .sep{color:var(--sep-clr)}
+.uuid-hist-row{
+  display:none;-webkit-align-items:center;align-items:center;
+  -webkit-justify-content:center;justify-content:center;
+  gap:.5rem;padding:.3rem 1.2rem;border-top:1px solid var(--border);
+}
+.uuid-hist-row.show{display:-webkit-flex;display:flex}
+.uuid-hist-lbl{font-size:.57rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);-webkit-flex-shrink:0;flex-shrink:0}
+.uuid-hist-val{
+  font-family:var(--font-code);font-size:.69rem;color:var(--hist-clr);
+  letter-spacing:.04em;opacity:.7;cursor:pointer;-webkit-user-select:all;user-select:all;
+  word-break:break-all;-webkit-transition:opacity .18s;transition:opacity .18s;
+}
+.uuid-hist-val:hover{opacity:1}
+
+/* ── DATETIME BAR ── */
+.dt-bar{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  gap:.85rem;-webkit-flex-wrap:wrap;flex-wrap:wrap;
+  -webkit-justify-content:center;justify-content:center;
+}
+.wd-track{display:-webkit-flex;display:flex;gap:4px}
+.wd{
+  width:25px;height:25px;border-radius:7px;border:1px solid var(--border2);
+  display:-webkit-flex;display:flex;
+  -webkit-align-items:center;align-items:center;
+  -webkit-justify-content:center;justify-content:center;
+  font-size:.6rem;font-weight:500;color:var(--txt3);
+  -webkit-transition:all .2s;transition:all .2s;
+}
+.wd.today{background:var(--accent-bg);border-color:var(--accent2);color:var(--accent);font-weight:600}
+.dt-sep{width:1px;height:15px;background:var(--border);-webkit-flex-shrink:0;flex-shrink:0}
+.dt-date{font-family:var(--font-code);font-size:.79rem;color:var(--txt);letter-spacing:.03em}
+.dt-time{font-family:var(--font-code);font-size:.79rem;color:var(--accent);letter-spacing:.05em;font-weight:500}
+.dt-unix-lbl{font-size:.57rem;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3)}
+.dt-unix{font-family:var(--font-code);font-size:.73rem;color:var(--txt2);letter-spacing:.02em}
+.dt-unix-ms{color:var(--t-num);font-size:.65rem}
+
+/* ── UUID COPY BUTTON ── */
+.btn-uuid{
+  display:-webkit-inline-flex;display:inline-flex;
+  -webkit-align-items:center;align-items:center;
+  gap:5px;-webkit-flex-shrink:0;flex-shrink:0;
+  background:transparent;border:1px solid var(--border2);border-radius:7px;
+  padding:.28rem .68rem;font-family:var(--font-ui);font-size:.71rem;font-weight:500;
+  color:var(--txt2);cursor:pointer;-webkit-transition:all .17s;transition:all .17s;white-space:nowrap;
+  -webkit-appearance:none;appearance:none;
+}
+.btn-uuid:hover{background:var(--bg3);border-color:var(--accent2);color:var(--accent)}
+.btn-uuid.ok{color:var(--ok)!important;border-color:var(--ok)!important}
+.btn-uuid svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* ── MAIN ── */
+main{
+  -webkit-flex:1;flex:1;display:-webkit-flex;display:flex;
+  -webkit-flex-direction:column;flex-direction:column;
+  padding:1rem 1rem .5rem;gap:.65rem;min-height:0;
+}
+
+/* ── TOOLBAR ── */
+.toolbar{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:.4rem;-webkit-flex-wrap:wrap;flex-wrap:wrap}
+.toolbar-sep{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--txt3);margin-right:.1rem}
+.btn{
+  display:-webkit-inline-flex;display:inline-flex;
+  -webkit-align-items:center;align-items:center;
+  gap:5px;background:var(--panel);border:1px solid var(--border2);border-radius:7px;
+  padding:.27rem .65rem;font-family:var(--font-ui);font-size:.73rem;font-weight:500;
+  color:var(--txt2);cursor:pointer;-webkit-transition:all .17s;transition:all .17s;
+  white-space:nowrap;-webkit-appearance:none;appearance:none;
+}
+.btn:hover{background:var(--bg3);color:var(--txt)}
+.btn.primary{border-color:var(--accent2);color:var(--accent)}
+.btn.primary:hover{background:var(--accent-bg)}
+.btn.ok{border-color:var(--ok)!important;color:var(--ok)!important}
+.btn[disabled]{opacity:.35;cursor:not-allowed;pointer-events:none}
+.btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;-webkit-flex-shrink:0;flex-shrink:0}
+.vdiv{width:1px;height:18px;background:var(--border);margin:0 .05rem;-webkit-flex-shrink:0;flex-shrink:0}
+
+/* ── ERROR BAR ── */
+.error-bar{
+  display:none;background:var(--err-bg);border:1px solid var(--err-bd);
+  border-radius:8px;padding:.48rem .88rem;
+  font-family:var(--font-code);font-size:.72rem;color:var(--err);line-height:1.5;
+}
+.error-bar.show{display:block}
+
+/* ── COLUMNS ── */
+.columns{
+  display:-webkit-flex;display:flex;-webkit-flex:1;flex:1;min-height:0;gap:0;
+  min-height:320px;
+}
+.col{
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;
+  background:var(--panel);border:1px solid var(--border);border-radius:10px;
+  overflow:hidden;min-height:0;-webkit-flex:0 0 auto;flex:0 0 auto;
+}
+.col-resizer{
+  width:10px;-webkit-flex-shrink:0;flex-shrink:0;cursor:col-resize;
+  display:-webkit-flex;display:flex;
+  -webkit-align-items:center;align-items:center;
+  -webkit-justify-content:center;justify-content:center;
+  z-index:10;-webkit-user-select:none;user-select:none;
+}
+.col-resizer::before{
+  content:'';display:block;width:2px;height:44px;border-radius:2px;
+  background:var(--border2);-webkit-transition:background .15s,height .15s;transition:background .15s,height .15s;
+}
+.col-resizer:hover::before,.col-resizer.dragging::before{background:var(--accent2);height:62px}
+.col-header{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  -webkit-justify-content:space-between;justify-content:space-between;
+  padding:.4rem .78rem;border-bottom:1px solid var(--border);background:var(--panel2);
+  -webkit-flex-shrink:0;flex-shrink:0;
+}
+.col-header-left{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:.45rem}
+.col-tag{font-size:.62rem;letter-spacing:.15em;text-transform:uppercase;color:var(--txt3)}
+.col-badge{font-size:.58rem;background:var(--badge-bg);color:var(--badge-txt);border-radius:4px;padding:1px 6px;font-family:var(--font-code)}
+.col-body{display:-webkit-flex;display:flex;-webkit-flex:1;flex:1;overflow:hidden;min-height:0}
+
+/* ── LINE NUMBERS ── */
+.lnums{
+  padding:.62rem 8px .62rem 5px;text-align:right;min-width:36px;
+  font-family:var(--font-code);font-size:.7rem;line-height:1.65;
+  color:var(--lnum);background:var(--panel2);border-right:1px solid var(--border);
+  -webkit-user-select:none;user-select:none;overflow:hidden;
+  white-space:pre;-webkit-flex-shrink:0;flex-shrink:0;
+}
+
+/* ── TEXTAREA (input side) ── */
+.input-wrap{-webkit-flex:1;flex:1;display:-webkit-flex;display:flex;overflow:hidden}
+textarea{
+  -webkit-flex:1;flex:1;resize:none;border:none;outline:none;background:transparent;
+  padding:.62rem .78rem;font-family:var(--font-code);font-size:.76rem;line-height:1.65;
+  color:var(--txt);-webkit-tab-size:2;tab-size:2;
+  /* vertical scroll, no horizontal */
+  overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  white-space:pre-wrap;word-break:break-all;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+textarea::-webkit-scrollbar{width:5px}
+textarea::-webkit-scrollbar-track{background:transparent}
+textarea::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+textarea::placeholder{color:var(--txt3)}
+
+/* ── OUTPUT (formatted side) ── */
+.out-wrap{
+  -webkit-flex:1;flex:1;
+  /* vertical scroll enabled, horizontal scroll for wide formatted JSON */
+  overflow-y:auto;overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.out-wrap::-webkit-scrollbar{width:5px;height:5px}
+.out-wrap::-webkit-scrollbar-track{background:transparent}
+.out-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.out-content{
+  padding:.62rem .78rem;font-family:var(--font-code);font-size:.76rem;line-height:1.65;
+  white-space:pre;min-width:-webkit-max-content;min-width:max-content;
+}
+/* JSON token colors */
+.t-key{color:var(--t-key)}.t-str{color:var(--t-str)}
+.t-int{color:var(--t-num);font-weight:500}.t-flt{color:var(--t-flt);font-weight:500}
+.t-bool{color:var(--t-bool)}.t-null{color:var(--t-null)}.t-punc{color:var(--t-punc)}
+.t-count{
+  font-size:.57rem;color:var(--badge-txt);background:var(--badge-bg);
+  border-radius:4px;padding:1px 5px;margin-left:4px;vertical-align:middle;font-weight:500;
+}
+/* collapsible nodes */
+.node{cursor:default}
+.toggle{
+  display:-webkit-inline-flex;display:inline-flex;
+  -webkit-align-items:center;align-items:center;
+  -webkit-justify-content:center;justify-content:center;
+  width:14px;height:14px;border-radius:3px;border:1px solid var(--border);
+  background:transparent;cursor:pointer;font-size:.57rem;color:var(--txt2);
+  margin-right:3px;vertical-align:middle;
+  -webkit-transition:all .12s;transition:all .12s;
+  -webkit-user-select:none;user-select:none;line-height:1;
+  font-family:var(--font-code);padding:0;-webkit-appearance:none;appearance:none;
+}
+.toggle:hover{background:var(--bg3);color:var(--txt)}
+.collapsible{display:inline}.ellipsis{display:none;color:var(--txt3)}.closing-inline{display:none}
+.collapsed>.collapsible{display:none}.collapsed>.ellipsis{display:inline}
+.collapsed>.closing{display:none}.collapsed>.closing-inline{display:inline}
+
+/* ── FONT SIZE LABEL ── */
+.font-size-lbl{
+  font-family:var(--font-code);font-size:.68rem;color:var(--txt3);
+  min-width:30px;text-align:center;-webkit-flex-shrink:0;flex-shrink:0;
+}
+
+/* ── IP MODAL STATES ── */
+.ip-loading{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  gap:.75rem;padding:1.6rem 1.1rem;color:var(--txt2);font-size:.82rem;
+}
+.ip-spinner{
+  width:18px;height:18px;border-radius:50%;-webkit-flex-shrink:0;flex-shrink:0;
+  border:2px solid var(--border2);border-top-color:var(--accent);
+  -webkit-animation:spin .7s linear infinite;animation:spin .7s linear infinite;
+}
+@-webkit-keyframes spin{to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}
+@keyframes spin{to{-webkit-transform:rotate(360deg);transform:rotate(360deg)}}
+.ip-error{
+  padding:1.4rem 1.1rem;color:var(--err);font-size:.8rem;
+  font-family:var(--font-code);line-height:1.5;
+}
+
+/* ── BROWSER INFO MODAL ── */
+.modal-overlay{
+  display:none;position:fixed;inset:0;z-index:2000;
+  background:var(--modal-overlay);
+  -webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);
+  -webkit-align-items:flex-start;align-items:flex-start;
+  -webkit-justify-content:center;justify-content:center;
+  padding:3rem 1rem 1rem;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+.modal-overlay.open{display:-webkit-flex;display:flex}
+.modal{
+  background:var(--panel);border:1px solid var(--border2);border-radius:14px;
+  width:100%;max-width:540px;
+  -webkit-box-shadow:var(--shadow);box-shadow:var(--shadow);
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;
+  max-height:calc(100vh - 4rem);overflow:hidden;
+  -webkit-flex-shrink:0;flex-shrink:0;
+  margin:auto;
+}
+.modal-header{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  -webkit-justify-content:space-between;justify-content:space-between;
+  padding:.85rem 1.1rem .75rem;border-bottom:1px solid var(--border);
+  -webkit-flex-shrink:0;flex-shrink:0;
+}
+.modal-title{font-size:.88rem;font-weight:600;color:var(--txt);letter-spacing:.01em}
+.modal-close{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  -webkit-justify-content:center;justify-content:center;
+  width:28px;height:28px;border-radius:7px;border:1px solid var(--border2);
+  background:transparent;cursor:pointer;color:var(--txt2);font-size:.9rem;
+  -webkit-transition:all .15s;transition:all .15s;-webkit-appearance:none;appearance:none;
+}
+.modal-close:hover{background:var(--bg3);color:var(--txt)}
+.modal-body{overflow-y:auto;-webkit-overflow-scrolling:touch;-webkit-flex:1;flex:1;padding:.5rem 0}
+.modal-body::-webkit-scrollbar{width:4px}
+.modal-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.info-table{width:100%;border-collapse:collapse}
+.info-table tr:hover td{background:var(--bg3)}
+.info-table td{
+  padding:.48rem 1.1rem;font-size:.75rem;line-height:1.4;
+  border-bottom:1px solid var(--border);vertical-align:top;
+}
+.info-table td:first-child{
+  color:var(--txt3);font-weight:500;white-space:nowrap;
+  width:42%;font-size:.72rem;letter-spacing:.01em;padding-right:.5rem;
+}
+.info-table td:last-child{
+  color:var(--txt);font-family:var(--font-code);font-size:.71rem;
+  word-break:break-all;
+}
+.info-table tr:last-child td{border-bottom:none}
+.info-section-head td{
+  background:var(--panel2)!important;color:var(--txt3)!important;
+  font-size:.6rem!important;letter-spacing:.14em!important;
+  text-transform:uppercase!important;font-weight:600!important;
+  padding:.35rem 1.1rem!important;border-bottom:1px solid var(--border)!important;
+}
+.info-na{color:var(--txt3)!important;font-style:italic}
+
+/* ── QR GENERATOR ── */
+.modal-xl{max-width:980px}
+.qr-layout{
+  display:-webkit-flex;display:flex;gap:0;
+  -webkit-flex:1;flex:1;min-height:0;overflow:hidden;
+}
+.qr-left{
+  -webkit-flex:1;flex:1;display:-webkit-flex;display:flex;
+  -webkit-flex-direction:column;flex-direction:column;
+  border-right:1px solid var(--border);overflow-y:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.qr-right{
+  -webkit-flex:1;flex:1;display:-webkit-flex;display:flex;
+  -webkit-flex-direction:column;flex-direction:column;
+  -webkit-align-items:center;align-items:center;
+  -webkit-justify-content:center;justify-content:center;
+  padding:1.2rem;gap:.8rem;background:var(--bg2);
+}
+.qr-section{padding:.8rem .9rem;border-bottom:1px solid var(--border)}
+.qr-label{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);font-weight:600;margin-bottom:.45rem;display:block}
+.qr-ta{
+  width:100%;min-height:110px;resize:vertical;border:1px solid var(--border2);
+  border-radius:8px;background:var(--bg2);padding:.6rem .75rem;
+  font-family:var(--font-code);font-size:.76rem;line-height:1.6;color:var(--txt);
+  outline:none;tab-size:2;overflow-y:auto;overflow-x:hidden;
+  white-space:pre-wrap;word-break:break-all;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+  -webkit-transition:border-color .15s;transition:border-color .15s;
+}
+.qr-ta:focus{border-color:var(--accent2)}
+.qr-ta::placeholder{color:var(--txt3)}
+.qr-drop{
+  border:2px dashed var(--border2);border-radius:10px;padding:1.1rem;
+  text-align:center;cursor:pointer;
+  -webkit-transition:all .18s;transition:all .18s;background:var(--bg2);
+}
+.qr-drop:hover,.qr-drop.drag-over{border-color:var(--accent2);background:var(--accent-bg)}
+.qr-drop p{font-size:.73rem;color:var(--txt3);margin:.25rem 0 0}
+.qr-drop-icon{font-size:1.4rem;display:block}
+.qr-fname{font-size:.68rem;color:var(--accent);margin-top:.4rem;word-break:break-all;min-height:1rem}
+.qr-preview-wrap{
+  width:100%;max-width:360px;
+  background:#fff;border-radius:10px;overflow:hidden;
+  display:-webkit-flex;display:flex;
+  -webkit-align-items:center;align-items:center;
+  -webkit-justify-content:center;justify-content:center;
+  padding:.5rem;
+  -webkit-box-shadow:0 4px 20px rgba(0,0,0,.18);box-shadow:0 4px 20px rgba(0,0,0,.18);
+}
+#qrCanvas{
+  display:block;
+  width:100%!important;   /* fill container width */
+  height:auto!important;  /* let intrinsic 1:1 ratio set height naturally */
+  max-width:100%;
+}
+.qr-placeholder{font-size:.75rem;color:var(--txt3);text-align:center;padding:2rem 1rem}
+.qr-errcol-row{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:.6rem;-webkit-flex-wrap:wrap;flex-wrap:wrap}
+.qr-errcol-row label{font-size:.72rem;color:var(--txt2)}
+.qr-select{
+  background:var(--panel2);border:1px solid var(--border2);border-radius:6px;
+  padding:.22rem .5rem;font-size:.72rem;color:var(--txt);
+  font-family:var(--font-ui);cursor:pointer;outline:none;
+  -webkit-appearance:none;appearance:none;
+}
+.qr-colors{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:.5rem;-webkit-flex-wrap:wrap;flex-wrap:wrap}
+.qr-color-item{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:.35rem;font-size:.72rem;color:var(--txt2)}
+.qr-color-item input[type=color]{width:28px;height:24px;border:1px solid var(--border2);border-radius:5px;cursor:pointer;background:none;padding:1px}
+.qr-btns{display:-webkit-flex;display:flex;gap:.4rem;-webkit-flex-wrap:wrap;flex-wrap:wrap}
+.qr-msg{font-size:.7rem;min-height:1.1rem;text-align:center}
+.qr-msg.err{color:var(--err)}.qr-msg.ok{color:var(--ok)}
+
+/* ── CONVERTERS ── */
+.conv-tabs{
+  display:-webkit-flex;display:flex;
+  -webkit-flex-wrap:wrap;flex-wrap:wrap;
+  gap:.3rem;padding:.7rem .9rem .5rem;
+  border-bottom:1px solid var(--border);
+  -webkit-flex-shrink:0;flex-shrink:0;
+  background:var(--panel2);
+}
+.conv-tab{
+  font-size:.73rem;font-family:var(--font-ui);font-weight:500;
+  background:transparent;border:1px solid var(--border2);border-radius:7px;
+  padding:.3rem .75rem;color:var(--txt3);cursor:pointer;
+  -webkit-transition:all .16s;transition:all .16s;
+  -webkit-appearance:none;appearance:none;white-space:nowrap;
+}
+.conv-tab:hover{color:var(--txt);border-color:var(--border)}
+.conv-tab.active{background:var(--accent-bg);border-color:var(--accent2);color:var(--accent)}
+.conv-panels{
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  -webkit-flex:1;flex:1;
+}
+.conv-panels::-webkit-scrollbar{width:4px}
+.conv-panels::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.conv-panel{display:none;padding:.9rem 1.1rem 1.4rem}
+.conv-panel.active{display:block}
+/* row-by-row fields */
+.conv-field{
+  display:-webkit-flex;display:flex;
+  -webkit-flex-direction:column;flex-direction:column;
+  gap:.35rem;width:100%;margin-bottom:.8rem;
+}
+.conv-field:last-child{margin-bottom:0}
+.conv-field label{
+  font-size:.82rem;color:var(--txt2);font-weight:500;
+  letter-spacing:.01em;
+}
+.conv-input{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  padding:.55rem .85rem;font-family:var(--font-code);font-size:.88rem;
+  color:var(--txt);outline:none;width:100%;
+  -webkit-transition:border-color .15s;transition:border-color .15s;
+  -webkit-appearance:none;appearance:none;
+}
+.conv-input:focus{border-color:var(--accent2);background:var(--accent-bg)}
+.conv-input[readonly]{opacity:.7;cursor:default}
+.conv-input::placeholder{color:var(--txt3)}
+/* base converter */
+.conv-base-row{
+  display:-webkit-flex;display:flex;gap:.65rem;
+  -webkit-align-items:flex-end;align-items:flex-end;
+  -webkit-flex-wrap:wrap;flex-wrap:wrap;
+}
+.conv-base-field{
+  display:-webkit-flex;display:flex;
+  -webkit-flex-direction:column;flex-direction:column;
+  gap:.35rem;-webkit-flex:1;flex:1;min-width:160px;
+}
+.conv-base-field label{font-size:.82rem;color:var(--txt2);font-weight:500}
+.conv-base-sel{
+  background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  padding:.5rem .75rem;font-size:.82rem;color:var(--txt);font-family:var(--font-ui);
+  outline:none;cursor:pointer;-webkit-appearance:none;appearance:none;width:100%;
+}
+.conv-base-sel:focus{border-color:var(--accent2)}
+.conv-quick-bases{
+  display:-webkit-flex;display:flex;gap:.35rem;
+  -webkit-flex-wrap:wrap;flex-wrap:wrap;margin-top:.7rem;
+  -webkit-align-items:center;align-items:center;
+}
+.conv-quick-bases span{font-size:.73rem;color:var(--txt3)}
+.conv-quick-btn{
+  font-size:.7rem;font-family:var(--font-ui);font-weight:500;
+  background:var(--panel2);border:1px solid var(--border2);border-radius:6px;
+  padding:.28rem .6rem;color:var(--txt3);cursor:pointer;
+  -webkit-transition:all .13s;transition:all .13s;-webkit-appearance:none;appearance:none;
+}
+.conv-quick-btn:hover{color:var(--accent);border-color:var(--accent2)}
+.conv-now-btn{
+  font-size:.75rem;font-family:var(--font-ui);font-weight:500;
+  background:var(--panel2);border:1px solid var(--border2);border-radius:6px;
+  padding:.3rem .7rem;color:var(--txt2);cursor:pointer;
+  -webkit-transition:all .13s;transition:all .13s;-webkit-appearance:none;appearance:none;
+  margin-top:.35rem;
+}
+.conv-now-btn:hover{color:var(--accent);border-color:var(--accent2)}
+
+@media(max-width:768px){
+  .qr-layout{-webkit-flex-direction:column;flex-direction:column}
+  .qr-left{border-right:none;border-bottom:1px solid var(--border)}
+  .qr-right{min-height:260px}
+  .conv-base-field{min-width:100%}
+}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);padding:.45rem 1.2rem;
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  -webkit-justify-content:space-between;justify-content:space-between;
+  font-size:.61rem;color:var(--txt3);letter-spacing:.04em;background:var(--panel2);
+  -webkit-flex-shrink:0;flex-shrink:0;gap:.8rem;-webkit-flex-wrap:wrap;flex-wrap:wrap;
+}
+footer a{color:inherit;text-decoration:none;-webkit-transition:color .15s;transition:color .15s}
+footer a:hover{color:var(--accent)}
+.footer-copy{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:.35rem}
+.footer-links{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:.9rem}
+.footer-link{display:-webkit-inline-flex;display:inline-flex;-webkit-align-items:center;align-items:center;gap:.3rem;color:var(--txt3);text-decoration:none;font-size:.6rem;letter-spacing:.03em;-webkit-transition:color .15s;transition:color .15s}
+.footer-link:hover{color:var(--accent)}
+.footer-link svg{width:12px;height:12px;-webkit-flex-shrink:0;flex-shrink:0}
+
+/* ── WIDE TOOL MODAL ── */
+.modal-wide{max-width:860px}
+.m-toolbar{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  gap:.32rem;-webkit-flex-wrap:wrap;flex-wrap:wrap;
+  padding:.48rem .85rem;border-bottom:1px solid var(--border);
+  -webkit-flex-shrink:0;flex-shrink:0;background:var(--panel2);
+}
+.m-toolbar-sep{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);margin-right:.2rem;-webkit-flex-shrink:0;flex-shrink:0}
+.m-vdiv{width:1px;height:16px;background:var(--border);margin:0 .08rem;-webkit-flex-shrink:0;flex-shrink:0}
+.m-btn{
+  display:-webkit-inline-flex;display:inline-flex;-webkit-align-items:center;align-items:center;
+  gap:4px;background:var(--panel);border:1px solid var(--border2);border-radius:6px;
+  padding:.22rem .52rem;font-size:.7rem;font-weight:500;font-family:var(--font-ui);
+  color:var(--txt2);cursor:pointer;-webkit-transition:all .15s;transition:all .15s;
+  white-space:nowrap;-webkit-appearance:none;appearance:none;
+}
+.m-btn:hover{background:var(--bg3);color:var(--txt)}
+.m-btn.ok{border-color:var(--ok)!important;color:var(--ok)!important}
+.m-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;-webkit-flex-shrink:0;flex-shrink:0}
+/* resizable scrollable textarea inside modals */
+.m-ta{
+  display:block;width:100%;min-height:160px;max-height:460px;
+  resize:vertical;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  background:var(--bg2);border:none;border-bottom:1px solid var(--border);
+  padding:.58rem .85rem;font-family:var(--font-code);font-size:.76rem;
+  line-height:1.62;color:var(--txt);outline:none;
+  white-space:pre-wrap;word-break:break-all;tab-size:2;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+  box-sizing:border-box;
+}
+.m-ta::-webkit-scrollbar{width:4px}
+.m-ta::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.m-ta::placeholder{color:var(--txt3)}
+/* Base64 separator row */
+.b64-sep{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  gap:.5rem;padding:.32rem .85rem;background:var(--panel2);border-bottom:1px solid var(--border);
+  -webkit-flex-shrink:0;flex-shrink:0;
+}
+.b64-sep-line{-webkit-flex:1;flex:1;height:1px;background:var(--border)}
+.b64-sep-lbl{font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--txt3);white-space:nowrap}
+/* File drop zone */
+.b64-drop{
+  margin:.55rem .85rem .6rem;
+  border:2px dashed var(--border2);border-radius:8px;
+  padding:.72rem .85rem;text-align:center;cursor:pointer;
+  -webkit-transition:all .18s;transition:all .18s;font-size:.74rem;color:var(--txt3);
+  -webkit-flex-shrink:0;flex-shrink:0;
+}
+.b64-drop:hover,.b64-drop.drag-over{border-color:var(--accent2);color:var(--accent);background:var(--accent-bg)}
+.b64-drop-hint{line-height:1.5}
+.b64-drop-hint label{color:var(--accent);cursor:pointer;text-decoration:underline}
+.b64-fname{font-size:.69rem;color:var(--t-str);margin-top:.28rem}
+/* Text analyzer stats */
+.ta-stats{
+  display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;gap:.4rem;
+  padding:.55rem .85rem;border-top:1px solid var(--border);-webkit-flex-shrink:0;flex-shrink:0;
+}
+.ta-stat{
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;
+  -webkit-align-items:center;align-items:center;
+  background:var(--badge-bg);border-radius:7px;padding:.28rem .52rem;min-width:56px;
+}
+.ta-stat-val{font-family:var(--font-code);font-size:.82rem;font-weight:600;color:var(--accent);line-height:1.2}
+.ta-stat-lbl{font-size:.54rem;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-top:2px}
+.ta-warn{font-size:.7rem;color:var(--err);padding:.28rem .85rem;display:none;-webkit-flex-shrink:0;flex-shrink:0}
+.ta-warn.show{display:block}
+
+/* ── JSON SEARCH BAR ── */
+.search-bar{
+  display:-webkit-flex;display:flex;
+  -webkit-align-items:center;align-items:center;
+  gap:.4rem;padding:.38rem .62rem;
+  background:var(--panel2);border:1px solid var(--border2);border-radius:8px;
+  -webkit-transition:border-color .18s;transition:border-color .18s;
+}
+.search-bar:focus-within{border-color:var(--accent2);background:var(--accent-bg)}
+.search-bar svg{
+  width:13px;height:13px;stroke:var(--txt3);fill:none;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;
+  -webkit-flex-shrink:0;flex-shrink:0;
+}
+.search-bar input{
+  border:none;outline:none;background:transparent;
+  font-family:var(--font-ui);font-size:.71rem;color:var(--txt);
+  width:130px;min-width:0;
+  -webkit-appearance:none;appearance:none;
+}
+.search-bar input::placeholder{color:var(--txt3)}
+.search-count{
+  font-family:var(--font-code);font-size:.62rem;color:var(--txt3);
+  white-space:nowrap;-webkit-flex-shrink:0;flex-shrink:0;
+  min-width:52px;text-align:right;
+}
+.search-count.has-match{color:var(--accent)}
+.search-nav-btn{
+  display:-webkit-inline-flex;display:inline-flex;
+  -webkit-align-items:center;align-items:center;
+  -webkit-justify-content:center;justify-content:center;
+  width:20px;height:20px;border-radius:4px;border:1px solid var(--border2);
+  background:transparent;cursor:pointer;color:var(--txt3);font-size:.7rem;
+  -webkit-transition:all .13s;transition:all .13s;
+  -webkit-flex-shrink:0;flex-shrink:0;-webkit-appearance:none;appearance:none;
+}
+.search-nav-btn:hover:not(:disabled){background:var(--bg3);color:var(--accent);border-color:var(--accent2)}
+.search-nav-btn:disabled{opacity:.3;cursor:not-allowed}
+.search-nav-btn svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+/* highlighted search match in output */
+mark.s-hit{
+  background:rgba(0,180,216,.25);color:inherit;
+  border-radius:2px;padding:0 1px;
+}
+mark.s-hit.s-active{
+  background:var(--accent);color:#000;
+  border-radius:2px;
+}
+/* highlighted match in input textarea (overlay approach) */
+.input-search-highlight{
+  position:absolute;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;overflow:hidden;white-space:pre-wrap;word-break:break-all;
+  font-family:var(--font-code);font-size:.76rem;line-height:1.65;
+  padding:.62rem .78rem;color:transparent;tab-size:2;
+  border:none;
+}
+.hl-match{background:rgba(0,180,216,.28);border-radius:2px}
+.hl-match.hl-active{background:var(--accent);border-radius:2px}
+
+/* ── MOBILE RESPONSIVE ── */
+@media (max-width:768px){
+  /* Header: logo row + tool-buttons row */
+  .site-header{
+    -webkit-flex-wrap:wrap;flex-wrap:wrap;
+    height:auto;padding:.5rem .75rem .55rem;gap:.45rem;
+  }
+  .site-logo{-webkit-flex:1;flex:1}
+  .site-logo-text .logo-dim{display:none}
+  /* Tool-button nav wraps to its own full-width centered row */
+  .top-controls{
+    width:100%;-webkit-order:3;order:3;
+    -webkit-justify-content:center;justify-content:center;
+    -webkit-flex-wrap:wrap;flex-wrap:wrap;
+    gap:6px;padding:.1rem 0;
+  }
+  .top-btn{
+    padding:.42rem .6rem;font-size:.76rem;font-weight:500;
+    min-height:38px;border-radius:8px;
+  }
+  /* UUID copy button: goes to its own centered row */
+  .uuid-main-row{
+    -webkit-flex-direction:column;flex-direction:column;
+    -webkit-align-items:center;align-items:center;
+    gap:.6rem;padding:.75rem 1rem;
+  }
+  .uuid-val{text-align:center;font-size:.82rem}
+  .btn-uuid{
+    font-size:.82rem;padding:.48rem 1.2rem;
+    min-height:42px;border-radius:9px;
+  }
+  /* Datetime bar: row-by-row groups */
+  .dt-bar{
+    -webkit-flex-direction:row;flex-direction:row;
+    -webkit-flex-wrap:wrap;flex-wrap:wrap;
+    -webkit-justify-content:center;justify-content:center;
+    gap:.5rem .7rem;
+  }
+  .wd-track{
+    -webkit-flex-basis:100%;flex-basis:100%;width:100%;
+    -webkit-justify-content:center;justify-content:center;
+  }
+  /* Each dt-sep becomes a full-width invisible row-breaker */
+  .dt-sep{
+    -webkit-flex-basis:100%;flex-basis:100%;
+    width:100%;height:0;background:none;margin:0;
+  }
+  /* JSON columns */
+  .columns{-webkit-flex-direction:column;flex-direction:column;min-height:0;gap:.65rem}
+  .col-resizer{display:none}
+  .col{-webkit-flex:none;flex:none;height:260px}
+  /* Modals */
+  .modal-overlay{padding:1rem .75rem}
+  .modal{max-height:calc(100vh - 2rem)}
+  /* JSON toolbar buttons — larger tap targets */
+  .toolbar{gap:.4rem}
+  .btn{
+    font-size:.82rem;padding:.48rem .9rem;
+    min-height:42px;border-radius:9px;
+  }
+  .btn svg{width:15px;height:15px}
+  /* Modal buttons */
+  .m-btn{
+    font-size:.8rem;padding:.42rem .75rem;
+    min-height:38px;border-radius:8px;
+  }
+  .m-btn svg{width:13px;height:13px}
+  /* UUID version buttons */
+  .uuid-ver-btn{font-size:.72rem;padding:.32rem .65rem;min-height:36px}
+  /* Footer */
+  footer{-webkit-flex-direction:column;flex-direction:column;gap:.5rem;-webkit-align-items:flex-start;align-items:flex-start;padding:.65rem 1rem}
+  .footer-copy{font-size:.72rem}
+  .footer-link{font-size:.7rem}
+  /* Search */
+  .search-bar input{width:90px}
+}
+@media (max-width:480px){
+  .site-header{padding:.45rem .65rem .5rem}
+  .top-controls{gap:5px}
+  .top-btn{padding:.4rem .55rem;border-radius:7px;min-height:36px}
+  .uuid-ver-track{gap:5px}
+  .uuid-ver-btn{font-size:.7rem;padding:.3rem .6rem;min-height:34px}
+  .dt-bar{gap:.45rem .55rem}
+  .wd{width:24px;height:24px;font-size:.58rem}
+  .btn{font-size:.85rem;padding:.52rem 1rem;min-height:44px;border-radius:10px}
+  .m-btn{font-size:.82rem;padding:.45rem .8rem;min-height:40px}
+  footer{-webkit-align-items:center;align-items:center;text-align:center;padding:.6rem .75rem}
+  .footer-links{-webkit-justify-content:center;justify-content:center}
+}
+/* Safari flex fix */
+@supports (-webkit-touch-callout:none){
+  .col-body{height:0}
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#json-main">Skip to JSON formatter</a>
+
+<!-- SITE HEADER -->
+<header class="site-header" role="banner">
+  <!-- Logo -->
+  <a class="site-logo" href="/" aria-label="DevTools home">
+    <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <rect width="32" height="32" rx="8" fill="var(--accent)" opacity=".12"/>
+      <path d="M9 11L4 16l5 5" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M23 11l5 5-5 5" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M19 8l-6 16" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <span class="site-logo-text">
+      <span class="logo-accent">Dev</span>Tools<span class="logo-dim">&nbsp;/&nbsp;webkit.uz</span>
+    </span>
+  </a>
+
+  <!-- TOP CONTROLS -->
+  <nav class="top-controls" aria-label="Tools">
+    <button class="top-btn" id="b64Btn" aria-label="Base64 Encoder/Decoder" title="Base64">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M7 8h4a2 2 0 0 1 0 4H7v4m0-8v8m6-4h2a2 2 0 0 1 0 4h-2"/></svg>
+      <span>Base64</span>
+    </button>
+    <button class="top-btn" id="textAnalyzerBtn" aria-labelledby="taModalTitle" title="Text Analyzer">
+      <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h10M4 18h14"/><circle cx="20" cy="18" r="2"/></svg>
+      <span>Text</span>
+    </button>
+    <button class="top-btn" id="qrBtn" aria-labelledby="qrModalTitle" title="QR Generator">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="5" y="5" width="3" height="3" fill="currentColor" stroke="none"/><rect x="16" y="5" width="3" height="3" fill="currentColor" stroke="none"/><rect x="5" y="16" width="3" height="3" fill="currentColor" stroke="none"/><path d="M14 14h3v3h-3zM17 17h3v3h-3zM14 17h1M17 14h1"/></svg>
+      <span>QR</span>
+    </button>
+    <button class="top-btn" id="convBtn" aria-labelledby="convModalTitle" title="Converters">
+      <svg viewBox="0 0 24 24"><path d="M8 3l4 4-4 4M16 21l-4-4 4-4M3 7h13M8 17h13"/></svg>
+      <span>Converters</span>
+    </button>
+    <button class="top-btn" id="ipInfoBtn" aria-label="IP address information" title="IP Info">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <span>IP Info</span>
+    </button>
+    <button class="top-btn" id="browserInfoBtn" aria-label="Browser information" title="Browser Info">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span>Browser Info</span>
+    </button>
+    <button class="top-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">
+      <svg id="themeIcon" viewBox="0 0 24 24"></svg>
+      <span id="themeLbl"></span>
+    </button>
+  </nav>
+</header>
+
+<!-- BROWSER INFO MODAL -->
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <span class="modal-title" id="modalTitle">🖥️ Browser &amp; System Info</span>
+      <button class="modal-close" id="modalClose" aria-label="Close modal">✕</button>
+    </div>
+    <div class="modal-body">
+      <table class="info-table" id="infoTable"><caption class="sr-only">Browser and system information</caption><tbody></tbody></table>
+    </div>
+  </div>
+</div>
+
+<!-- IP INFO MODAL -->
+<div class="modal-overlay" id="ipModalOverlay" role="dialog" aria-modal="true" aria-labelledby="ipModalTitle">
+  <div class="modal" id="ipModalBox">
+    <div class="modal-header">
+      <span class="modal-title" id="ipModalTitle">🌐 IP &amp; Location Info</span>
+      <button class="modal-close" id="ipModalClose" aria-label="Close IP modal">✕</button>
+    </div>
+    <div class="modal-body" id="ipModalBody">
+      <div class="ip-loading" id="ipLoading">
+        <div class="ip-spinner"></div>
+        <span>Fetching IP information…</span>
+      </div>
+      <table class="info-table" id="ipInfoTable" style="display:none"><caption class="sr-only">IP address and location information</caption><tbody></tbody></table>
+      <div class="ip-error" id="ipError" style="display:none">Unable to get IP info. All services are unavailable.</div>
+    </div>
+  </div>
+</div>
+
+<!-- BASE64 MODAL -->
+<div class="modal-overlay" id="b64Overlay" role="dialog" aria-modal="true" aria-labelledby="b64ModalTitle">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <span class="modal-title" id="b64ModalTitle">⚡ Base64 Encoder / Decoder</span>
+      <button class="modal-close" id="b64Close" aria-label="Close">✕</button>
+    </div>
+    <!-- Decoded section (top) -->
+    <div class="m-toolbar">
+      <span class="m-toolbar-sep" aria-hidden="true">Decoded</span>
+      <button class="m-btn" id="b64CopyDec"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
+      <button class="m-btn" id="b64ClearDec"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Clear</button>
+      <button class="m-btn" id="b64DlDec"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</button>
+    </div>
+    <textarea class="m-ta" id="b64DecTa" placeholder="Plain text — type here to encode…" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+    <!-- Separator -->
+    <div class="b64-sep">
+      <div class="b64-sep-line"></div>
+      <span class="b64-sep-lbl">↕ Encoded Base64</span>
+      <div class="b64-sep-line"></div>
+    </div>
+    <!-- Encoded section (bottom) -->
+    <div class="m-toolbar">
+      <span class="m-toolbar-sep" aria-hidden="true">Encoded</span>
+      <button class="m-btn" id="b64CopyEnc"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
+      <button class="m-btn" id="b64ClearEnc"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Clear</button>
+      <button class="m-btn" id="b64DlEnc"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</button>
+    </div>
+    <textarea class="m-ta" id="b64EncTa" placeholder="Base64 encoded string — paste here to decode, or type above…" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
+    <!-- File upload -->
+    <div class="b64-drop" id="b64Drop" role="button" tabindex="0" aria-label="Drag and drop a file or press Enter to choose a file to encode in Base64">
+      <div class="b64-drop-hint">
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Drag &amp; drop a file to encode, or <label for="b64FileIn" style="color:var(--accent);cursor:pointer;text-decoration:underline">choose file</label>
+      </div>
+      <div class="b64-fname" id="b64Fname"></div>
+      <input type="file" id="b64FileIn" style="display:none" aria-label="Choose file to encode">
+    </div>
+  </div>
+</div>
+
+<!-- TEXT ANALYZER MODAL -->
+<div class="modal-overlay" id="taOverlay" role="dialog" aria-modal="true" aria-labelledby="taModalTitle">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <span class="modal-title" id="taModalTitle">📝 Text Analyzer</span>
+      <button class="modal-close" id="taClose" aria-label="Close">✕</button>
+    </div>
+    <div class="m-toolbar">
+      <button class="m-btn" id="taCopy"><svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy</button>
+      <button class="m-btn" id="taClear"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Clear</button>
+      <button class="m-btn" id="taDl"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</button>
+      <div class="m-vdiv" aria-hidden="true"></div>
+      <button class="m-btn" id="taUpper" title="To UPPERCASE" aria-label="Convert to UPPERCASE">AA</button>
+      <button class="m-btn" id="taLower" title="To lowercase" aria-label="Convert to lowercase">aa</button>
+      <button class="m-btn" id="taMinify" title="Collapse whitespace">
+        <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Minify
+      </button>
+    </div>
+    <div class="ta-warn" id="taWarn">⚠ Maximum 100,000 characters reached.</div>
+    <textarea class="m-ta" id="taTa" maxlength="100000" placeholder="Paste or type text here to analyze in real time…" spellcheck="false" autocomplete="off" autocorrect="off" style="min-height:160px;max-height:360px"></textarea>
+    <div class="ta-stats">
+      <div class="ta-stat"><span class="ta-stat-val" id="taChars">0</span><span class="ta-stat-lbl">Chars</span></div>
+      <div class="ta-stat"><span class="ta-stat-val" id="taWords">0</span><span class="ta-stat-lbl">Words</span></div>
+      <div class="ta-stat"><span class="ta-stat-val" id="taSents">0</span><span class="ta-stat-lbl">Sentences</span></div>
+      <div class="ta-stat"><span class="ta-stat-val" id="taSpaces">0</span><span class="ta-stat-lbl">Spaces</span></div>
+      <div class="ta-stat"><span class="ta-stat-val" id="taLines">0</span><span class="ta-stat-lbl">Newlines</span></div>
+      <div class="ta-stat"><span class="ta-stat-val" id="taBytes">0</span><span class="ta-stat-lbl">Bytes</span></div>
+      <div class="ta-stat"><span class="ta-stat-val" id="taKb">0.00</span><span class="ta-stat-lbl">KB</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- QR GENERATOR MODAL -->
+<div class="modal-overlay" id="qrOverlay" role="dialog" aria-modal="true" aria-labelledby="qrModalTitle">
+  <div class="modal modal-xl" style="height:min(680px,calc(100vh - 4rem))">
+    <div class="modal-header">
+      <span class="modal-title" id="qrModalTitle">⬛ QR Code Generator</span>
+      <button class="modal-close" id="qrClose" aria-label="Close">✕</button>
+    </div>
+    <div class="qr-layout">
+      <!-- Left: inputs -->
+      <div class="qr-left">
+        <div class="qr-section">
+          <label class="qr-label" for="qrText">Text / URL</label>
+          <textarea class="qr-ta" id="qrText" placeholder="Enter text, URL or any data to encode…" spellcheck="false"></textarea>
+        </div>
+        <div class="qr-section">
+          <label class="qr-label" id="qrDropLabel">Center Logo (optional)</label>
+          <div class="qr-drop" id="qrDrop" role="button" tabindex="0" aria-labelledby="qrDropLabel">
+            <span class="qr-drop-icon">🖼️</span>
+            <p>Drag & drop an image, or click to choose</p>
+            <input type="file" id="qrFileIn" accept="image/*" style="display:none">
+          </div>
+          <div class="qr-fname" id="qrFname"></div>
+        </div>
+        <div class="qr-section">
+          <label class="qr-label">Options</label>
+          <div class="qr-errcol-row" style="margin-bottom:.5rem">
+            <label>Error correction:</label>
+            <select class="qr-select" id="qrEcc">
+              <option value="L">L — 7%</option>
+              <option value="M">M — 15%</option>
+              <option value="Q">Q — 25%</option>
+              <option value="H" selected>H — 30% (logo safe)</option>
+            </select>
+            <label style="margin-left:.4rem">Size:</label>
+            <select class="qr-select" id="qrSize">
+              <option value="256">256 px</option>
+              <option value="512" selected>512 px</option>
+              <option value="800">800 px</option>
+              <option value="1024">1024 px</option>
+            </select>
+          </div>
+          <div class="qr-colors">
+            <div class="qr-color-item"><label for="qrFg">Foreground</label><input type="color" id="qrFg" value="#000000" aria-label="QR code foreground colour"></div>
+            <div class="qr-color-item"><label for="qrBg">Background</label><input type="color" id="qrBg" value="#ffffff" aria-label="QR code background colour"></div>
+          </div>
+        </div>
+        <div class="qr-section">
+          <div class="qr-btns">
+            <button class="m-btn primary" id="qrGenBtn" style="font-size:.76rem;padding:.32rem .8rem">
+              <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>Generate
+            </button>
+            <button class="m-btn" id="qrSaveBtn" disabled style="font-size:.76rem;padding:.32rem .8rem">
+              <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Save JPG
+            </button>
+            <button class="m-btn" id="qrClearBtn" style="font-size:.76rem;padding:.32rem .8rem">
+              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Clear
+            </button>
+          </div>
+          <div class="qr-msg" id="qrMsg"></div>
+        </div>
+      </div>
+      <!-- Right: preview -->
+      <div class="qr-right">
+        <div class="qr-preview-wrap" id="qrPreviewWrap">
+          <div class="qr-placeholder" id="qrPlaceholder">QR code preview<br>will appear here</div>
+          <canvas id="qrCanvas" style="display:none"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CONVERTERS MODAL -->
+<div class="modal-overlay" id="convOverlay" role="dialog" aria-modal="true" aria-labelledby="convModalTitle">
+  <div class="modal modal-xl" style="height:min(820px,calc(100vh - 3rem))">
+    <div class="modal-header">
+      <span class="modal-title" id="convModalTitle">⇄ Unit Converters</span>
+      <button class="modal-close" id="convClose" aria-label="Close">✕</button>
+    </div>
+
+    <!-- Tab buttons -->
+    <div class="conv-tabs" role="tablist">
+      <button class="conv-tab active" data-tab="data" role="tab" id="ctab-btn-data" aria-selected="true" aria-controls="ctab-data">Data Storage</button>
+      <button class="conv-tab" data-tab="time" role="tab" id="ctab-btn-time" aria-selected="false" aria-controls="ctab-time">Time</button>
+      <button class="conv-tab" data-tab="base" role="tab" id="ctab-btn-base" aria-selected="false" aria-controls="ctab-base">Number Base</button>
+      <button class="conv-tab" data-tab="temp" role="tab" id="ctab-btn-temp" aria-selected="false" aria-controls="ctab-temp">Temperature</button>
+      <button class="conv-tab" data-tab="len" role="tab" id="ctab-btn-len" aria-selected="false" aria-controls="ctab-len">Length</button>
+      <button class="conv-tab" data-tab="weight" role="tab" id="ctab-btn-weight" aria-selected="false" aria-controls="ctab-weight">Weight</button>
+    </div>
+
+    <!-- Tab panels -->
+    <div class="conv-panels">
+
+      <!-- DATA STORAGE -->
+      <div class="conv-panel active" id="ctab-data" role="tabpanel" aria-labelledby="ctab-btn-data" tabindex="0">
+        <div class="conv-field"><label>Bit (bit)</label><input class="conv-input" data-group="data" data-unit="bit" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Byte (B)</label><input class="conv-input" data-group="data" data-unit="byte" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Kilobyte (KB)</label><input class="conv-input" data-group="data" data-unit="kb" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Megabyte (MB)</label><input class="conv-input" data-group="data" data-unit="mb" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Gigabyte (GB)</label><input class="conv-input" data-group="data" data-unit="gb" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Petabyte (PB)</label><input class="conv-input" data-group="data" data-unit="pb" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Zettabyte (ZB)</label><input class="conv-input" data-group="data" data-unit="zb" placeholder="0" autocomplete="off"></div>
+      </div>
+
+      <!-- TIME -->
+      <div class="conv-panel" id="ctab-time" role="tabpanel" aria-labelledby="ctab-btn-time" tabindex="0">
+        <div class="conv-field"><label>Unix Timestamp — seconds</label><input class="conv-input" id="ctUnixSec" placeholder="e.g. 1700000000" autocomplete="off"></div>
+        <div class="conv-field"><label>Unix Timestamp — milliseconds</label><input class="conv-input" id="ctUnixMs" placeholder="e.g. 1700000000000" autocomplete="off"></div>
+        <div class="conv-field"><label>ISO 8601 Date &amp; Time (local)</label><input class="conv-input" id="ctIso" placeholder="e.g. 2024-01-15T14:30:00" autocomplete="off"></div>
+        <div class="conv-field"><label>Human Readable (UTC)</label><input class="conv-input" id="ctHuman" placeholder="Result…" readonly></div>
+        <button class="conv-now-btn" id="ctNowBtn">⏱ Use current time</button>
+      </div>
+
+      <!-- NUMBER BASE -->
+      <div class="conv-panel" id="ctab-base" role="tabpanel" aria-labelledby="ctab-btn-base" tabindex="0">
+        <div class="conv-base-row">
+          <div class="conv-base-field">
+            <label>From — Base <span id="cbFromLbl">10</span></label>
+            <input class="conv-input" id="cbFrom" placeholder="Enter number…" autocomplete="off" autocorrect="off" spellcheck="false">
+          </div>
+          <div class="conv-base-field">
+            <label>From base</label>
+            <select class="conv-base-sel" id="cbFromBase"></select>
+          </div>
+        </div>
+        <div class="conv-base-row" style="margin-top:.65rem">
+          <div class="conv-base-field">
+            <label>To — Base <span id="cbToLbl">2</span></label>
+            <input class="conv-input" id="cbTo" readonly placeholder="Result…">
+          </div>
+          <div class="conv-base-field">
+            <label>To base</label>
+            <select class="conv-base-sel" id="cbToBase"></select>
+          </div>
+        </div>
+        <div class="conv-quick-bases" style="margin-top:.85rem">
+          <span>Set From:</span>
+          <button class="conv-quick-btn" data-qb="2">BIN 2</button>
+          <button class="conv-quick-btn" data-qb="8">OCT 8</button>
+          <button class="conv-quick-btn" data-qb="10">DEC 10</button>
+          <button class="conv-quick-btn" data-qb="16">HEX 16</button>
+          <span style="margin-left:.4rem">Set To:</span>
+          <button class="conv-quick-btn" data-qb2="2">BIN 2</button>
+          <button class="conv-quick-btn" data-qb2="8">OCT 8</button>
+          <button class="conv-quick-btn" data-qb2="10">DEC 10</button>
+          <button class="conv-quick-btn" data-qb2="16">HEX 16</button>
+        </div>
+      </div>
+
+      <!-- TEMPERATURE -->
+      <div class="conv-panel" id="ctab-temp" role="tabpanel" aria-labelledby="ctab-btn-temp" tabindex="0">
+        <div class="conv-field"><label>Celsius (°C)</label><input class="conv-input" data-group="temp" data-unit="c" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Fahrenheit (°F)</label><input class="conv-input" data-group="temp" data-unit="f" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Kelvin (K)</label><input class="conv-input" data-group="temp" data-unit="k" placeholder="0" autocomplete="off"></div>
+      </div>
+
+      <!-- LENGTH -->
+      <div class="conv-panel" id="ctab-len" role="tabpanel" aria-labelledby="ctab-btn-len" tabindex="0">
+        <div class="conv-field"><label>Metre (m)</label><input class="conv-input" data-group="len" data-unit="m" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Kilometre (km)</label><input class="conv-input" data-group="len" data-unit="km" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Centimetre (cm)</label><input class="conv-input" data-group="len" data-unit="cm" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Decimetre (dm)</label><input class="conv-input" data-group="len" data-unit="dm" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Inch (in)</label><input class="conv-input" data-group="len" data-unit="in" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Foot (ft)</label><input class="conv-input" data-group="len" data-unit="ft" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Yard (yd)</label><input class="conv-input" data-group="len" data-unit="yd" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Mile (mi)</label><input class="conv-input" data-group="len" data-unit="mi" placeholder="0" autocomplete="off"></div>
+      </div>
+
+      <!-- WEIGHT -->
+      <div class="conv-panel" id="ctab-weight" role="tabpanel" aria-labelledby="ctab-btn-weight" tabindex="0">
+        <div class="conv-field"><label>Milligram (mg)</label><input class="conv-input" data-group="weight" data-unit="mg" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Gram (g)</label><input class="conv-input" data-group="weight" data-unit="g" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Kilogram (kg)</label><input class="conv-input" data-group="weight" data-unit="kg" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Pound (lb)</label><input class="conv-input" data-group="weight" data-unit="lb" placeholder="0" autocomplete="off"></div>
+        <div class="conv-field"><label>Tonne (t)</label><input class="conv-input" data-group="weight" data-unit="t" placeholder="0" autocomplete="off"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- UUID SECTION -->
+<section class="uuid-section" aria-label="UUID Generator" id="uuid-section">
+  <div class="uuid-label" id="uuidLabel" aria-live="polite">UUID Generator</div>
+  <div class="uuid-ver-track" role="group" aria-label="UUID version selection">
+    <button class="uuid-ver-btn" data-ver="1" aria-pressed="false">v1</button>
+    <button class="uuid-ver-btn" data-ver="4" aria-pressed="false">v4</button>
+    <button class="uuid-ver-btn" data-ver="5" aria-pressed="false">v5</button>
+    <button class="uuid-ver-btn" data-ver="6" aria-pressed="false">v6</button>
+    <button class="uuid-ver-btn active" data-ver="7" aria-pressed="true">v7</button>
+  </div>
+  <div class="uuid-display" role="region" aria-label="Generated UUID">
+    <div class="uuid-main-row">
+      <div class="uuid-val" id="uuidVal" aria-live="polite" aria-label="Generated UUID value" role="status"></div>
+      <button class="btn-uuid" id="uuidCopyBtn" aria-label="Copy UUID to clipboard and regenerate">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy &amp; Regen
+      </button>
+    </div>
+    <div class="uuid-hist-row" id="uuidHistRow" aria-label="Previous UUID">
+      <span class="uuid-hist-lbl" aria-hidden="true">prev</span>
+      <span class="uuid-hist-val" id="uuidHistVal" role="button" tabindex="0" title="Click to copy previous UUID" aria-label="Previous UUID – click to copy"></span>
+    </div>
+  </div>
+  <div class="dt-bar" aria-label="Current date and time" role="status">
+    <div class="wd-track" id="wdTrack" aria-hidden="true">
+      <div class="wd" data-d="1">Mo</div><div class="wd" data-d="2">Tu</div>
+      <div class="wd" data-d="3">We</div><div class="wd" data-d="4">Th</div>
+      <div class="wd" data-d="5">Fr</div><div class="wd" data-d="6">Sa</div>
+      <div class="wd" data-d="0">Su</div>
+    </div>
+    <div class="dt-sep" aria-hidden="true"></div>
+    <span class="dt-date" id="dtDate" aria-label="Today's date"></span>
+    <span class="dt-time" id="dtTime" aria-label="Current time"></span>
+    <div class="dt-sep" aria-hidden="true"></div>
+    <span class="dt-unix-lbl" aria-hidden="true">unix</span>
+    <span class="dt-unix" id="dtUnix" aria-label="Unix timestamp"></span>
+  </div>
+</section>
+
+<!-- JSON FORMATTER -->
+<main id="json-main" aria-label="JSON Formatter">
+  <div class="toolbar" role="toolbar" aria-label="JSON formatting tools">
+    <span class="toolbar-sep" aria-hidden="true">JSON</span>
+    <button class="btn primary" id="formatBtn" aria-label="Format JSON">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Format
+    </button>
+    <button class="btn" id="minifyBtn" aria-label="Minify JSON">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Minify
+    </button>
+    <button class="btn" id="clearBtn" aria-label="Clear JSON input">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>Clear
+    </button>
+    <div class="vdiv" aria-hidden="true"></div>
+    <button class="btn" id="expandBtn" aria-label="Expand all JSON nodes">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>Expand all
+    </button>
+    <button class="btn" id="collapseBtn" aria-label="Collapse all JSON nodes">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>Collapse all
+    </button>
+    <div class="vdiv" aria-hidden="true"></div>
+    <button class="btn" id="copyBtn" aria-label="Copy formatted JSON">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy
+    </button>
+    <button class="btn" id="downloadBtn" aria-label="Download formatted JSON as file">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download
+    </button>
+    <div class="vdiv" aria-hidden="true"></div>
+    <button class="btn" id="fontDecBtn" aria-label="Decrease JSON font size">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><text x="3" y="17" font-size="13" fill="currentColor" stroke="none" font-family="monospace">A</text><text x="13" y="19" font-size="9" fill="currentColor" stroke="none" font-family="monospace">A</text></svg>A−
+    </button>
+    <span class="font-size-lbl" id="fontSizeLbl" aria-live="polite" aria-label="Current font size">12px</span>
+    <button class="btn" id="fontIncBtn" aria-label="Increase JSON font size">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><text x="2" y="15" font-size="9" fill="currentColor" stroke="none" font-family="monospace">A</text><text x="10" y="19" font-size="13" fill="currentColor" stroke="none" font-family="monospace">A</text></svg>A+
+    </button>
+    <div class="vdiv" aria-hidden="true"></div>
+    <!-- Search toggle button + bar -->
+    <button class="btn" id="searchToggleBtn" aria-label="Search JSON output (Ctrl+F)" aria-expanded="false" aria-controls="jsonSearchBar">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search
+    </button>
+    <div class="search-bar" id="jsonSearchBar" role="search" aria-label="Search within JSON output" style="display:none">
+      <input type="search" id="jsonSearchInput" placeholder="Search JSON…" aria-label="Search JSON output" autocomplete="off" autocorrect="off" spellcheck="false">
+      <span class="search-count" id="searchCount" aria-live="polite" aria-atomic="true"></span>
+      <button class="search-nav-btn" id="searchPrev" aria-label="Previous match" disabled>
+        <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+      </button>
+      <button class="search-nav-btn" id="searchNext" aria-label="Next match" disabled>
+        <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <button class="search-nav-btn" id="searchClose" aria-label="Close search">
+        <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="error-bar" id="errorBar" role="alert" aria-live="assertive" aria-atomic="true"></div>
+
+  <div class="columns" id="columns">
+    <div class="col" id="colLeft">
+      <div class="col-header">
+        <div class="col-header-left">
+          <span class="col-tag" aria-hidden="true">Input</span>
+          <span class="col-badge" id="inBadge" aria-live="polite" aria-label="Input line count">0 lines</span>
+        </div>
+      </div>
+      <div class="col-body">
+        <div class="lnums" id="inNums" aria-hidden="true">1</div>
+        <div class="input-wrap" style="position:relative">
+          <textarea id="inputArea" spellcheck="false" autocomplete="off" autocorrect="off"
+            autocapitalize="off"
+            aria-label="JSON input – paste or type JSON here" aria-multiline="true"
+            aria-describedby="errorBar"
+            placeholder="Paste or type JSON here…&#10;&#10;• Unicode is decoded automatically&#10;• Errors shown in real time&#10;• Paste triggers auto-format"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-resizer" id="colResizer" role="separator" aria-label="Drag to resize columns" aria-orientation="vertical" tabindex="0"></div>
+
+    <div class="col" id="colRight">
+      <div class="col-header">
+        <div class="col-header-left">
+          <span class="col-tag" aria-hidden="true">Formatted</span>
+          <span class="col-badge" id="outBadge" aria-live="polite" aria-label="Output line count">—</span>
+        </div>
+      </div>
+      <div class="col-body">
+        <div class="lnums" id="outNums" aria-hidden="true">1</div>
+        <div class="out-wrap" id="outWrap">
+          <div class="out-content" id="outContent" role="region" aria-label="Formatted JSON output" aria-live="off"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <span class="footer-copy">
+    &copy; 2025 <a href="https://webkit.uz">webkit.uz</a>
+    &nbsp;&middot;&nbsp; JSON Formatter &amp; UUID Generator &nbsp;&middot;&nbsp; Free developer tools
+  </span>
+  <span class="footer-links">
+    <a class="footer-link" href="https://github.com/JavohirSD/webkit" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+      <!-- GitHub icon -->
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.49.5.09.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.34-3.369-1.34-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.68a3-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.641.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+      GitHub
+    </a>
+    <a class="footer-link" href="https://t.me/javohirsd" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
+      <!-- Telegram icon -->
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+      Telegram
+    </a>
+  </span>
+</footer>
+
+<script>
+(function(){
+'use strict';
+
+/* ══════════════════════════════════════════
+   UTILITIES
+══════════════════════════════════════════ */
+var $ = function(id){ return document.getElementById(id); };
+var pad = function(n,w){ return String(n).padStart ? String(n).padStart(w||2,'0') : (n < 10 ? '0'+n : String(n)); };
+var rndH = function(n){ var s=''; for(var i=0;i<n;i++) s+=(Math.random()*16|0).toString(16); return s; };
+var esc  = function(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+
+function decodeUnicode(s){
+  try{ return s.replace(/\\u([0-9a-fA-F]{4})/g,function(_,h){ return String.fromCharCode(parseInt(h,16)); }); }
+  catch(e){ return s; }
+}
+
+function copyText(text){
+  if(!text) return;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).catch(function(){ execCopy(text); });
+  } else { execCopy(text); }
+}
+function execCopy(text){
+  var ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.cssText = 'position:fixed;left:-9999px;top:-9999px;opacity:0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try{ document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta);
+}
+
+function flashBtn(btn, label, ms){
+  if(!btn || btn.dataset.flashing) return;
+  btn.dataset.flashing = '1';
+  var orig = btn.innerHTML;
+  btn.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> '+(label||'Done!');
+  btn.classList.add('ok');
+  setTimeout(function(){ btn.innerHTML=orig; btn.classList.remove('ok'); delete btn.dataset.flashing; }, ms||1500);
+}
+
+function downloadFile(content, name){
+  try{
+    var blob = new Blob([content], {type:'application/json'});
+    var url  = URL.createObjectURL(blob);
+    var a    = document.createElement('a');
+    a.href = url; a.download = name || 'formatted.json';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 30000);
+  }catch(e){ alert('Download failed: '+e.message); }
+}
+
+var lineNums = function(n){
+  var a=[]; for(var i=1;i<=Math.max(1,n);i++) a.push(i);
+  return a.join('\n');
+};
+
+/* ══════════════════════════════════════════
+   THEME
+══════════════════════════════════════════ */
+var SUN_ICON  = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
+var MOON_ICON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+var dark;
+try{ dark = (localStorage.getItem('theme')||'dark')==='dark'; }catch(e){ dark=true; }
+
+function applyTheme(){
+  document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+  $('themeIcon').innerHTML = dark ? SUN_ICON : MOON_ICON;
+  $('themeLbl').textContent = dark ? 'Light' : 'Dark';
+  var mc = $('metaThemeColor');
+  if(mc) mc.content = dark ? '#050608' : '#f4f6fb';
+  try{ localStorage.setItem('theme', dark?'dark':'light'); }catch(e){}
+}
+applyTheme();
+$('themeBtn').addEventListener('click', function(){ dark=!dark; applyTheme(); });
+
+/* ══════════════════════════════════════════
+   BROWSER INFO MODAL
+══════════════════════════════════════════ */
+function safe(fn, fallback){
+  try{ var v=fn(); return (v===null||v===undefined||v==='')?fallback||'—':String(v); }
+  catch(e){ return fallback||'N/A'; }
+}
+
+function getBrowserName(ua){
+  if(!ua) return '—';
+  if(ua.indexOf('Edg/')!==-1||ua.indexOf('Edge/')!==-1) return 'Microsoft Edge';
+  if(ua.indexOf('OPR/')!==-1||ua.indexOf('Opera/')!==-1) return 'Opera';
+  if(ua.indexOf('Chrome/')!==-1&&ua.indexOf('Safari/')!==-1) return 'Google Chrome';
+  if(ua.indexOf('Firefox/')!==-1) return 'Mozilla Firefox';
+  if(ua.indexOf('Safari/')!==-1&&ua.indexOf('Chrome/')===-1) return 'Apple Safari';
+  if(ua.indexOf('MSIE')!==-1||ua.indexOf('Trident/')!==-1) return 'Internet Explorer';
+  return 'Unknown';
+}
+
+function getBrowserVersion(ua, name){
+  if(!ua||name==='—') return '—';
+  var m;
+  if(name==='Microsoft Edge'){ m=ua.match(/Edg\/(\S+)/)||ua.match(/Edge\/(\S+)/); }
+  else if(name==='Opera'){ m=ua.match(/OPR\/(\S+)/)||ua.match(/Opera\/(\S+)/); }
+  else if(name==='Google Chrome'){ m=ua.match(/Chrome\/(\S+)/); }
+  else if(name==='Mozilla Firefox'){ m=ua.match(/Firefox\/(\S+)/); }
+  else if(name==='Apple Safari'){ m=ua.match(/Version\/(\S+)/); }
+  return m ? m[1] : '—';
+}
+
+function getOS(ua){
+  if(!ua) return '—';
+  if(ua.indexOf('Windows NT 10.0')!==-1) return 'Windows 10/11';
+  if(ua.indexOf('Windows NT 6.3')!==-1) return 'Windows 8.1';
+  if(ua.indexOf('Windows NT 6.2')!==-1) return 'Windows 8';
+  if(ua.indexOf('Windows NT 6.1')!==-1) return 'Windows 7';
+  if(ua.indexOf('Windows')!==-1) return 'Windows';
+  if(ua.indexOf('iPhone')!==-1) return 'iOS (iPhone)';
+  if(ua.indexOf('iPad')!==-1) return 'iOS (iPad)';
+  if(ua.indexOf('Mac OS X')!==-1){ var m=ua.match(/Mac OS X ([\d_]+)/); return 'macOS'+(m?' '+m[1].replace(/_/g,'.'):''); }
+  if(ua.indexOf('Android')!==-1){ var m2=ua.match(/Android ([\d.]+)/); return 'Android'+(m2?' '+m2[1]:''); }
+  if(ua.indexOf('Linux')!==-1) return 'Linux';
+  if(ua.indexOf('CrOS')!==-1) return 'Chrome OS';
+  return '—';
+}
+
+function getDeviceType(){
+  var ua = safe(function(){ return navigator.userAgent; },'');
+  if(/Mobi|Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua)) return 'Mobile / Tablet';
+  return 'Desktop';
+}
+
+function formatDatetime(d){
+  try{
+    return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())
+      +' '+pad(d.getHours())+':'+pad(d.getMinutes())+':'+pad(d.getSeconds());
+  }catch(e){ return '—'; }
+}
+
+function getIntlDateFormat(){
+  try{
+    var d = new Date(2024,0,31);
+    return new Intl.DateTimeFormat(navigator.language||'en').format(d)+' (sample: Jan 31 2024)';
+  }catch(e){ return '—'; }
+}
+
+function getNumberFormat(){
+  try{ return (1234567.89).toLocaleString(navigator.language||undefined); }catch(e){ return '—'; }
+}
+
+function getCurrencyFormat(){
+  try{
+    return new Intl.NumberFormat(navigator.language||'en',{style:'currency',currency:'USD'}).format(1234.56);
+  }catch(e){ return '—'; }
+}
+
+function getColorScheme(){
+  try{
+    if(window.matchMedia('(prefers-color-scheme:dark)').matches) return 'Dark';
+    if(window.matchMedia('(prefers-color-scheme:light)').matches) return 'Light';
+    return '—';
+  }catch(e){ return '—'; }
+}
+
+function getReducedMotion(){
+  try{ return window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 'Yes':'No'; }catch(e){ return '—'; }
+}
+
+function getConnectionInfo(){
+  try{
+    var c = navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+    if(!c) return '—';
+    var parts=[];
+    if(c.effectiveType) parts.push('Type: '+c.effectiveType);
+    if(c.downlink!==undefined) parts.push('Downlink: '+c.downlink+' Mbps');
+    if(c.rtt!==undefined) parts.push('RTT: '+c.rtt+'ms');
+    if(c.saveData!==undefined) parts.push('Save-data: '+(c.saveData?'on':'off'));
+    return parts.length?parts.join(' | '):'—';
+  }catch(e){ return '—'; }
+}
+
+function getBatteryInfo(cb){
+  try{
+    if(navigator.getBattery){
+      navigator.getBattery().then(function(b){
+        cb('Level: '+(b.level*100).toFixed(0)+'% | Charging: '+(b.charging?'Yes':'No'));
+      }).catch(function(){ cb('—'); });
+    } else { cb('—'); }
+  }catch(e){ cb('—'); }
+}
+
+function getMemory(){
+  try{
+    var m = performance.memory||navigator.deviceMemory;
+    if(navigator.deviceMemory) return navigator.deviceMemory+' GB (device)';
+    if(performance.memory){ return 'JS Heap: '+(performance.memory.usedJSHeapSize/1048576).toFixed(1)+'MB / '+(performance.memory.jsHeapSizeLimit/1048576).toFixed(1)+'MB'; }
+    return '—';
+  }catch(e){ return '—'; }
+}
+
+function getHardwareConcurrency(){
+  try{ return navigator.hardwareConcurrency ? navigator.hardwareConcurrency+' logical cores' : '—'; }catch(e){ return '—'; }
+}
+
+function getCookiesEnabled(){
+  try{ return navigator.cookieEnabled ? 'Yes' : 'No'; }catch(e){ return '—'; }
+}
+
+function getLocalStorageAvail(){
+  try{ localStorage.setItem('__t','1'); localStorage.removeItem('__t'); return 'Yes'; }catch(e){ return 'No'; }
+}
+
+function getSessionStorageAvail(){
+  try{ sessionStorage.setItem('__t','1'); sessionStorage.removeItem('__t'); return 'Yes'; }catch(e){ return 'No'; }
+}
+
+function getIndexedDBAvail(){
+  try{ return window.indexedDB ? 'Yes' : 'No'; }catch(e){ return '—'; }
+}
+
+function getWebGLRenderer(){
+  try{
+    var c = document.createElement('canvas');
+    var gl = c.getContext('webgl')||c.getContext('experimental-webgl');
+    if(!gl) return '—';
+    var ext = gl.getExtension('WEBGL_debug_renderer_info');
+    return ext ? gl.getParameter(ext.UNMASKED_RENDERER_WEBGL) : 'WebGL supported';
+  }catch(e){ return '—'; }
+}
+
+function getMaxTouchPoints(){
+  try{ return navigator.maxTouchPoints!==undefined ? String(navigator.maxTouchPoints) : '—'; }catch(e){ return '—'; }
+}
+
+function buildInfoTable(){
+  var ua      = safe(function(){ return navigator.userAgent; });
+  var bname   = getBrowserName(ua==='—'?'':ua);
+  var bver    = getBrowserVersion(ua==='—'?'':ua, bname);
+  var os      = getOS(ua==='—'?'':ua);
+  var now     = new Date();
+
+  var sections = [
+    { head:'Browser', rows:[
+      ['Browser Name',    bname],
+      ['Version',         bver],
+      ['User-Agent',      ua],
+      ['Vendor',          safe(function(){ return navigator.vendor; })],
+      ['App Name',        safe(function(){ return navigator.appName; })],
+      ['App Version',     safe(function(){ return navigator.appVersion; })],
+      ['App Code Name',   safe(function(){ return navigator.appCodeName; })],
+      ['Product',         safe(function(){ return navigator.product; })],
+      ['Product Sub',     safe(function(){ return navigator.productSub; })],
+      ['Build ID',        safe(function(){ return navigator.buildID||'—'; })],
+    ]},
+    { head:'Operating System & Device', rows:[
+      ['Operating System', os],
+      ['Platform',        safe(function(){ return navigator.platform; })],
+      ['Device Type',     getDeviceType()],
+      ['CPU Cores',       getHardwareConcurrency()],
+      ['Device Memory',   getMemory()],
+      ['Max Touch Points',getMaxTouchPoints()],
+    ]},
+    { head:'Screen & Display', rows:[
+      ['Screen Size',     safe(function(){ return screen.width+'×'+screen.height+' px'; })],
+      ['Available Size',  safe(function(){ return screen.availWidth+'×'+screen.availHeight+' px'; })],
+      ['Window Size',     safe(function(){ return window.innerWidth+'×'+window.innerHeight+' px'; })],
+      ['Pixel Ratio',     safe(function(){ return (window.devicePixelRatio||1)+'x'; })],
+      ['Color Depth',     safe(function(){ return screen.colorDepth+'-bit'; })],
+      ['Orientation',     safe(function(){ return screen.orientation ? screen.orientation.type : (window.orientation!==undefined?window.orientation+'°':'—'); })],
+      ['Color Scheme',    getColorScheme()],
+      ['Reduced Motion',  getReducedMotion()],
+    ]},
+    { head:'Network & Location', rows:[
+      ['Online Status',   safe(function(){ return navigator.onLine?'Online':'Offline'; })],
+      ['Connection',      getConnectionInfo()],
+      ['Do Not Track',    safe(function(){ var d=navigator.doNotTrack||window.doNotTrack; return d==='1'?'Enabled':d==='0'?'Disabled':'—'; })],
+    ]},
+    { head:'Date, Time & Locale', rows:[
+      ['Date & Time',     formatDatetime(now)],
+      ['Timezone',        safe(function(){ return Intl.DateTimeFormat().resolvedOptions().timeZone; })],
+      ['UTC Offset',      safe(function(){ var o=now.getTimezoneOffset(); return (o<=0?'+':'-')+pad(Math.abs(o/60|0))+':'+pad(Math.abs(o%60)); })],
+      ['Unix Timestamp',  String(Math.floor(now.getTime()/1000))],
+      ['Language',        safe(function(){ return navigator.language; })],
+      ['Languages',       safe(function(){ return (navigator.languages||[navigator.language]).join(', '); })],
+      ['Date Format',     getIntlDateFormat()],
+      ['Number Format',   getNumberFormat()],
+      ['Currency Format', getCurrencyFormat()],
+    ]},
+    { head:'Storage & APIs', rows:[
+      ['Cookies Enabled', getCookiesEnabled()],
+      ['LocalStorage',    getLocalStorageAvail()],
+      ['SessionStorage',  getSessionStorageAvail()],
+      ['IndexedDB',       getIndexedDBAvail()],
+      ['Service Worker',  safe(function(){ return 'serviceWorker' in navigator ? 'Supported':'Not supported'; })],
+      ['WebAssembly',     safe(function(){ return typeof WebAssembly!=='undefined'?'Supported':'Not supported'; })],
+      ['WebGL Renderer',  getWebGLRenderer()],
+      ['Clipboard API',   safe(function(){ return navigator.clipboard?'Supported':'Not supported'; })],
+      ['Geolocation',     safe(function(){ return navigator.geolocation?'Supported':'Not supported'; })],
+      ['Notifications',   safe(function(){ return 'Notification' in window?(Notification.permission):'Not supported'; })],
+    ]},
+  ];
+
+  var tbody = $('infoTable').querySelector('tbody');
+  tbody.innerHTML = '';
+  sections.forEach(function(sec){
+    var hrow = document.createElement('tr');
+    hrow.className = 'info-section-head';
+    hrow.innerHTML = '<td colspan="2">'+esc(sec.head)+'</td>';
+    tbody.appendChild(hrow);
+    sec.rows.forEach(function(r){
+      var tr = document.createElement('tr');
+      var val = r[1]||'—';
+      var naClass = (val==='—'||val==='N/A'||val==='Not supported')?' class="info-na"':'';
+      tr.innerHTML = '<td>'+esc(r[0])+'</td><td'+naClass+'>'+esc(val)+'</td>';
+      tbody.appendChild(tr);
+    });
+  });
+
+  // Async battery (fills in after table renders)
+  getBatteryInfo(function(info){
+    var rows = tbody.querySelectorAll('tr');
+    for(var i=0;i<rows.length;i++){
+      var cells = rows[i].querySelectorAll('td');
+      if(cells.length===2 && cells[0].textContent==='Battery'){
+        cells[1].textContent = info; return;
+      }
+    }
+    // Append battery row to last section
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td>Battery</td><td>'+(info==='—'?'<span class="info-na">—</span>':esc(info))+'</td>';
+    tbody.appendChild(tr);
+  });
+}
+
+/* ── FOCUS TRAP UTILITY ── */
+var FOCUSABLE = 'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
+var _prevFocus = null;
+
+function openOverlay(overlayId, firstFocusId){
+  var ov = $(overlayId);
+  if(!ov) return;
+  _prevFocus = document.activeElement;
+  ov.classList.add('open');
+  document.body.style.overflow = 'hidden';
+  ov.setAttribute('aria-hidden','false');
+  // Focus first element
+  var target = firstFocusId ? $(firstFocusId) : ov.querySelector(FOCUSABLE);
+  if(target) setTimeout(function(){ target.focus(); }, 50);
+}
+
+function closeOverlay(overlayId){
+  var ov = $(overlayId);
+  if(!ov) return;
+  ov.classList.remove('open');
+  document.body.style.overflow = '';
+  ov.setAttribute('aria-hidden','true');
+  if(_prevFocus) { _prevFocus.focus(); _prevFocus = null; }
+}
+
+function trapFocus(overlay, e){
+  if(!overlay.classList.contains('open')) return;
+  var focusable = Array.from(overlay.querySelectorAll(FOCUSABLE));
+  if(!focusable.length) return;
+  var first = focusable[0], last = focusable[focusable.length-1];
+  if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+  else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+}
+
+// Global Escape handler for all overlays
+document.addEventListener('keydown', function(e){
+  if(e.key !== 'Escape') return;
+  ['modalOverlay','ipModalOverlay','b64Overlay','taOverlay','qrOverlay','convOverlay'].forEach(function(id){
+    var ov = $(id);
+    if(ov && ov.classList.contains('open')) closeOverlay(id);
+  });
+});
+
+// Focus trap for all overlays
+['modalOverlay','ipModalOverlay','b64Overlay','taOverlay','qrOverlay','convOverlay'].forEach(function(id){
+  var ov = $(id);
+  if(!ov) return;
+  ov.setAttribute('aria-hidden','true');
+  ov.addEventListener('keydown', function(e){ if(e.key==='Tab') trapFocus(ov,e); });
+});
+
+// Modal open/close
+$('browserInfoBtn').addEventListener('click', function(){
+  buildInfoTable();
+  openOverlay('modalOverlay','modalClose');
+});
+function closeModal(){ closeOverlay('modalOverlay'); }
+$('modalClose').addEventListener('click', closeModal);
+$('modalOverlay').addEventListener('click', function(e){ if(e.target===this) closeModal(); });
+
+/* ══════════════════════════════════════════
+   UUID GENERATORS
+══════════════════════════════════════════ */
+var UUID_EPOCH = typeof BigInt !== 'undefined' ? BigInt('122192928000000000') : null;
+
+function uuidV1(){
+  var t = BigInt(Date.now())*BigInt(10000) + UUID_EPOCH;
+  var tlo = (t & BigInt(0xFFFFFFFF)).toString(16).padStart(8,'0');
+  var tmd = ((t >> BigInt(32)) & BigInt(0xFFFF)).toString(16).padStart(4,'0');
+  var thi = ((t >> BigInt(48)) & BigInt(0xFFF)).toString(16).padStart(3,'0');
+  var ch  = (((Math.random()*0x3F|0))|0x80).toString(16).padStart(2,'0');
+  var cl  = (Math.random()*0x100|0).toString(16).padStart(2,'0');
+  return tlo+'-'+tmd+'-1'+thi+'-'+ch+cl+'-'+rndH(12);
+}
+
+function uuidV4(){
+  try{ if(crypto && crypto.randomUUID) return crypto.randomUUID(); }catch(e){}
+  return rndH(8)+'-'+rndH(4)+'-4'+rndH(3)+'-'+((Math.random()*4|0)|8).toString(16)+rndH(3)+'-'+rndH(12);
+}
+
+function sha1(data){
+  function rotl(n,s){ return ((n<<s)|(n>>>(32-s)))>>>0; }
+  var H=[0x67452301,0xEFCDAB89,0x98BADCFE,0x10325476,0xC3D2E1F0];
+  var m=[]; for(var i=0;i<data.length;i++) m.push(data[i]);
+  var bl=m.length*8; m.push(0x80);
+  while(m.length%64!==56) m.push(0);
+  m.push(0,0,0,0,(bl>>>24)&0xFF,(bl>>>16)&0xFF,(bl>>>8)&0xFF,bl&0xFF);
+  for(var bi=0;bi<m.length;bi+=64){
+    var W=[];
+    for(var j=0;j<16;j++) W[j]=(m[bi+j*4]<<24)|(m[bi+j*4+1]<<16)|(m[bi+j*4+2]<<8)|m[bi+j*4+3];
+    for(j=16;j<80;j++) W[j]=rotl(W[j-3]^W[j-8]^W[j-14]^W[j-16],1);
+    var a=H[0],b=H[1],c=H[2],d=H[3],e=H[4];
+    for(j=0;j<80;j++){
+      var f,k;
+      if(j<20){f=((b&c)|(~b&d))>>>0;k=0x5A827999;}
+      else if(j<40){f=(b^c^d)>>>0;k=0x6ED9EBA1;}
+      else if(j<60){f=((b&c)|(b&d)|(c&d))>>>0;k=0x8F1BBCDC;}
+      else{f=(b^c^d)>>>0;k=0xCA62C1D6;}
+      var tmp=(rotl(a,5)+f+e+k+W[j])>>>0;
+      e=d;d=c;c=rotl(b,30);b=a;a=tmp;
+    }
+    H[0]=(H[0]+a)>>>0;H[1]=(H[1]+b)>>>0;H[2]=(H[2]+c)>>>0;H[3]=(H[3]+d)>>>0;H[4]=(H[4]+e)>>>0;
+  }
+  var out=new Uint8Array(20);
+  for(var i=0;i<5;i++){out[i*4]=(H[i]>>>24)&0xFF;out[i*4+1]=(H[i]>>>16)&0xFF;out[i*4+2]=(H[i]>>>8)&0xFF;out[i*4+3]=H[i]&0xFF;}
+  return out;
+}
+
+function uuidV5(){
+  var NS=[0x6b,0xa7,0xb8,0x10,0x9d,0xad,0x11,0xd1,0x80,0xb4,0x00,0xc0,0x4f,0xd4,0x30,0xc8];
+  var nm; try{ nm=Array.from(new TextEncoder().encode(String(Date.now())+rndH(8))); }
+  catch(e){ nm=String(Date.now()+rndH(8)).split('').map(function(c){ return c.charCodeAt(0); }); }
+  var d=NS.concat(nm), h=sha1(d);
+  h[6]=(h[6]&0x0F)|0x50; h[8]=(h[8]&0x3F)|0x80;
+  var x=Array.from(h,function(b){ return b.toString(16).padStart(2,'0'); }).join('');
+  return x.slice(0,8)+'-'+x.slice(8,12)+'-'+x.slice(12,16)+'-'+x.slice(16,20)+'-'+x.slice(20,32);
+}
+
+function uuidV6(){
+  var t = BigInt(Date.now())*BigInt(10000) + UUID_EPOCH;
+  var h48 = (t>>BigInt(12)) & BigInt('281474976710655');
+  var lo12= (t&BigInt(0xFFF)).toString(16).padStart(3,'0');
+  var g1  = ((h48>>BigInt(16)) & BigInt(0xFFFFFFFF)).toString(16).padStart(8,'0');
+  var g2  = (h48&BigInt(0xFFFF)).toString(16).padStart(4,'0');
+  var ch  = (((Math.random()*0x3F|0))|0x80).toString(16).padStart(2,'0');
+  var cl  = (Math.random()*0x100|0).toString(16).padStart(2,'0');
+  return g1+'-'+g2+'-6'+lo12+'-'+ch+cl+'-'+rndH(12);
+}
+
+function uuidV7(){
+  var ts=Date.now().toString(16).padStart(12,'0');
+  return ts.slice(0,8)+'-'+ts.slice(8,12)+'-7'+rndH(3)+'-'+((Math.random()*4|0)|8).toString(16)+rndH(3)+'-'+rndH(12);
+}
+
+// Fallback for browsers without BigInt (IE, old Safari)
+function uuidV1Fallback(){ return rndH(8)+'-'+rndH(4)+'-1'+rndH(3)+'-'+(((Math.random()*4|0)|8).toString(16))+rndH(3)+'-'+rndH(12); }
+function uuidV6Fallback(){ return rndH(8)+'-'+rndH(4)+'-6'+rndH(3)+'-'+(((Math.random()*4|0)|8).toString(16))+rndH(3)+'-'+rndH(12); }
+
+var hasBigInt = typeof BigInt !== 'undefined';
+var UUID_GEN = {
+  1: hasBigInt ? uuidV1 : uuidV1Fallback,
+  4: uuidV4,
+  5: uuidV5,
+  6: hasBigInt ? uuidV6 : uuidV6Fallback,
+  7: uuidV7
+};
+var UUID_LABEL = {
+  1:'v1 — Gregorian time + node',4:'v4 — Random',
+  5:'v5 — Name-based SHA-1',6:'v6 — Reordered time',7:'v7 — Unix-ms time'
+};
+var UUID_SEGS = {
+  1:['time','time','ver','clk','node'],4:['rand','rand','ver','rand','rand'],
+  5:['rand','rand','ver','rand','rand'],6:['time','time','ver','clk','node'],
+  7:['time','time','ver','rand','rand']
+};
+
+function colorUUID(uuid, ver){
+  var parts = uuid.split('-');
+  if(parts.length!==5) return esc(uuid);
+  var segs = UUID_SEGS[ver]||['rand','rand','ver','rand','rand'];
+  var sep  = '<span class="sep">-</span>';
+  return parts.map(function(p,i){ return '<span class="seg-'+segs[i]+'">'+p+'</span>'; }).join(sep);
+}
+
+var activeVer = 7, currentUUID = '';
+var uuidValEl    = $('uuidVal');
+var uuidHistRow  = $('uuidHistRow');
+var uuidHistVal  = $('uuidHistVal');
+var uuidLabelEl  = $('uuidLabel');
+
+function renderUUID(){
+  try{
+    currentUUID = UUID_GEN[activeVer]();
+    uuidValEl.innerHTML = colorUUID(currentUUID, activeVer);
+    uuidLabelEl.textContent = UUID_LABEL[activeVer]||'UUID Generator';
+  }catch(e){
+    uuidValEl.textContent = '⚠ Error: '+e.message;
+    currentUUID='';
+  }
+}
+
+document.querySelectorAll('.uuid-ver-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.uuid-ver-btn').forEach(function(b){
+      b.classList.remove('active');
+      b.setAttribute('aria-pressed','false');
+    });
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed','true');
+    activeVer = +btn.dataset.ver;
+    uuidHistRow.classList.remove('show');
+    renderUUID();
+  });
+});
+
+$('uuidCopyBtn').addEventListener('click', function(){
+  if(!currentUUID) return;
+  var prev = currentUUID;
+  copyText(prev);
+  uuidHistVal.textContent = prev;
+  uuidHistRow.classList.add('show');
+  flashBtn($('uuidCopyBtn'),'Copied!',1200);
+  setTimeout(renderUUID, 1200);
+});
+uuidHistVal.addEventListener('click', function(){ copyText(uuidHistVal.textContent); });
+uuidHistVal.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' ') copyText(uuidHistVal.textContent); });
+
+// Static clock snapshot
+(function(){
+  var now=new Date(), dow=now.getDay();
+  $('dtDate').textContent = pad(now.getDate())+'.'+pad(now.getMonth()+1)+'.'+now.getFullYear();
+  $('dtTime').textContent = pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+  var sec=Math.floor(now.getTime()/1000);
+  var ms=pad(now.getMilliseconds(),3);
+  $('dtUnix').innerHTML = sec+'<span class="dt-unix-ms">.'+ms+'</span>';
+  document.querySelectorAll('#wdTrack .wd').forEach(function(el){
+    el.classList.toggle('today', +el.dataset.d===dow);
+  });
+})();
+
+renderUUID();
+
+/* ══════════════════════════════════════════
+   JSON FORMATTER
+══════════════════════════════════════════ */
+var inputArea  = $('inputArea');
+var inNums     = $('inNums');
+var outNums    = $('outNums');
+var outContent = $('outContent');
+var outWrap    = $('outWrap');
+var errorBar   = $('errorBar');
+var inBadge    = $('inBadge');
+var outBadge   = $('outBadge');
+var plainOutput = '', nodeCount = 0;
+
+// Restore JSON input from localStorage on page load
+(function(){
+  try{
+    var saved = localStorage.getItem('json_input');
+    if(saved){ inputArea.value = saved; }
+  }catch(e){}
+})();
+
+function showErr(msg){ errorBar.textContent='⚠  '+msg; errorBar.classList.add('show'); inputArea.setAttribute('aria-invalid','true'); }
+function clearErr()  { errorBar.classList.remove('show'); inputArea.removeAttribute('aria-invalid'); }
+function resetOut()  { outContent.innerHTML=''; outBadge.textContent='—'; outNums.textContent='1'; plainOutput=''; }
+
+function updInNums(){
+  var n = inputArea.value.split('\n').length;
+  inNums.textContent = lineNums(n);
+  inBadge.textContent = n+' line'+(n!==1?'s':'');
+}
+function updOutNums(){
+  var text = outContent.innerText||outContent.textContent||'';
+  outNums.textContent = lineNums(text.split('\n').length);
+}
+
+function errorPos(text, msg){
+  var m = msg.match(/position (\d+)/i)||msg.match(/column (\d+)/i);
+  if(!m) return '';
+  var pos=+m[1], before=text.slice(0,pos);
+  return ' (line '+before.split('\n').length+', col '+(pos-before.lastIndexOf('\n')-1)+')';
+}
+
+function buildHTML(val, depth){
+  var i0='  '.repeat(depth), i1='  '.repeat(depth+1);
+  if(val===null)             return '<span class="t-null">null</span>';
+  if(typeof val==='boolean') return '<span class="t-bool">'+val+'</span>';
+  if(typeof val==='number'){
+    if(!isFinite(val)) return '<span class="t-null">'+val+'</span>';
+    return '<span class="'+(Number.isInteger(val)?'t-int':'t-flt')+'">'+val+'</span>';
+  }
+  if(typeof val==='string')  return '<span class="t-str">"'+esc(val)+'"</span>';
+
+  if(Array.isArray(val)){
+    if(!val.length) return '<span class="t-punc">[]</span>';
+    var id='n'+(++nodeCount);
+    var items=val.map(function(v,i){
+      return i1+buildHTML(v,depth+1)+(i<val.length-1?'<span class="t-punc">,</span>':'');
+    }).join('\n');
+    return '<span class="node" id="'+id+'"><button class="toggle" onclick="window._toggle(\''+id+'\')" aria-expanded="true" aria-label="Collapse array">▾</button><span class="t-punc">[</span><span class="t-count">'+val.length+'</span><span class="collapsible">\n'+items+'\n'+i0+'</span><span class="ellipsis"> … </span><span class="closing"><span class="t-punc">]</span></span><span class="closing-inline"><span class="t-punc">]</span></span></span>';
+  }
+
+  if(typeof val==='object'){
+    var keys=Object.keys(val);
+    if(!keys.length) return '<span class="t-punc">{}</span>';
+    var id2='n'+(++nodeCount);
+    var items2=keys.map(function(k,i){
+      return i1+'<span class="t-key">"'+esc(k)+'"</span><span class="t-punc">: </span>'+buildHTML(val[k],depth+1)+(i<keys.length-1?'<span class="t-punc">,</span>':'');
+    }).join('\n');
+    return '<span class="node" id="'+id2+'"><button class="toggle" onclick="window._toggle(\''+id2+'\')" aria-expanded="true" aria-label="Collapse object">▾</button><span class="t-punc">{</span><span class="t-count">'+keys.length+'</span><span class="collapsible">\n'+items2+'\n'+i0+'</span><span class="ellipsis"> … </span><span class="closing"><span class="t-punc">}</span></span><span class="closing-inline"><span class="t-punc">}</span></span></span>';
+  }
+  return esc(String(val));
+}
+
+window._toggle = function(id){
+  var el=document.getElementById(id); if(!el) return;
+  var c=el.classList.toggle('collapsed');
+  var t=el.querySelector('.toggle');
+  if(t){
+    t.textContent = c ? '▸' : '▾';
+    t.setAttribute('aria-expanded', c ? 'false' : 'true');
+    t.setAttribute('aria-label', c ? 'Expand' : 'Collapse');
+  }
+  updOutNums();
+};
+
+function setAllNodes(collapse){
+  document.querySelectorAll('.node').forEach(function(n){
+    n.classList.toggle('collapsed',collapse);
+    var t=n.querySelector('.toggle');
+    if(t){
+      t.textContent = collapse ? '▸' : '▾';
+      t.setAttribute('aria-expanded', collapse ? 'false' : 'true');
+      t.setAttribute('aria-label', collapse ? 'Expand' : 'Collapse');
+    }
+  });
+  updOutNums();
+}
+
+function doFormat(raw){
+  clearErr();
+  var trimmed=(raw||'').trim();
+  if(!trimmed){ resetOut(); return; }
+  if(trimmed.length>500000) showErr('Large input ('+Math.round(trimmed.length/1000)+' KB) — may be slow.');
+  var decoded=decodeUnicode(trimmed);
+  var parsed;
+  try{ parsed=JSON.parse(decoded); }
+  catch(e){ resetOut(); showErr(e.message+errorPos(decoded,e.message)); return; }
+  nodeCount=0;
+  var fmt=JSON.stringify(parsed,null,2);
+  plainOutput=fmt;
+  outBadge.textContent=fmt.split('\n').length+' lines';
+  try{ outContent.innerHTML=buildHTML(parsed,0); }
+  catch(e){ outContent.textContent=fmt; showErr('Renderer error — plain output. '+e.message); }
+  updOutNums();
+  // Re-apply search highlights after rerender
+  if(window._searchHook) window._searchHook();
+}
+
+// Input events
+inputArea.addEventListener('input', function(){
+  updInNums(); doFormat(inputArea.value);
+  try{ localStorage.setItem('json_input', inputArea.value); }catch(e){}
+});
+inputArea.addEventListener('paste', function(){ setTimeout(function(){ updInNums(); doFormat(inputArea.value); try{ localStorage.setItem('json_input', inputArea.value); }catch(e){} },0); });
+inputArea.addEventListener('scroll', function(){ inNums.scrollTop=inputArea.scrollTop; });
+inputArea.addEventListener('keydown', function(e){
+  if(e.key!=='Tab') return;
+  e.preventDefault();
+  var s=inputArea.selectionStart, end=inputArea.selectionEnd;
+  inputArea.value=inputArea.value.slice(0,s)+'  '+inputArea.value.slice(end);
+  inputArea.selectionStart=inputArea.selectionEnd=s+2;
+  updInNums();
+});
+outWrap.addEventListener('scroll', function(){ outNums.scrollTop=outWrap.scrollTop; });
+
+// Toolbar
+$('formatBtn').addEventListener('click', function(){ doFormat(inputArea.value); });
+$('clearBtn').addEventListener('click', function(){ inputArea.value=''; updInNums(); clearErr(); resetOut(); try{ localStorage.removeItem('json_input'); }catch(e){} });
+$('expandBtn').addEventListener('click', function(){ setAllNodes(false); });
+$('collapseBtn').addEventListener('click', function(){ setAllNodes(true); });
+$('minifyBtn').addEventListener('click', function(){
+  var raw=inputArea.value.trim();
+  if(!raw){ showErr('Nothing to minify.'); return; }
+  try{ var min=JSON.stringify(JSON.parse(decodeUnicode(raw))); inputArea.value=min; updInNums(); doFormat(min); }
+  catch(e){ showErr('Cannot minify — invalid JSON: '+e.message); }
+});
+$('copyBtn').addEventListener('click', function(){
+  if(!plainOutput){ showErr('Nothing to copy — format valid JSON first.'); return; }
+  copyText(plainOutput); flashBtn($('copyBtn'),'Copied!');
+});
+$('downloadBtn').addEventListener('click', function(){
+  if(!plainOutput){ showErr('Nothing to download — format valid JSON first.'); return; }
+  var ts=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
+  downloadFile(plainOutput,'formatted_'+ts+'.json');
+  flashBtn($('downloadBtn'),'Saved!');
+});
+
+// Init from restored localStorage value
+if(inputArea.value){ updInNums(); doFormat(inputArea.value); }
+
+/* ══════════════════════════════════════════
+   COLUMN RESIZER
+══════════════════════════════════════════ */
+(function(){
+  var cols=document.getElementById('columns');
+  var left=document.getElementById('colLeft');
+  var right=document.getElementById('colRight');
+  var handle=document.getElementById('colResizer');
+  var MIN=180, drag=false, x0=0, lw=0, rw=0;
+
+  function split(){
+    if(window.innerWidth<=768) return;
+    var avail=cols.offsetWidth-handle.offsetWidth;
+    left.style.width=(avail/2)+'px';
+    right.style.width=(avail/2)+'px';
+  }
+  split();
+  window.addEventListener('resize', function(){ split(); });
+
+  function start(x){ drag=true;x0=x;lw=left.offsetWidth;rw=right.offsetWidth;handle.classList.add('dragging');document.body.style.cursor='col-resize';document.body.style.userSelect='none';document.body.style.webkitUserSelect='none'; }
+  function move(x){ if(!drag) return; var nl=Math.min(Math.max(lw+(x-x0),MIN),lw+rw-MIN); left.style.width=nl+'px'; right.style.width=(lw+rw-nl)+'px'; }
+  function end(){ if(!drag) return; drag=false; handle.classList.remove('dragging'); document.body.style.cursor=''; document.body.style.userSelect=''; document.body.style.webkitUserSelect=''; }
+
+  handle.addEventListener('mousedown', function(e){ start(e.clientX); e.preventDefault(); });
+  document.addEventListener('mousemove', function(e){ move(e.clientX); });
+  document.addEventListener('mouseup', end);
+  handle.addEventListener('touchstart', function(e){ start(e.touches[0].clientX); e.preventDefault(); },{passive:false});
+  document.addEventListener('touchmove', function(e){ if(drag){ move(e.touches[0].clientX); e.preventDefault(); } },{passive:false});
+  document.addEventListener('touchend', end);
+})();
+
+updInNums();
+
+/* ══════════════════════════════════════════
+   FONT SIZE CONTROL
+══════════════════════════════════════════ */
+var JSON_FONT_SIZES = [10, 11, 12, 13, 14, 15, 16, 18, 20];
+var fontSizeIdx = 2; // default → 12px
+
+function applyFontSize(){
+  var px = JSON_FONT_SIZES[fontSizeIdx];
+  var pxStr = px + 'px';
+  inputArea.style.fontSize   = pxStr;
+  outContent.style.fontSize  = pxStr;
+  inNums.style.fontSize      = Math.max(9, px - 2) + 'px';
+  outNums.style.fontSize     = Math.max(9, px - 2) + 'px';
+  $('fontSizeLbl').textContent = pxStr;
+  try{ localStorage.setItem('jsonFontIdx', fontSizeIdx); }catch(e){}
+}
+try{ var fi=parseInt(localStorage.getItem('jsonFontIdx'),10); if(!isNaN(fi)&&fi>=0&&fi<JSON_FONT_SIZES.length) fontSizeIdx=fi; }catch(e){}
+applyFontSize();
+
+$('fontIncBtn').addEventListener('click', function(){
+  if(fontSizeIdx < JSON_FONT_SIZES.length-1){ fontSizeIdx++; applyFontSize(); }
+});
+$('fontDecBtn').addEventListener('click', function(){
+  if(fontSizeIdx > 0){ fontSizeIdx--; applyFontSize(); }
+});
+
+/* ══════════════════════════════════════════
+   JSON SEARCH
+══════════════════════════════════════════ */
+(function(){
+  var searchBar    = $('jsonSearchBar');
+  var searchInput  = $('jsonSearchInput');
+  var searchCount  = $('searchCount');
+  var prevBtn      = $('searchPrev');
+  var nextBtn      = $('searchNext');
+  var closeBtn     = $('searchClose');
+  var toggleBtn    = $('searchToggleBtn');
+  var hits         = [];
+  var activeIdx    = -1;
+  var isOpen       = false;
+
+  /* ── open / close the search bar ── */
+  function openSearch(){
+    isOpen = true;
+    searchBar.style.display = 'flex';
+    toggleBtn.setAttribute('aria-expanded','true');
+    toggleBtn.classList.add('primary');
+    searchInput.focus();
+    searchInput.select();
+  }
+  function closeSearch(){
+    isOpen = false;
+    searchBar.style.display = 'none';
+    toggleBtn.setAttribute('aria-expanded','false');
+    toggleBtn.classList.remove('primary');
+    clearHighlights();
+    searchInput.value = '';
+    searchCount.textContent = '';
+    prevBtn.disabled = true;
+    nextBtn.disabled = true;
+  }
+
+  toggleBtn.addEventListener('click', function(){
+    if(isOpen) closeSearch(); else openSearch();
+  });
+  closeBtn.addEventListener('click', closeSearch);
+
+  /* ── clear all <mark> highlights ── */
+  function clearHighlights(){
+    /* normalise before we walk, so adjacent text nodes merge */
+    outContent.normalize();
+    outContent.querySelectorAll('mark.s-hit').forEach(function(m){
+      var p = m.parentNode; if(!p) return;
+      while(m.firstChild) p.insertBefore(m.firstChild, m);
+      p.removeChild(m);
+    });
+    outContent.normalize();
+    hits = []; activeIdx = -1;
+  }
+
+  /* ── collect ALL text nodes into a plain array first ──
+       We must snapshot before touching the DOM so we never
+       process a text node that we ourselves just created.    */
+  function collectTextNodes(root){
+    var result = [];
+    var walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null, false);
+    var n;
+    while((n = walker.nextNode())) result.push(n);
+    return result;
+  }
+
+  /* ── highlight a single text node for a given query ── */
+  function highlightNode(tn, lowerQuery, queryLen){
+    var val  = tn.nodeValue;
+    var lval = val.toLowerCase();
+    var pos  = lval.indexOf(lowerQuery);
+    if(pos === -1) return;                 /* nothing to do */
+
+    var frag = document.createDocumentFragment();
+    var last = 0;
+    while(pos !== -1){
+      /* text before the match */
+      if(pos > last) frag.appendChild(document.createTextNode(val.slice(last, pos)));
+      /* the match itself */
+      var mark = document.createElement('mark');
+      mark.className = 's-hit';
+      mark.setAttribute('aria-hidden','true');
+      mark.textContent = val.slice(pos, pos + queryLen);
+      frag.appendChild(mark);
+      hits.push(mark);
+      last = pos + queryLen;
+      pos  = lval.indexOf(lowerQuery, last);
+    }
+    /* text after the last match */
+    if(last < val.length) frag.appendChild(document.createTextNode(val.slice(last)));
+
+    tn.parentNode.replaceChild(frag, tn);
+  }
+
+  /* ── set the active (bright) hit and scroll to it ── */
+  function setActive(idx){
+    if(!hits.length){ activeIdx = -1; return; }
+    if(idx < 0)            idx = hits.length - 1;
+    if(idx >= hits.length) idx = 0;
+    if(activeIdx >= 0 && hits[activeIdx]) hits[activeIdx].classList.remove('s-active');
+    activeIdx = idx;
+    hits[activeIdx].classList.add('s-active');
+    hits[activeIdx].scrollIntoView({block:'nearest', behavior:'smooth'});
+    searchCount.textContent = (activeIdx + 1) + ' / ' + hits.length;
+    searchCount.className   = 'search-count has-match';
+  }
+
+  /* ── main search routine ── */
+  function runSearch(){
+    clearHighlights();
+    var query = (searchInput.value || '').trim();
+    if(!query){
+      searchCount.textContent = '';
+      searchCount.className   = 'search-count';
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      return;
+    }
+
+    /* snapshot text nodes BEFORE any DOM mutation */
+    var nodes      = collectTextNodes(outContent);
+    var lowerQuery = query.toLowerCase();
+    var queryLen   = query.length;
+
+    nodes.forEach(function(tn){ highlightNode(tn, lowerQuery, queryLen); });
+
+    if(!hits.length){
+      searchCount.textContent = '0 results';
+      searchCount.className   = 'search-count';
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+    } else {
+      prevBtn.disabled = false;
+      nextBtn.disabled = false;
+      setActive(0);
+    }
+  }
+
+  /* hook called by doFormat after output is rebuilt */
+  window._searchHook = function(){ if(isOpen && searchInput.value) runSearch(); };
+
+  /* ── event wiring ── */
+  searchInput.addEventListener('input', runSearch);
+  searchInput.addEventListener('keydown', function(e){
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      setActive(e.shiftKey ? activeIdx - 1 : activeIdx + 1);
+    }
+    if(e.key === 'Escape'){ e.preventDefault(); closeSearch(); }
+  });
+  nextBtn.addEventListener('click', function(){ setActive(activeIdx + 1); });
+  prevBtn.addEventListener('click', function(){ setActive(activeIdx - 1); });
+
+  /* Ctrl+F / Cmd+F → open search and focus input */
+  document.addEventListener('keydown', function(e){
+    if((e.ctrlKey || e.metaKey) && (e.key === 'f' || e.key === 'F')){
+      e.preventDefault();
+      openSearch();
+    }
+  });
+})();
+
+/* ══════════════════════════════════════════
+   COL RESIZER — KEYBOARD SUPPORT
+══════════════════════════════════════════ */
+(function(){
+  var handle = $('colResizer');
+  handle.addEventListener('keydown', function(e){
+    if(window.innerWidth <= 768) return;
+    var left  = $('colLeft');
+    var right = $('colRight');
+    var step  = 20;
+    var lw = left.offsetWidth, rw = right.offsetWidth, MIN = 180;
+    var nl;
+    if(e.key === 'ArrowLeft'){ nl = Math.max(lw - step, MIN); }
+    else if(e.key === 'ArrowRight'){ nl = Math.min(lw + step, lw+rw-MIN); }
+    else return;
+    e.preventDefault();
+    left.style.width  = nl + 'px';
+    right.style.width = (lw + rw - nl) + 'px';
+  });
+})();
+
+/* ══════════════════════════════════════════
+   IP INFO MODAL
+══════════════════════════════════════════ */
+var IP_SERVICES = [
+  { url:'https://geo.kamero.ai/api/geo',
+    parse:function(d){
+      var rows=[],add=function(k,v){if(v!==undefined&&v!==null&&v!=='')rows.push([k,String(v)]);};
+      add('IP Address',d.ip);
+      add('City',d.city);
+      add('Country Code',d.country);
+      add('Region Code',d.countryRegion);
+      add('Continent',d.continent);
+      add('Latitude',d.latitude);
+      add('Longitude',d.longitude);
+      add('Timezone',d.timezone);
+      add('Region',d.region);
+      return rows.length?rows:null;
+    }
+  },
+  { url:'https://geoip.vuiz.net/geoip',
+    parse:function(d){
+      var rows=[],add=function(k,v){if(v!==undefined&&v!==null&&v!=='')rows.push([k,String(v)]);};
+      add('IP Address',d.ip);
+      add('City',d.city);
+      add('Region',d.region+(d.region_code?' ('+d.region_code+')':''));
+      add('Country',d.country+(d.country_code?' ('+d.country_code+')':''));
+      add('Continent',d.continent_code);
+      add('Postal Code',d.postal_code);
+      add('Latitude',d.latitude);
+      add('Longitude',d.longitude);
+      add('Timezone',d.timezone);
+      add('ISP',d.isp);
+      add('Organization',d.organization);
+      add('ASN Org',d.asn_organization);
+      add('ASN',d.asn!==undefined&&d.asn!==null?String(d.asn):'');
+      return rows.length?rows:null;
+    }
+  },
+  { url:'http://ipwho.is/',
+    parse:function(d){
+      if(d.success===false) return null;
+      var rows=[],add=function(k,v){if(v!==undefined&&v!==null&&v!=='')rows.push([k,String(v)]);};
+      add('IP Address',d.ip);
+      add('IP Type',d.type);
+      add('City',d.city);
+      add('Region',d.region+(d.region_code?' ('+d.region_code+')':''));
+      add('Country',d.country+(d.country_code?' ('+d.country_code+')':''));
+      add('Continent',d.continent+(d.continent_code?' ('+d.continent_code+')':''));
+      add('Postal Code',d.postal);
+      add('Latitude',d.latitude);
+      add('Longitude',d.longitude);
+      add('EU Member',d.is_eu?'Yes':'No');
+      add('Calling Code',d.calling_code);
+      add('Capital',d.capital);
+      add('Borders',d.borders);
+      add('Flag',d.flag&&d.flag.emoji?d.flag.emoji+' ('+d.flag.emoji_unicode+')':'');
+      add('ISP',d.connection&&d.connection.isp?d.connection.isp:'');
+      add('Org',d.connection&&d.connection.org?d.connection.org:'');
+      add('ASN',d.connection&&d.connection.asn?String(d.connection.asn):'');
+      add('Domain',d.connection&&d.connection.domain?d.connection.domain:'');
+      add('Timezone',d.timezone&&d.timezone.id?d.timezone.id:'');
+      add('UTC Offset',d.timezone&&d.timezone.utc?d.timezone.utc:'');
+      add('DST',d.timezone&&d.timezone.is_dst!==undefined?(d.timezone.is_dst?'Yes':'No'):'');
+      return rows.length?rows:null;
+    }
+  },
+  { url:'https://api.country.is/',
+    parse:function(d){
+      var rows=[],add=function(k,v){if(v!==undefined&&v!==null&&v!=='')rows.push([k,String(v)]);};
+      add('IP Address',d.ip);
+      add('Country Code',d.country);
+      return rows.length?rows:null;
+    }
+  }
+];
+
+var ipCacheRows  = null;  // non-null = successful fetch cached
+var ipFetchDone  = false; // true after first attempt (success OR all-failed)
+
+function renderIPTable(rows){
+  ipCacheRows = rows;
+  ipFetchDone = true;
+  var tbody=$('ipInfoTable').querySelector('tbody');
+  tbody.innerHTML='';
+  rows.forEach(function(r){
+    var val=r[1]||'—';
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td>'+esc(r[0])+'</td><td>'+(val==='—'?'<span class="info-na">—</span>':esc(val))+'</td>';
+    tbody.appendChild(tr);
+  });
+  $('ipLoading').style.display='none';
+  $('ipError').style.display='none';
+  $('ipInfoTable').style.display='';
+}
+
+function showIPError(){
+  ipFetchDone = true; // cache the error — do not retry until page reload
+  $('ipLoading').style.display='none';
+  $('ipInfoTable').style.display='none';
+  $('ipError').style.display='block';
+}
+
+function tryIPService(idx){
+  if(idx>=IP_SERVICES.length){showIPError();return;}
+  var svc=IP_SERVICES[idx], done=false;
+  var timer=setTimeout(function(){ if(!done){done=true;tryIPService(idx+1);} },6000);
+  try{
+    fetch(svc.url,{method:'GET',headers:{'Accept':'application/json'},mode:'cors'})
+      .then(function(res){ if(!res.ok) throw new Error('HTTP '+res.status); return res.json(); })
+      .then(function(data){
+        if(done) return; done=true; clearTimeout(timer);
+        var rows; try{rows=svc.parse(data);}catch(e){rows=null;}
+        if(rows&&rows.length){renderIPTable(rows);}else{tryIPService(idx+1);}
+      })
+      .catch(function(){ if(done) return; done=true; clearTimeout(timer); tryIPService(idx+1); });
+  }catch(e){ clearTimeout(timer); tryIPService(idx+1); }
+}
+
+function openIPModal(){
+  openOverlay('ipModalOverlay','ipModalClose');
+
+  // Already have data — show it instantly, no request
+  if(ipCacheRows){ renderIPTable(ipCacheRows); return; }
+
+  // Already failed this page session — show error instantly, no request
+  if(ipFetchDone){ showIPError(); return; }
+
+  // First open: fetch now
+  $('ipLoading').style.display='flex';
+  $('ipInfoTable').style.display='none';
+  $('ipError').style.display='none';
+  if(typeof fetch==='undefined'){ showIPError(); return; }
+  tryIPService(0);
+}
+function closeIPModal(){ closeOverlay('ipModalOverlay'); }
+
+$('ipInfoBtn').addEventListener('click', openIPModal);
+$('ipModalClose').addEventListener('click', closeIPModal);
+$('ipModalOverlay').addEventListener('click', function(e){if(e.target===this)closeIPModal();});
+
+/* ══════════════════════════════════════════
+   BASE64 ENCODER / DECODER
+══════════════════════════════════════════ */
+var b64EncTa = $('b64EncTa');
+var b64DecTa = $('b64DecTa');
+var b64Updating = false; // prevent feedback loops
+
+function b64Encode(str){
+  try{
+    // Handle Unicode correctly via TextEncoder
+    if(typeof TextEncoder !== 'undefined'){
+      var bytes = new TextEncoder().encode(str);
+      var bin = '';
+      for(var i=0;i<bytes.length;i++) bin += String.fromCharCode(bytes[i]);
+      return btoa(bin);
+    }
+    // Fallback: encode URI components then escape
+    return btoa(unescape(encodeURIComponent(str)));
+  }catch(e){ return ''; }
+}
+
+function b64Decode(str){
+  try{
+    var clean = str.replace(/\s/g,''); // strip whitespace/newlines
+    if(!clean) return '';
+    var bin = atob(clean);
+    if(typeof TextDecoder !== 'undefined'){
+      var bytes = new Uint8Array(bin.length);
+      for(var i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+      return new TextDecoder('utf-8',{fatal:false}).decode(bytes);
+    }
+    // Fallback
+    return decodeURIComponent(escape(bin));
+  }catch(e){ return null; } // null = invalid base64
+}
+
+var B64_ERR_CLS = 'b64-err';
+function setB64Error(ta, on){
+  if(on){ ta.style.color='var(--err)'; }
+  else  { ta.style.color=''; }
+}
+
+b64EncTa.addEventListener('input', function(){
+  if(b64Updating) return;
+  b64Updating = true;
+  var decoded = b64Decode(b64EncTa.value);
+  if(b64EncTa.value.trim() === ''){ b64DecTa.value=''; setB64Error(b64EncTa,false); }
+  else if(decoded === null){ setB64Error(b64EncTa,true); } // invalid base64
+  else{ b64DecTa.value = decoded; setB64Error(b64EncTa,false); }
+  b64Updating = false;
+});
+
+b64DecTa.addEventListener('input', function(){
+  if(b64Updating) return;
+  b64Updating = true;
+  setB64Error(b64EncTa, false);
+  if(b64DecTa.value === ''){ b64EncTa.value=''; }
+  else{ b64EncTa.value = b64Encode(b64DecTa.value); }
+  b64Updating = false;
+});
+
+// Reliable paste: execCommand fires on every user-gesture click without permission prompts.
+// Clipboard API used as fallback for browsers where execCommand paste is blocked.
+function pasteInto(el, onDone){
+  el.focus();
+  el.select(); // select all so paste replaces content
+  var ok = false;
+  try{ ok = document.execCommand('paste'); }catch(e){}
+  if(ok){
+    if(onDone) onDone(el.value);
+    el.dispatchEvent(new Event('input'));
+    return;
+  }
+  // Fallback: Clipboard API
+  if(navigator.clipboard && navigator.clipboard.readText){
+    navigator.clipboard.readText()
+      .then(function(txt){
+        el.value = txt;
+        if(onDone) onDone(txt);
+        el.dispatchEvent(new Event('input'));
+      })
+      .catch(function(){});
+  }
+}
+
+// Copy/Clear/Download helpers for each side
+function wireB64Toolbar(copyId, clearId, dlId, ta, dlName){
+  $(copyId).addEventListener('click', function(){
+    if(!ta.value) return;
+    copyText(ta.value); flashBtn($(copyId),'Copied!');
+  });
+  $(clearId).addEventListener('click', function(){
+    ta.value=''; ta.dispatchEvent(new Event('input'));
+    setB64Error(b64EncTa,false);
+  });
+  $(dlId).addEventListener('click', function(){
+    if(!ta.value) return;
+    downloadFile(ta.value, dlName, 'text/plain');
+    flashBtn($(dlId),'Saved!');
+  });
+}
+wireB64Toolbar('b64CopyDec','b64ClearDec','b64DlDec', b64DecTa, 'decoded.txt');
+wireB64Toolbar('b64CopyEnc','b64ClearEnc','b64DlEnc', b64EncTa, 'encoded.txt');
+
+// File upload → Base64 encode
+function handleB64File(file){
+  if(!file) return;
+  $('b64Fname').textContent = file.name+' ('+Math.round(file.size/1024)+' KB)';
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var result = e.target.result; // data:...;base64,XXXXX
+    var b64 = result.indexOf(',') !== -1 ? result.split(',')[1] : result;
+    b64EncTa.value = b64;
+    var dec = b64Decode(b64);
+    b64DecTa.value = (dec !== null) ? dec : '(binary file — encoded above)';
+    setB64Error(b64EncTa, false);
+  };
+  reader.onerror = function(){ $('b64Fname').textContent = 'Error reading file.'; };
+  reader.readAsDataURL(file);
+}
+
+var b64Drop = $('b64Drop');
+b64Drop.addEventListener('dragover', function(e){ e.preventDefault(); b64Drop.classList.add('drag-over'); });
+b64Drop.addEventListener('dragleave', function(){ b64Drop.classList.remove('drag-over'); });
+b64Drop.addEventListener('drop', function(e){
+  e.preventDefault(); b64Drop.classList.remove('drag-over');
+  var f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+  if(f) handleB64File(f);
+});
+b64Drop.addEventListener('click', function(e){
+  if(e.target.tagName!=='LABEL') $('b64FileIn').click();
+});
+b64Drop.addEventListener('keydown', function(e){
+  if(e.key==='Enter'||e.key===' '){ e.preventDefault(); $('b64FileIn').click(); }
+});
+$('b64FileIn').addEventListener('change', function(){
+  if(this.files && this.files[0]) handleB64File(this.files[0]);
+});
+
+function openB64(){ openOverlay('b64Overlay','b64Close'); }
+function closeB64(){ closeOverlay('b64Overlay'); }
+$('b64Btn').addEventListener('click', openB64);
+$('b64Close').addEventListener('click', closeB64);
+$('b64Overlay').addEventListener('click', function(e){ if(e.target===this) closeB64(); });
+
+/* ══════════════════════════════════════════
+   TEXT ANALYZER
+══════════════════════════════════════════ */
+var taTa   = $('taTa');
+var taWarn = $('taWarn');
+var TA_MAX = 100000;
+
+function countBytes(str){
+  try{
+    if(typeof TextEncoder !== 'undefined') return new TextEncoder().encode(str).length;
+    return encodeURIComponent(str).replace(/%[0-9a-fA-F]{2}/g,'x').length;
+  }catch(e){ return str.length; }
+}
+
+function updateTAStats(){
+  var v = taTa.value;
+  if(v.length >= TA_MAX){ taWarn.classList.add('show'); }
+  else{ taWarn.classList.remove('show'); }
+  var chars    = v.length;
+  var words    = v.trim() === '' ? 0 : v.trim().split(/\s+/).filter(function(w){ return w.length>0; }).length;
+  var sents    = v.trim() === '' ? 0 : (v.match(/[.!?]+(\s|$)/g)||[]).length;
+  var spaces   = (v.match(/ /g)||[]).length;
+  var newlines = (v.match(/\n/g)||[]).length;
+  var bytes    = countBytes(v);
+  var kb       = bytes/1024;
+
+  $('taChars').textContent  = chars.toLocaleString();
+  $('taWords').textContent  = words.toLocaleString();
+  $('taSents').textContent  = sents.toLocaleString();
+  $('taSpaces').textContent = spaces.toLocaleString();
+  $('taLines').textContent  = newlines.toLocaleString();
+  $('taBytes').textContent  = bytes.toLocaleString();
+  $('taKb').textContent     = kb.toFixed(2);
+}
+
+taTa.addEventListener('input', updateTAStats);
+
+$('taCopy').addEventListener('click', function(){
+  if(!taTa.value) return;
+  copyText(taTa.value); flashBtn($('taCopy'),'Copied!');
+});
+$('taClear').addEventListener('click', function(){ taTa.value=''; updateTAStats(); });
+$('taDl').addEventListener('click', function(){
+  if(!taTa.value) return;
+  downloadFile(taTa.value, 'text_'+new Date().toISOString().slice(0,10)+'.txt', 'text/plain');
+  flashBtn($('taDl'),'Saved!');
+});
+$('taUpper').addEventListener('click', function(){ taTa.value=taTa.value.toUpperCase(); updateTAStats(); });
+$('taLower').addEventListener('click', function(){ taTa.value=taTa.value.toLowerCase(); updateTAStats(); });
+$('taMinify').addEventListener('click', function(){
+  taTa.value = taTa.value.replace(/\s+/g,' ').trim();
+  updateTAStats();
+});
+
+function openTA(){ openOverlay('taOverlay','taClose'); updateTAStats(); }
+function closeTA(){ closeOverlay('taOverlay'); }
+$('textAnalyzerBtn').addEventListener('click', openTA);
+$('taClose').addEventListener('click', closeTA);
+$('taOverlay').addEventListener('click', function(e){ if(e.target===this) closeTA(); });
+
+/* ══════════════════════════════════════════
+   QR CODE GENERATOR
+══════════════════════════════════════════ */
+var qrLogoImg = null;
+var qrGenerated = false;
+
+function qrSetMsg(txt, type){
+  var el = $('qrMsg');
+  el.textContent = txt;
+  el.className = 'qr-msg' + (type ? ' '+type : '');
+}
+
+function qrGenerate(){
+  var text = ($('qrText').value||'').trim();
+  if(!text){ qrSetMsg('Please enter text or URL to encode.','err'); return; }
+  if(typeof QRCode === 'undefined'){ qrSetMsg('QR library not loaded. Check internet connection.','err'); return; }
+  var size = parseInt($('qrSize').value, 10) || 512;
+  var ecc  = $('qrEcc').value || 'H';
+  var fg   = $('qrFg').value || '#000000';
+  var bg   = $('qrBg').value || '#ffffff';
+  qrSetMsg('Generating…');
+  $('qrGenBtn').disabled = true;
+  var canvas = $('qrCanvas');
+  QRCode.toCanvas(canvas, text, {
+    errorCorrectionLevel: ecc,
+    width: size, margin: 2,
+    color: { dark: fg, light: bg }
+  }, function(err){
+    $('qrGenBtn').disabled = false;
+    if(err){ qrSetMsg('Error: '+err.message,'err'); return; }
+    // Overlay logo if uploaded
+    if(qrLogoImg){
+      var ctx = canvas.getContext('2d');
+      var logoSize = Math.round(canvas.width * 0.22);
+      var x = Math.round((canvas.width - logoSize) / 2);
+      var y = Math.round((canvas.height - logoSize) / 2);
+      var pad = Math.round(logoSize * 0.08);
+      ctx.fillStyle = bg;
+      ctx.beginPath();
+      ctx.roundRect ? ctx.roundRect(x-pad, y-pad, logoSize+pad*2, logoSize+pad*2, pad) : ctx.rect(x-pad, y-pad, logoSize+pad*2, logoSize+pad*2);
+      ctx.fill();
+      ctx.drawImage(qrLogoImg, x, y, logoSize, logoSize);
+    }
+    $('qrPlaceholder').style.display = 'none';
+    canvas.style.display = 'block';
+    $('qrSaveBtn').disabled = false;
+    qrGenerated = true;
+    qrSetMsg('QR code ready — '+size+'×'+size+' px','ok');
+  });
+}
+
+function qrSave(){
+  if(!qrGenerated) return;
+  var src = $('qrCanvas');
+  var exp = document.createElement('canvas');
+  exp.width = src.width; exp.height = src.height;
+  var ctx = exp.getContext('2d');
+  ctx.fillStyle = $('qrBg').value || '#ffffff';
+  ctx.fillRect(0, 0, exp.width, exp.height);
+  ctx.drawImage(src, 0, 0);
+  exp.toBlob(function(blob){
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = 'qrcode_'+Date.now()+'.jpg';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 30000);
+    flashBtn($('qrSaveBtn'),'Saved!');
+  }, 'image/jpeg', 0.96);
+}
+
+function qrClear(){
+  $('qrText').value = '';
+  $('qrFname').textContent = '';
+  qrLogoImg = null; qrGenerated = false;
+  var canvas = $('qrCanvas');
+  canvas.style.display = 'none';
+  $('qrPlaceholder').style.display = '';
+  $('qrSaveBtn').disabled = true;
+  qrSetMsg('');
+  $('qrFileIn').value = '';
+}
+
+function qrHandleFile(file){
+  if(!file || !file.type.match(/^image\//)) return;
+  $('qrFname').textContent = file.name;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var img = new Image();
+    img.onload = function(){ qrLogoImg = img; };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+$('qrGenBtn').addEventListener('click', qrGenerate);
+$('qrSaveBtn').addEventListener('click', qrSave);
+$('qrClearBtn').addEventListener('click', qrClear);
+$('qrText').addEventListener('keydown', function(e){ if(e.ctrlKey && e.key==='Enter') qrGenerate(); });
+
+var qrDrop = $('qrDrop');
+qrDrop.addEventListener('dragover', function(e){ e.preventDefault(); qrDrop.classList.add('drag-over'); });
+qrDrop.addEventListener('dragleave', function(){ qrDrop.classList.remove('drag-over'); });
+qrDrop.addEventListener('drop', function(e){ e.preventDefault(); qrDrop.classList.remove('drag-over'); qrHandleFile(e.dataTransfer && e.dataTransfer.files[0]); });
+qrDrop.addEventListener('click', function(e){ if(e.target.tagName !== 'LABEL') $('qrFileIn').click(); });
+qrDrop.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); $('qrFileIn').click(); } });
+$('qrFileIn').addEventListener('change', function(){ qrHandleFile(this.files && this.files[0]); });
+
+function openQR(){ openOverlay('qrOverlay','qrClose'); }
+function closeQR(){ closeOverlay('qrOverlay'); }
+$('qrBtn').addEventListener('click', openQR);
+$('qrClose').addEventListener('click', closeQR);
+$('qrOverlay').addEventListener('click', function(e){ if(e.target===this) closeQR(); });
+
+/* ══════════════════════════════════════════
+   UNIT CONVERTERS
+══════════════════════════════════════════ */
+
+/* ── Data Storage (base unit: bytes) ── */
+var DATA_TO_BYTES = { bit:0.125, byte:1, kb:1024, mb:1048576, gb:1073741824, pb:1.125899906842624e15, zb:1.180591620717411e21 };
+/* ── Length (base unit: metres) ── */
+var LEN_TO_M = { m:1, km:1000, cm:0.01, dm:0.1, 'in':0.0254, ft:0.3048, yd:0.9144, mi:1609.344 };
+/* ── Weight (base unit: grams) ── */
+var WGT_TO_G = { mg:0.001, g:1, kg:1000, lb:453.59237, t:1000000 };
+
+function fmtNum(n){
+  if(!isFinite(n)) return '';
+  // show enough precision without scientific for reasonable numbers
+  if(Math.abs(n) === 0) return '0';
+  if(Math.abs(n) >= 0.0001 && Math.abs(n) < 1e15) return parseFloat(n.toPrecision(10)).toString();
+  return n.toExponential(6);
+}
+
+function wireLinearGroup(toBase){
+  return function(e){
+    var src = e.target;
+    var unit = src.dataset.unit;
+    var val = parseFloat(src.value);
+    var inputs = document.querySelectorAll('.conv-input[data-group="'+src.dataset.group+'"]');
+    if(src.value.trim() === '' || isNaN(val)){
+      inputs.forEach(function(inp){ if(inp!==src) inp.value=''; });
+      return;
+    }
+    var base = val * toBase[unit];
+    inputs.forEach(function(inp){
+      if(inp === src) return;
+      inp.value = fmtNum(base / toBase[inp.dataset.unit]);
+    });
+  };
+}
+
+// Wire data group
+document.querySelectorAll('.conv-input[data-group="data"]').forEach(function(inp){
+  inp.addEventListener('input', wireLinearGroup(DATA_TO_BYTES));
+});
+// Wire length group
+document.querySelectorAll('.conv-input[data-group="len"]').forEach(function(inp){
+  inp.addEventListener('input', wireLinearGroup(LEN_TO_M));
+});
+// Wire weight group
+document.querySelectorAll('.conv-input[data-group="weight"]').forEach(function(inp){
+  inp.addEventListener('input', wireLinearGroup(WGT_TO_G));
+});
+
+// ── Temperature ──
+function tempToK(val, unit){
+  if(unit==='c') return val + 273.15;
+  if(unit==='f') return (val - 32) * 5/9 + 273.15;
+  return val; // kelvin
+}
+function kToUnit(k, unit){
+  if(unit==='c') return k - 273.15;
+  if(unit==='f') return (k - 273.15) * 9/5 + 32;
+  return k;
+}
+document.querySelectorAll('.conv-input[data-group="temp"]').forEach(function(inp){
+  inp.addEventListener('input', function(){
+    var val = parseFloat(inp.value);
+    var allTemp = document.querySelectorAll('.conv-input[data-group="temp"]');
+    if(inp.value.trim()==='' || isNaN(val)){
+      allTemp.forEach(function(i){ if(i!==inp) i.value=''; }); return;
+    }
+    var k = tempToK(val, inp.dataset.unit);
+    allTemp.forEach(function(i){ if(i!==inp) i.value = fmtNum(kToUnit(k, i.dataset.unit)); });
+  });
+});
+
+// ── Time converter ──
+var ctLock = false;
+function ctUpdate(srcId, msVal){
+  if(ctLock) return; ctLock = true;
+  try{
+    if(isNaN(msVal) || !isFinite(msVal)){ ctLock=false; return; }
+    var d = new Date(msVal);
+    if(srcId !== 'ctUnixSec') $('ctUnixSec').value = Math.round(msVal/1000);
+    if(srcId !== 'ctUnixMs')  $('ctUnixMs').value  = msVal;
+    if(srcId !== 'ctIso'){
+      // local ISO without timezone suffix for datetime-local compatibility
+      var tzOff = d.getTimezoneOffset()*60000;
+      var local  = new Date(d - tzOff);
+      $('ctIso').value = local.toISOString().slice(0,19);
+    }
+    $('ctHuman').value = d.toUTCString().replace('GMT','UTC');
+  }catch(e){}
+  ctLock = false;
+}
+
+$('ctUnixSec').addEventListener('input', function(){
+  var v = parseFloat(this.value);
+  if(this.value.trim()===''){ [$('ctUnixMs'),$('ctIso'),$('ctHuman')].forEach(function(e){e.value='';}); return; }
+  if(!isNaN(v)) ctUpdate('ctUnixSec', v * 1000);
+});
+$('ctUnixMs').addEventListener('input', function(){
+  var v = parseFloat(this.value);
+  if(this.value.trim()===''){ [$('ctUnixSec'),$('ctIso'),$('ctHuman')].forEach(function(e){e.value='';}); return; }
+  if(!isNaN(v)) ctUpdate('ctUnixMs', v);
+});
+$('ctIso').addEventListener('input', function(){
+  if(this.value.trim()==='') { [$('ctUnixSec'),$('ctUnixMs'),$('ctHuman')].forEach(function(e){e.value='';}); return; }
+  var d = new Date(this.value);
+  if(!isNaN(d.getTime())) ctUpdate('ctIso', d.getTime());
+});
+$('ctNowBtn').addEventListener('click', function(){ ctUpdate('', Date.now()); });
+
+// ── Number Base Converter ──
+(function(){
+  var fromSel = $('cbFromBase'), toSel = $('cbToBase');
+  for(var b=2; b<=36; b++){
+    var o1=document.createElement('option'), o2=document.createElement('option');
+    o1.value=o2.value=b;
+    o1.textContent = 'Base '+b+(b===2?' (Binary)':b===8?' (Octal)':b===10?' (Decimal)':b===16?' (Hexadecimal)':'');
+    o2.textContent = o1.textContent;
+    if(b===10) o1.selected=true;
+    if(b===2)  o2.selected=true;
+    fromSel.appendChild(o1); toSel.appendChild(o2);
+  }
+  function updateFromLbl(){ $('cbFromLbl').textContent = fromSel.value; }
+  function updateToLbl(){ $('cbToLbl').textContent = toSel.value; }
+  function convert(){
+    var raw = ($('cbFrom').value||'').trim();
+    if(!raw){ $('cbTo').value=''; return; }
+    try{
+      var n = parseInt(raw, parseInt(fromSel.value,10));
+      if(isNaN(n)){ $('cbTo').value='Invalid'; return; }
+      $('cbTo').value = n.toString(parseInt(toSel.value,10)).toUpperCase();
+    }catch(e){ $('cbTo').value='Error'; }
+  }
+  $('cbFrom').addEventListener('input', convert);
+  fromSel.addEventListener('change', function(){ updateFromLbl(); convert(); });
+  toSel.addEventListener('change',   function(){ updateToLbl();   convert(); });
+  // Quick-set buttons
+  document.querySelectorAll('[data-qb]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      fromSel.value = btn.dataset.qb; updateFromLbl(); convert();
+    });
+  });
+  document.querySelectorAll('[data-qb2]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      toSel.value = btn.dataset.qb2; updateToLbl(); convert();
+    });
+  });
+  updateFromLbl(); updateToLbl();
+})();
+
+/* ── Converter tab switching ── */
+document.querySelectorAll('.conv-tab').forEach(function(tab){
+  tab.addEventListener('click', function(){
+    document.querySelectorAll('.conv-tab').forEach(function(t){
+      t.classList.remove('active');
+      t.setAttribute('aria-selected','false');
+    });
+    document.querySelectorAll('.conv-panel').forEach(function(p){ p.classList.remove('active'); });
+    tab.classList.add('active');
+    tab.setAttribute('aria-selected','true');
+    var panel = document.getElementById('ctab-'+tab.dataset.tab);
+    if(panel){ panel.classList.add('active'); panel.focus(); }
+  });
+  // Arrow key navigation within tablist (ARIA authoring practice)
+  tab.addEventListener('keydown', function(e){
+    var tabs = Array.from(document.querySelectorAll('.conv-tab'));
+    var idx  = tabs.indexOf(tab);
+    if(e.key === 'ArrowRight'){ e.preventDefault(); tabs[(idx+1)%tabs.length].click(); tabs[(idx+1)%tabs.length].focus(); }
+    else if(e.key === 'ArrowLeft'){ e.preventDefault(); tabs[(idx-1+tabs.length)%tabs.length].click(); tabs[(idx-1+tabs.length)%tabs.length].focus(); }
+    else if(e.key === 'Home'){ e.preventDefault(); tabs[0].click(); tabs[0].focus(); }
+    else if(e.key === 'End'){ e.preventDefault(); tabs[tabs.length-1].click(); tabs[tabs.length-1].focus(); }
+  });
+});
+
+function openConv(){ openOverlay('convOverlay','convClose'); }
+function closeConv(){ closeOverlay('convOverlay'); }
+$('convBtn').addEventListener('click', openConv);
+$('convClose').addEventListener('click', closeConv);
+$('convOverlay').addEventListener('click', function(e){ if(e.target===this) closeConv(); });
+
+})(); // end IIFE
+</script>
+</body>
+</html>
