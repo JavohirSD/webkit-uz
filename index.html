@@ -86,6 +86,7 @@
 .m-btn:focus-visible,
 .btn:focus-visible,
 .top-btn:focus-visible,
+.theme-btn:focus-visible,
 .btn-uuid:focus-visible,
 .modal-close:focus-visible,
 .search-nav-btn:focus-visible,
@@ -236,6 +237,69 @@ body{
 .top-btn svg{
   width:13px;height:13px;stroke:currentColor;fill:none;
   stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;
+}
+
+/* ── THEME SEPARATOR ── */
+.theme-sep{
+  display:block;
+  width:1px;height:22px;
+  background:var(--border2);
+  margin:0 4px;
+  flex-shrink:0;
+  align-self:center;
+  opacity:.7;
+}
+
+/* ── THEME TOGGLE BUTTON (neon style, distinct from tool buttons) ── */
+.theme-btn{
+  display:-webkit-inline-flex;display:inline-flex;
+  -webkit-align-items:center;align-items:center;gap:5px;
+  padding:.28rem .7rem;
+  font-family:var(--font-ui);font-size:.71rem;font-weight:600;
+  border-radius:8px;cursor:pointer;
+  white-space:nowrap;flex-shrink:0;
+  -webkit-transition:all .2s;transition:all .2s;
+  /* Dark mode default: near-black bg, neon cyan glow */
+  background:#0a0c12;
+  color:#00e5ff;
+  border:1px solid rgba(0,229,255,.35);
+  box-shadow:0 0 8px rgba(0,229,255,.18),0 0 2px rgba(0,229,255,.12) inset;
+  text-shadow:0 0 8px rgba(0,229,255,.5);
+}
+.theme-btn svg{
+  width:13px;height:13px;stroke:currentColor;fill:none;
+  stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;
+  filter:drop-shadow(0 0 4px rgba(0,229,255,.55));
+}
+.theme-btn:hover{
+  background:#0d1018;
+  color:#33eeff;
+  border-color:rgba(0,229,255,.6);
+  box-shadow:0 0 14px rgba(0,229,255,.32),0 0 4px rgba(0,229,255,.18) inset;
+  text-shadow:0 0 12px rgba(0,229,255,.7);
+}
+.theme-btn:hover svg{
+  filter:drop-shadow(0 0 6px rgba(0,229,255,.8));
+}
+/* Light mode: white/off-white bg, soft neon glow */
+[data-theme="light"] .theme-btn{
+  background:#f0f4ff;
+  color:#0050a0;
+  border:1px solid rgba(0,80,160,.28);
+  box-shadow:0 0 8px rgba(0,100,200,.12),0 0 2px rgba(0,100,200,.08) inset;
+  text-shadow:none;
+}
+[data-theme="light"] .theme-btn svg{
+  filter:drop-shadow(0 0 3px rgba(0,100,200,.3));
+}
+[data-theme="light"] .theme-btn:hover{
+  background:#e4eaf8;
+  color:#003a80;
+  border-color:rgba(0,80,160,.5);
+  box-shadow:0 0 12px rgba(0,100,200,.22),0 0 4px rgba(0,100,200,.12) inset;
+}
+[data-theme="light"] .theme-btn:hover svg{
+  filter:drop-shadow(0 0 5px rgba(0,100,200,.5));
 }
 
 /* ── UUID SECTION ── */
@@ -916,6 +980,8 @@ mark.s-hit.s-active{
     padding:.42rem .6rem;font-size:.76rem;font-weight:500;
     min-height:38px;border-radius:8px;
   }
+  .theme-sep{height:18px;margin:0 3px;}
+  .theme-btn{padding:.42rem .65rem;font-size:.76rem;min-height:38px;border-radius:8px;}
   /* UUID copy button: goes to its own centered row */
   .uuid-main-row{
     -webkit-flex-direction:column;flex-direction:column;
@@ -976,6 +1042,8 @@ mark.s-hit.s-active{
   .site-header{padding:.45rem .65rem .5rem}
   .top-controls{gap:5px}
   .top-btn{padding:.4rem .55rem;border-radius:7px;min-height:36px}
+  .theme-btn{padding:.4rem .6rem;border-radius:7px;min-height:36px;font-size:.72rem;}
+  .theme-sep{height:16px;margin:0 2px;}
   .uuid-ver-track{gap:5px}
   .uuid-ver-btn{font-size:.7rem;padding:.3rem .6rem;min-height:34px}
   .dt-bar{gap:.45rem .55rem}
@@ -1192,8 +1260,215 @@ mark.s-hit.s-active{
   padding:.5rem .7rem;font-family:var(--font-code);font-size:.71rem;line-height:1.7;
   color:#34d399;word-break:break-all;min-height:44px;
 }
+/* ══════════════════════════════════════════
+   HASH MODAL STYLES
+══════════════════════════════════════════ */
+.modal-hash{max-width:780px;width:100%}
+.hash-body{
+  display:flex;flex-direction:column;gap:0;
+  overflow:hidden;flex:1;min-height:0;
+}
+
+/* Tab bar */
+.hash-tabs{
+  display:flex;border-bottom:1px solid var(--border);
+  background:var(--panel2);flex-shrink:0;
+}
+.hash-tab{
+  flex:1;padding:.65rem .5rem;font-family:var(--font-ui);font-size:.82rem;font-weight:500;
+  color:var(--txt3);background:transparent;border:none;cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:all .15s;white-space:nowrap;
+}
+.hash-tab:hover{color:var(--txt);background:var(--bg3)}
+.hash-tab.active{color:var(--accent);border-bottom-color:var(--accent);background:transparent}
+
+/* Tab panels */
+.hash-panel{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+.hash-panel.active{display:flex}
+
+/* Input area */
+.hash-input-section{
+  padding:.75rem .9rem .6rem;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.hash-input-label{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:.4rem;
+}
+.hash-input-label-txt{
+  font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:600;color:var(--txt3);
+}
+.hash-input-actions{display:flex;align-items:center;gap:.4rem}
+.hash-input-wrap{position:relative}
+.hash-ta{
+  width:100%;border:1px solid var(--border2);border-radius:8px;
+  background:var(--bg2);padding:.65rem .8rem;
+  font-family:var(--font-code);font-size:.85rem;line-height:1.6;
+  color:var(--txt);resize:none;height:78px;outline:none;
+  transition:border-color .15s;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.hash-ta:focus{border-color:var(--accent2)}
+.hash-ta::placeholder{color:var(--txt3)}
+.hash-ta::-webkit-scrollbar{width:4px}
+.hash-ta::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.hash-char-count{
+  font-size:.7rem;color:var(--txt3);font-family:var(--font-code);margin-top:.35rem;
+}
+.hash-paste-btn{
+  display:inline-flex;align-items:center;gap:4px;
+  padding:.32rem .65rem;font-size:.75rem;font-family:var(--font-ui);font-weight:500;
+  color:var(--txt2);background:transparent;border:1px solid var(--border2);
+  border-radius:7px;cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.hash-paste-btn:hover{color:var(--accent);border-color:var(--accent2);background:var(--accent-bg)}
+.hash-paste-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hash-paste-btn.ok{color:var(--ok)!important;border-color:var(--ok)!important}
+
+/* Results scroll area */
+.hash-results{
+  flex:1;overflow-y:auto;padding:.55rem .9rem .75rem;
+  display:flex;flex-direction:column;gap:.4rem;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.hash-results::-webkit-scrollbar{width:4px}
+.hash-results::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* Hash card row */
+.hash-card{
+  display:flex;align-items:center;gap:.55rem;flex-wrap:wrap;
+  background:var(--panel2);border:1px solid var(--border);border-radius:9px;
+  padding:.5rem .55rem .5rem .8rem;
+  transition:border-color .15s;
+}
+.hash-card:hover{border-color:var(--border2)}
+.hash-card-info{flex-shrink:0;min-width:110px;max-width:110px}
+.hash-algo-name{
+  font-size:.78rem;font-weight:600;font-family:var(--font-ui);
+  color:var(--accent);letter-spacing:.02em;display:block;line-height:1.25;
+}
+.hash-algo-len{
+  font-size:.67rem;color:var(--txt3);font-family:var(--font-code);
+  display:block;margin-top:2px;
+}
+.hash-val-input{
+  flex:1;min-width:120px;border:none;background:transparent;
+  font-family:var(--font-code);font-size:.79rem;color:var(--txt2);
+  outline:none;cursor:text;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.hash-val-input::placeholder{color:var(--txt3)}
+.hash-val-input:focus{color:var(--txt)}
+.hash-copy-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:28px;height:28px;flex-shrink:0;
+  border:1px solid var(--border2);border-radius:7px;
+  background:transparent;cursor:pointer;color:var(--txt3);
+  transition:all .15s;
+}
+.hash-copy-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.hash-copy-btn:hover{background:var(--bg3);color:var(--accent);border-color:var(--accent2)}
+.hash-copy-btn.ok{color:var(--ok)!important;border-color:var(--ok)!important}
+
+/* Computing spinner on a card */
+.hash-computing{
+  display:inline-block;width:10px;height:10px;border-radius:50%;
+  border:1.5px solid var(--border2);border-top-color:var(--accent);
+  animation:spin .6s linear infinite;flex-shrink:0;margin-right:4px;
+}
+
+/* Password hash section */
+.hash-pw-params{
+  padding:.55rem .9rem .5rem;border-bottom:1px solid var(--border);
+  display:flex;flex-direction:column;gap:.45rem;flex-shrink:0;
+}
+.hash-pw-algo-row{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+.hash-pw-algo-btn{
+  font-family:var(--font-ui);font-size:.78rem;font-weight:500;
+  padding:.32rem .75rem;border:1px solid var(--border2);border-radius:7px;
+  background:transparent;color:var(--txt3);cursor:pointer;transition:all .15s;
+}
+.hash-pw-algo-btn:hover{color:var(--txt);border-color:var(--border)}
+.hash-pw-algo-btn.active{background:var(--accent-bg);border-color:var(--accent2);color:var(--accent)}
+
+.hash-pw-fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.4rem}
+.hash-pw-field{display:flex;flex-direction:column;gap:.25rem}
+.hash-pw-field label{font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--txt3);font-weight:600}
+.hash-pw-field input,.hash-pw-field select{
+  border:1px solid var(--border2);border-radius:7px;background:var(--bg2);
+  padding:.42rem .6rem;font-family:var(--font-code);font-size:.8rem;color:var(--txt);
+  outline:none;transition:border-color .15s;width:100%;
+}
+.hash-pw-field input:focus,.hash-pw-field select:focus{border-color:var(--accent2)}
+.hash-pw-field select option{background:var(--panel)}
+
+/* Compute button */
+.hash-compute-btn{
+  display:inline-flex;align-items:center;gap:.35rem;
+  padding:.42rem 1rem;font-family:var(--font-ui);font-size:.75rem;font-weight:600;
+  color:#fff;background:var(--accent);border:none;border-radius:8px;
+  cursor:pointer;transition:all .15s;flex-shrink:0;
+}
+.hash-compute-btn:hover{background:var(--accent2)}
+.hash-compute-btn:disabled{opacity:.5;cursor:not-allowed}
+.hash-compute-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+/* PW results */
+.hash-pw-results{
+  flex:1;overflow-y:auto;padding:.55rem .9rem .75rem;
+  display:flex;flex-direction:column;gap:.5rem;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.hash-pw-results::-webkit-scrollbar{width:4px}
+.hash-pw-results::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.hash-pw-result-card{
+  background:var(--panel2);border:1px solid var(--border);border-radius:10px;
+  padding:.6rem .75rem;display:flex;flex-direction:column;gap:.35rem;
+}
+.hash-pw-result-header{
+  display:flex;align-items:center;justify-content:space-between;
+}
+.hash-pw-result-algo{font-size:.78rem;font-weight:600;color:var(--accent);font-family:var(--font-ui)}
+.hash-pw-result-meta{font-size:.7rem;color:var(--txt3);font-family:var(--font-code)}
+.hash-pw-result-val{
+  font-family:var(--font-code);font-size:.79rem;color:var(--txt2);
+  word-break:break-all;line-height:1.55;
+  border:1px solid var(--border);border-radius:6px;
+  background:var(--bg2);padding:.45rem .6rem;
+}
+.hash-pw-result-actions{display:flex;align-items:center;gap:.4rem}
+.hash-pw-empty{
+  color:var(--txt3);font-size:.84rem;font-family:var(--font-ui);
+  text-align:center;padding:1.5rem 0;font-style:italic;
+}
+.hash-warn{
+  font-size:.66rem;color:var(--t-flt);font-family:var(--font-ui);
+  padding:.25rem .5rem;background:rgba(244,162,97,.08);border-radius:5px;
+  border:1px solid rgba(244,162,97,.2);margin-top:.1rem;
+}
+
+/* Responsive */
+@media(max-width:600px){
+  .hash-card{flex-wrap:wrap;gap:.4rem;padding:.55rem .6rem}
+  .hash-card-info{min-width:100%;max-width:100%;display:flex;align-items:baseline;gap:.5rem}
+  .hash-algo-len{margin-top:0}
+  .hash-val-input{
+    min-width:0;width:100%;flex-basis:calc(100% - 36px);
+    white-space:normal;overflow:visible;text-overflow:clip;
+    word-break:break-all;font-size:.77rem;
+  }
+  .hash-pw-fields{grid-template-columns:1fr 1fr}
+}
+@media(max-width:400px){
+  .hash-pw-fields{grid-template-columns:1fr}
+  .hash-val-input{font-size:.74rem}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/node-forge@1.3.1/dist/forge.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/argon2-browser@1.18.0/dist/argon2-bundled.min.js"></script>
 </head>
 <body>
 <a class="skip-link" href="#json-main">Skip to JSON formatter</a>
@@ -1201,7 +1476,7 @@ mark.s-hit.s-active{
 <!-- SITE HEADER -->
 <header class="site-header" role="banner">
   <!-- Logo -->
-  <a class="site-logo" href="/" aria-label="DevTools home">
+  <a class="site-logo" href="/" aria-label="Webkit.uz home">
     <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <rect width="32" height="32" rx="8" fill="var(--accent)" opacity=".12"/>
       <path d="M9 11L4 16l5 5" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1209,7 +1484,7 @@ mark.s-hit.s-active{
       <path d="M19 8l-6 16" stroke="var(--accent2)" stroke-width="2" stroke-linecap="round"/>
     </svg>
     <span class="site-logo-text">
-      <span class="logo-accent">Dev</span>Tools<span class="logo-dim">&nbsp;/&nbsp;webkit.uz</span>
+      <span class="logo-accent">Webkit</span>.uz<span class="logo-dim">&nbsp;/&nbsp;Free Fast Secure</span>
     </span>
   </a>
 
@@ -1243,12 +1518,144 @@ mark.s-hit.s-active{
       <svg viewBox="0 0 24 24"><rect x="2" y="7" width="6" height="10" rx="1.5"/><rect x="9" y="7" width="6" height="10" rx="1.5"/><rect x="16" y="7" width="6" height="10" rx="1.5"/><line x1="8" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="16" y2="12"/></svg>
       <span>JWT</span>
     </button>
-    <button class="top-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">
+    <button class="top-btn" id="hashBtn" aria-label="Hashing Tools" title="Hash">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16M4 16h16M9 3l-1 18M16 3l-1 18"/></svg>
+      <span>Hash</span>
+    </button>
+    <span class="theme-sep" aria-hidden="true"></span>
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">
       <svg id="themeIcon" viewBox="0 0 24 24"></svg>
       <span id="themeLbl"></span>
     </button>
   </nav>
 </header>
+
+<!-- HASH MODAL -->
+<div class="modal-overlay" id="hashOverlay" role="dialog" aria-modal="true" aria-labelledby="hashModalTitle">
+  <div class="modal modal-hash" style="max-height:calc(100vh - 3rem);display:flex;flex-direction:column;">
+    <div class="modal-header">
+      <span class="modal-title" id="hashModalTitle"># Hashing Tools</span>
+      <button class="modal-close" id="hashClose" aria-label="Close hash modal">✕</button>
+    </div>
+    <div class="hash-body">
+      <!-- TAB BAR -->
+      <div class="hash-tabs" role="tablist">
+        <button class="hash-tab active" id="htab-crypto" role="tab" aria-selected="true" aria-controls="hpanel-crypto">Cryptographic Hash</button>
+        <button class="hash-tab" id="htab-pw" role="tab" aria-selected="false" aria-controls="hpanel-pw">Password Hash</button>
+      </div>
+
+      <!-- ══ CRYPTOGRAPHIC HASH PANEL ══ -->
+      <div class="hash-panel active" id="hpanel-crypto" role="tabpanel" aria-labelledby="htab-crypto">
+        <div class="hash-input-section">
+          <div class="hash-input-label">
+            <span class="hash-input-label-txt">Input Text</span>
+            <div class="hash-input-actions">
+              <span class="hash-char-count" id="hashCryptoCount">0 chars</span>
+              <button class="hash-paste-btn" id="hashCryptoPaste">
+                <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                Paste
+              </button>
+              <button class="hash-paste-btn" id="hashCryptoClear">
+                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                Clear
+              </button>
+            </div>
+          </div>
+          <textarea class="hash-ta" id="hashCryptoInput" placeholder="Type or paste text to hash in real time…" spellcheck="false" autocomplete="off"></textarea>
+        </div>
+        <div class="hash-results" id="hashCryptoResults">
+          <!-- cards injected by JS -->
+        </div>
+      </div><!-- /#hpanel-crypto -->
+
+      <!-- ══ PASSWORD HASH PANEL ══ -->
+      <div class="hash-panel" id="hpanel-pw" role="tabpanel" aria-labelledby="htab-pw">
+        <div class="hash-input-section">
+          <div class="hash-input-label">
+            <span class="hash-input-label-txt">Password / Input</span>
+            <div class="hash-input-actions">
+              <span class="hash-char-count" id="hashPwCount">0 chars</span>
+              <button class="hash-paste-btn" id="hashPwPaste">
+                <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                Paste
+              </button>
+              <button class="hash-paste-btn" id="hashPwClear">
+                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                Clear
+              </button>
+            </div>
+          </div>
+          <textarea class="hash-ta" id="hashPwInput" placeholder="Enter the password to hash…" spellcheck="false" autocomplete="off"></textarea>
+        </div>
+
+        <!-- Algorithm selector + parameters -->
+        <div class="hash-pw-params">
+          <div class="hash-pw-algo-row">
+            <span style="font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);font-weight:600;flex-shrink:0;">Algorithm</span>
+            <button class="hash-pw-algo-btn active" data-pwalgo="bcrypt">bcrypt</button>
+            <button class="hash-pw-algo-btn" data-pwalgo="argon2">Argon2</button>
+          </div>
+
+          <!-- bcrypt params -->
+          <div id="pw-params-bcrypt" class="hash-pw-fields">
+            <div class="hash-pw-field">
+              <label>Cost factor (rounds)</label>
+              <input type="number" id="bcrypt-cost" value="10" min="4" max="14" step="1">
+            </div>
+            <div class="hash-pw-field" style="align-self:flex-end;">
+              <div class="hash-warn">⚠ Higher cost = slower. Max 14 recommended in browser.</div>
+            </div>
+          </div>
+
+          <!-- argon2 params -->
+          <div id="pw-params-argon2" class="hash-pw-fields" style="display:none">
+            <div class="hash-pw-field">
+              <label>Variant</label>
+              <select id="argon2-variant">
+                <option value="d">Argon2d</option>
+                <option value="i" selected>Argon2i</option>
+                <option value="id">Argon2id</option>
+              </select>
+            </div>
+            <div class="hash-pw-field">
+              <label>Time cost (t)</label>
+              <input type="number" id="argon2-t" value="3" min="1" max="10">
+            </div>
+            <div class="hash-pw-field">
+              <label>Memory (KB)</label>
+              <input type="number" id="argon2-m" value="4096" min="1024" max="65536" step="1024">
+            </div>
+            <div class="hash-pw-field">
+              <label>Parallelism (p)</label>
+              <input type="number" id="argon2-p" value="1" min="1" max="8">
+            </div>
+            <div class="hash-pw-field">
+              <label>Output length</label>
+              <input type="number" id="argon2-len" value="32" min="16" max="64">
+            </div>
+            <div class="hash-pw-field">
+              <label>Salt (text)</label>
+              <input type="text" id="argon2-salt" value="somesaltsomesalt" spellcheck="false">
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:.1rem;">
+            <button class="hash-compute-btn" id="hashPwCompute">
+              <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+              Compute Hash
+            </button>
+            <span class="hash-warn" id="hashPwWarn" style="display:none"></span>
+          </div>
+        </div>
+
+        <div class="hash-pw-results" id="hashPwResults">
+          <div class="hash-pw-empty">Configure parameters above and click <strong>Compute Hash</strong></div>
+        </div>
+      </div><!-- /#hpanel-pw -->
+
+    </div><!-- /.hash-body -->
+  </div>
+</div><!-- /#hashOverlay -->
 
 <!-- JWT MODAL -->
 <div class="modal-overlay" id="jwtOverlay" role="dialog" aria-modal="true" aria-labelledby="jwtModalTitle">
@@ -2944,7 +3351,7 @@ function renderIPTable(rows){
   });
   $('ipLoading').style.display='none';
   $('ipError').style.display='none';
-  $('ipInfoTable').style.display='';
+  $('ipInfoTable').style.display='table';
 }
 
 function showIPError(){
@@ -3964,6 +4371,368 @@ $('convOverlay').addEventListener('click', function(e){ if(e.target===this) clos
 
   /* Initialise decode placeholder */
   renderDecodeInputHl('');
+})();
+
+/* ══════════════════════════════════════════
+   HASHING TOOLS  (libraries: forge · bcryptjs · argon2-browser)
+══════════════════════════════════════════ */
+(function(){
+'use strict';
+
+/* ── Utilities ─────────────────────────────── */
+function toBytes(str){
+  try{ return Array.from(new TextEncoder().encode(str)); }
+  catch(e){
+    var out=[];
+    for(var i=0;i<str.length;i++){
+      var c=str.charCodeAt(i);
+      if(c<0x80){out.push(c);}
+      else if(c<0x800){out.push(0xC0|(c>>6),0x80|(c&0x3F));}
+      else{out.push(0xE0|(c>>12),0x80|((c>>6)&0x3F),0x80|(c&0x3F));}
+    }
+    return out;
+  }
+}
+function bytesToHex(bytes){
+  return bytes.map(function(b){return('0'+b.toString(16)).slice(-2);}).join('');
+}
+
+/* ── node-forge wrappers ─────────────────────
+   Covers: MD5, SHA-1, SHA-256, SHA-384, SHA-512 */
+function forgeHash(algoKey, text){
+  var md = forge.md[algoKey].create();
+  md.update(text, 'utf8');
+  return md.digest().toHex();
+}
+
+/* ── CRC-16  (CRC-16-ARC / IBM, reflected poly 0x8005) ── */
+function crc16hex(text){
+  var b=toBytes(text),crc=0;
+  for(var i=0;i<b.length;i++){crc^=b[i];for(var j=0;j<8;j++)crc=(crc&1)?((crc>>>1)^0xA001):(crc>>>1);}
+  return bytesToHex([(crc>>>8)&0xFF,crc&0xFF]);
+}
+
+/* ── CRC-32  (ISO 3309, reflected poly 0xEDB88320) ── */
+var CRC32T=(function(){
+  var t=[];for(var i=0;i<256;i++){var c=i;for(var k=0;k<8;k++)c=(c&1)?(0xEDB88320^(c>>>1)):(c>>>1);t[i]=c;}
+  return t;
+})();
+function crc32hex(text){
+  var b=toBytes(text),crc=0xFFFFFFFF;
+  for(var i=0;i<b.length;i++)crc=(crc>>>8)^CRC32T[(crc^b[i])&0xFF];
+  crc=(crc^0xFFFFFFFF)>>>0;
+  return bytesToHex([(crc>>>24)&0xFF,(crc>>>16)&0xFF,(crc>>>8)&0xFF,crc&0xFF]);
+}
+
+/* ── CRC-64  (ECMA-182, reflected poly 0xC96C5795D7870F42) ── */
+var CRC64T=(function(){
+  var PH=0xC96C5795,PL=0xD7870F42,t=[];
+  for(var i=0;i<256;i++){
+    var ch=0,cl=i;
+    for(var k=0;k<8;k++){var lsb=cl&1;cl=(cl>>>1)|((ch&1)<<31);ch=ch>>>1;if(lsb){ch^=PH;cl^=PL;}}
+    t[i]={h:ch>>>0,l:cl>>>0};
+  }return t;
+})();
+function crc64hex(text){
+  var b=toBytes(text),hi=0xFFFFFFFF,lo=0xFFFFFFFF;
+  for(var i=0;i<b.length;i++){
+    var idx=(lo^b[i])&0xFF,e=CRC64T[idx];
+    var nl=(lo>>>8)|(hi<<24),nh=hi>>>8;
+    hi=(nh^e.h)>>>0;lo=(nl^e.l)>>>0;
+  }
+  hi=(hi^0xFFFFFFFF)>>>0;lo=(lo^0xFFFFFFFF)>>>0;
+  return bytesToHex([(hi>>>24)&0xFF,(hi>>>16)&0xFF,(hi>>>8)&0xFF,hi&0xFF,(lo>>>24)&0xFF,(lo>>>16)&0xFF,(lo>>>8)&0xFF,lo&0xFF]);
+}
+
+/* ── BLAKE2b-256  (pure-JS, RFC 7693) ── */
+var B2B_IV=[[0x6a09e667,0xf3bcc908],[0xbb67ae85,0x84caa73b],[0x3c6ef372,0xfe94f82b],[0xa54ff53a,0x5f1d36f1],
+            [0x510e527f,0xade682d1],[0x9b05688c,0x2b3e6c1f],[0x1f83d9ab,0xfb41bd6b],[0x5be0cd19,0x137e2179]];
+var B2B_SIGMA=[[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],[14,10,4,8,9,15,13,6,1,12,0,2,11,7,5,3],
+  [11,8,12,0,5,2,15,13,10,14,3,6,7,1,9,4],[7,9,3,1,13,12,11,14,2,6,5,10,4,0,15,8],
+  [9,0,5,7,2,4,10,15,14,1,11,12,6,8,3,13],[2,12,6,10,0,11,8,3,4,13,7,5,15,14,1,9],
+  [12,5,1,15,14,13,4,10,0,7,6,3,9,2,8,11],[13,11,7,14,12,1,3,9,5,0,15,4,8,6,2,10],
+  [6,15,14,9,11,3,0,8,12,2,13,7,1,4,10,5],[10,2,8,4,7,6,1,5,15,11,9,14,3,12,13,0],
+  [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],[14,10,4,8,9,15,13,6,1,12,0,2,11,7,5,3]];
+function blake2b256(bytes){
+  var outLen=32,h=B2B_IV.map(function(v){return[v[0],v[1]];});
+  h[0][0]^=0x01010000^outLen;
+  var msg=bytes.slice(),dLen=msg.length;
+  if(msg.length===0)msg.push(0);
+  while(msg.length%128!==0)msg.push(0);
+  var blocks=msg.length/128;
+  function add64(ah,al,bh,bl){var l=(al+bl)>>>0;return{h:(ah+bh+(l<(al>>>0)?1:0))>>>0,l:l};}
+  function xor64(a,b){return{h:(a.h^b.h)>>>0,l:(a.l^b.l)>>>0};}
+  function rot64(a,n){
+    if(n===32)return{h:a.l,l:a.h};
+    if(n<32)return{h:(a.h>>>n)|(a.l<<(32-n)),l:(a.l>>>n)|(a.h<<(32-n))};
+    n-=32;return{h:(a.l>>>n)|(a.h<<(32-n)),l:(a.h>>>n)|(a.l<<(32-n))};
+  }
+  for(var blk=0;blk<blocks;blk++){
+    var off=blk*128,isLast=(blk===blocks-1);
+    var cntLo=(isLast?dLen:((blk+1)*128))>>>0;
+    var m=[];
+    for(var i=0;i<16;i++){
+      var o=off+i*8;
+      m[i]={h:((msg[o+4]||0)|(msg[o+5]||0)<<8|(msg[o+6]||0)<<16|(msg[o+7]||0)<<24)>>>0,
+            l:((msg[o]||0)|(msg[o+1]||0)<<8|(msg[o+2]||0)<<16|(msg[o+3]||0)<<24)>>>0};
+    }
+    var v=h.map(function(x){return{h:x[0],l:x[1]};}).concat(B2B_IV.map(function(x){return{h:x[0],l:x[1]};}));
+    v[12]=xor64(v[12],{h:0,l:cntLo});
+    if(isLast){v[14]=xor64(v[14],{h:0xFFFFFFFF,l:0xFFFFFFFF});}
+    function G(a,b,c,d,xi,yi){
+      v[a]=add64(v[a].h,v[a].l,v[b].h,v[b].l);v[a]=add64(v[a].h,v[a].l,m[xi].h,m[xi].l);
+      v[d]=xor64(v[d],v[a]);v[d]=rot64(v[d],32);
+      v[c]=add64(v[c].h,v[c].l,v[d].h,v[d].l);
+      v[b]=xor64(v[b],v[c]);v[b]=rot64(v[b],24);
+      v[a]=add64(v[a].h,v[a].l,v[b].h,v[b].l);v[a]=add64(v[a].h,v[a].l,m[yi].h,m[yi].l);
+      v[d]=xor64(v[d],v[a]);v[d]=rot64(v[d],16);
+      v[c]=add64(v[c].h,v[c].l,v[d].h,v[d].l);
+      v[b]=xor64(v[b],v[c]);v[b]=rot64(v[b],63);
+    }
+    for(var rnd=0;rnd<12;rnd++){
+      var s=B2B_SIGMA[rnd];
+      G(0,4,8,12,s[0],s[1]);G(1,5,9,13,s[2],s[3]);G(2,6,10,14,s[4],s[5]);G(3,7,11,15,s[6],s[7]);
+      G(0,5,10,15,s[8],s[9]);G(1,6,11,12,s[10],s[11]);G(2,7,8,13,s[12],s[13]);G(3,4,9,14,s[14],s[15]);
+    }
+    for(var i=0;i<8;i++){h[i][0]=(h[i][0]^v[i].h^v[i+8].h)>>>0;h[i][1]=(h[i][1]^v[i].l^v[i+8].l)>>>0;}
+  }
+  var out=[];
+  for(var i=0;i<outLen/8;i++)out.push(h[i][1]&0xFF,(h[i][1]>>>8)&0xFF,(h[i][1]>>>16)&0xFF,(h[i][1]>>>24)&0xFF,
+    h[i][0]&0xFF,(h[i][0]>>>8)&0xFF,(h[i][0]>>>16)&0xFF,(h[i][0]>>>24)&0xFF);
+  return out;
+}
+
+/* ── BLAKE3-256  (pure-JS, single-chunk, output 32 bytes) ── */
+var B3_IV=[0x6A09E667,0xBB67AE85,0x3C6EF372,0xA54FF53A,0x510E527F,0x9B05688C,0x1F83D9AB,0x5BE0CD19];
+var B3_PERM=[2,6,3,10,7,0,4,13,1,11,12,5,9,14,15,8];
+function blake3(bytes){
+  function rotr(x,n){return(x>>>n)|(x<<(32-n));}
+  function compress(cv,blk,ctr,blen,flags){
+    var m=blk.slice();
+    var v=[cv[0],cv[1],cv[2],cv[3],cv[4],cv[5],cv[6],cv[7],
+           B3_IV[0],B3_IV[1],B3_IV[2],B3_IV[3],ctr&0xFFFFFFFF,0,blen>>>0,flags>>>0];
+    function G(a,b,c,d,mx,my){
+      v[a]=(v[a]+v[b]+mx)>>>0;v[d]=rotr(v[d]^v[a],16);v[c]=(v[c]+v[d])>>>0;v[b]=rotr(v[b]^v[c],12);
+      v[a]=(v[a]+v[b]+my)>>>0;v[d]=rotr(v[d]^v[a],8); v[c]=(v[c]+v[d])>>>0;v[b]=rotr(v[b]^v[c],7);
+    }
+    for(var r=0;r<7;r++){
+      G(0,4,8,12,m[0],m[1]);G(1,5,9,13,m[2],m[3]);G(2,6,10,14,m[4],m[5]);G(3,7,11,15,m[6],m[7]);
+      G(0,5,10,15,m[8],m[9]);G(1,6,11,12,m[10],m[11]);G(2,7,8,13,m[12],m[13]);G(3,4,9,14,m[14],m[15]);
+      var nm=new Array(16);for(var i=0;i<16;i++)nm[i]=m[B3_PERM[i]];m=nm;
+    }
+    var out=new Array(8);for(var i=0;i<8;i++)out[i]=(v[i]^v[i+8])>>>0;
+    return out;
+  }
+  var msg=bytes.slice(),origLen=msg.length;
+  while(msg.length%64!==0)msg.push(0);
+  if(msg.length===0){for(var i=0;i<64;i++)msg.push(0);}
+  var blocks=msg.length/64,cv=B3_IV.slice();
+  for(var bi=0;bi<blocks;bi++){
+    var isFirst=(bi===0),isLast=(bi===blocks-1);
+    var flags=(isFirst?1:0)|(isLast?10:0);
+    var blen=isLast?((origLen%64)||64):64;
+    var blk=new Array(16);
+    for(var i=0;i<16;i++)blk[i]=(msg[bi*64+i*4]|msg[bi*64+i*4+1]<<8|msg[bi*64+i*4+2]<<16|msg[bi*64+i*4+3]<<24)>>>0;
+    cv=compress(cv,blk,0,blen,flags);
+  }
+  var out=[];for(var i=0;i<8;i++)out.push(cv[i]&0xFF,(cv[i]>>>8)&0xFF,(cv[i]>>>16)&0xFF,(cv[i]>>>24)&0xFF);
+  return out;
+}
+
+/* ── CRYPTO_ALGOS table ── */
+var CRYPTO_ALGOS=[
+  {id:'md5',    name:'MD5',     bits:128, fn:function(t){return forgeHash('md5',t);}},
+  {id:'sha1',   name:'SHA-1',   bits:160, fn:function(t){return forgeHash('sha1',t);}},
+  {id:'sha256', name:'SHA-256', bits:256, fn:function(t){return forgeHash('sha256',t);}},
+  {id:'sha384', name:'SHA-384', bits:384, fn:function(t){return forgeHash('sha384',t);}},
+  {id:'sha512', name:'SHA-512', bits:512, fn:function(t){return forgeHash('sha512',t);}},
+  {id:'crc16',  name:'CRC-16',  bits:16,  fn:crc16hex},
+  {id:'crc32',  name:'CRC-32',  bits:32,  fn:crc32hex},
+  {id:'crc64',  name:'CRC-64',  bits:64,  fn:crc64hex},
+  {id:'blake2b',name:'BLAKE2b', bits:256, fn:function(t){return bytesToHex(blake2b256(toBytes(t)));}},
+  {id:'blake3', name:'BLAKE3',  bits:256, fn:function(t){return bytesToHex(blake3(toBytes(t)));}}
+];
+
+/* ── DOM refs ── */
+var hashCryptoInput=document.getElementById('hashCryptoInput');
+var hashCryptoResults=document.getElementById('hashCryptoResults');
+var hashCryptoCount=document.getElementById('hashCryptoCount');
+var hashPwInput=document.getElementById('hashPwInput');
+var hashPwCount=document.getElementById('hashPwCount');
+var hashPwResults=document.getElementById('hashPwResults');
+var hashPwWarn=document.getElementById('hashPwWarn');
+
+/* ── Build crypto result cards ── */
+CRYPTO_ALGOS.forEach(function(algo){
+  var card=document.createElement('div');
+  card.className='hash-card';card.id='hcard-'+algo.id;
+  card.innerHTML=
+    '<div class="hash-card-info">'+
+      '<span class="hash-algo-name">'+algo.name+'</span>'+
+      '<span class="hash-algo-len" id="hlen-'+algo.id+'">'+algo.bits+' bit</span>'+
+    '</div>'+
+    '<input class="hash-val-input" id="hval-'+algo.id+'" readonly placeholder="—" aria-label="'+algo.name+' hash value">'+
+    '<button class="hash-copy-btn" id="hcopy-'+algo.id+'" aria-label="Copy '+algo.name+'" title="Copy">'+
+      '<svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>'+
+    '</button>';
+  hashCryptoResults.appendChild(card);
+  document.getElementById('hcopy-'+algo.id).addEventListener('click',function(){
+    var val=document.getElementById('hval-'+algo.id).value;
+    if(!val||val==='—')return;
+    copyText(val);
+    var btn=this,orig=btn.innerHTML;
+    btn.innerHTML='<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    btn.classList.add('ok');setTimeout(function(){btn.innerHTML=orig;btn.classList.remove('ok');},1500);
+  });
+});
+
+/* ── Crypto hash computation ── */
+function runCryptoHash(text){
+  var bytes=toBytes(text);
+  hashCryptoCount.textContent=text.length+' chars / '+bytes.length+' bytes';
+  CRYPTO_ALGOS.forEach(function(algo){
+    var valEl=document.getElementById('hval-'+algo.id);
+    var lenEl=document.getElementById('hlen-'+algo.id);
+    if(!text){valEl.value='';lenEl.textContent=algo.bits+' bit';return;}
+    try{
+      var result=algo.fn(text);
+      valEl.value=result;
+      lenEl.textContent=algo.bits+' bit · '+result.length+' hex chars';
+    }catch(e){valEl.value='error';}
+  });
+}
+
+var _cryptoTimer=null;
+hashCryptoInput.addEventListener('input',function(){
+  clearTimeout(_cryptoTimer);_cryptoTimer=setTimeout(function(){runCryptoHash(hashCryptoInput.value);},60);
+});
+
+/* ── Paste / Clear helpers ── */
+function wirePaste(btnId, targetEl, countEl, afterPaste){
+  document.getElementById(btnId).addEventListener('click',function(){
+    var btn=this;
+    if(navigator.clipboard&&navigator.clipboard.readText){
+      navigator.clipboard.readText().then(function(text){
+        targetEl.value=text;if(afterPaste)afterPaste(text);
+        var orig=btn.textContent;btn.textContent='✓ Pasted';btn.classList.add('ok');
+        setTimeout(function(){btn.textContent=orig;btn.classList.remove('ok');},1500);
+      }).catch(function(){targetEl.focus();});
+    }else{targetEl.focus();}
+  });
+}
+wirePaste('hashCryptoPaste',hashCryptoInput,hashCryptoCount,function(t){runCryptoHash(t);});
+document.getElementById('hashCryptoClear').addEventListener('click',function(){hashCryptoInput.value='';runCryptoHash('');});
+wirePaste('hashPwPaste',hashPwInput,hashPwCount,function(t){hashPwCount.textContent=t.length+' chars';});
+document.getElementById('hashPwClear').addEventListener('click',function(){hashPwInput.value='';hashPwCount.textContent='0 chars';});
+hashPwInput.addEventListener('input',function(){hashPwCount.textContent=hashPwInput.value.length+' chars';});
+
+/* ── Password algo tabs ── */
+var curPwAlgo='bcrypt';
+document.querySelectorAll('.hash-pw-algo-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.hash-pw-algo-btn').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');curPwAlgo=btn.dataset.pwalgo;
+    ['bcrypt','argon2'].forEach(function(a){
+      document.getElementById('pw-params-'+a).style.display=(a===curPwAlgo?'':'none');
+    });
+  });
+});
+
+/* ── Compute button helper ── */
+var COMPUTE_ICON='<svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>';
+document.getElementById('hashPwCompute').addEventListener('click',function(){
+  var password=hashPwInput.value.trim();
+  if(!password){hashPwWarn.textContent='Please enter a password or input text.';hashPwWarn.style.display='';return;}
+  hashPwWarn.style.display='none';
+  var btn=this;
+  function setBusy(){btn.disabled=true;btn.innerHTML='<span class="hash-computing"></span> Computing…';}
+  function setReady(){btn.disabled=false;btn.innerHTML=COMPUTE_ICON+' Compute Hash';}
+  function showErr(msg){hashPwWarn.textContent=msg;hashPwWarn.style.display='';setReady();}
+  setBusy();
+
+  if(curPwAlgo==='bcrypt'){
+    var cost=Math.min(14,Math.max(4,parseInt(document.getElementById('bcrypt-cost').value)||10));
+    setTimeout(function(){
+      try{
+        /* bcryptjs: window.dcodeIO.bcrypt or window.bcrypt */
+        var lib=(window.dcodeIO&&window.dcodeIO.bcrypt)||window.bcrypt;
+        if(!lib){showErr('bcryptjs library failed to load. Check network.');return;}
+        var salt=lib.genSaltSync(cost);
+        var hash=lib.hashSync(password,salt);
+        addPwResult('bcrypt','cost='+cost+' (new random salt each run)',hash);
+        setReady();
+      }catch(e){showErr('bcrypt error: '+e.message);}
+    },30);
+
+  }else if(curPwAlgo==='argon2'){
+    var variant=document.getElementById('argon2-variant').value||'id';
+    var t=parseInt(document.getElementById('argon2-t').value)||3;
+    var m=parseInt(document.getElementById('argon2-m').value)||4096;
+    var pp=parseInt(document.getElementById('argon2-p').value)||1;
+    var len=parseInt(document.getElementById('argon2-len').value)||32;
+    var s2=document.getElementById('argon2-salt').value||'somesalt';
+    var meta2='t='+t+', mem='+m+'KB, p='+pp+', len='+len+', salt="'+s2+'"';
+    if(typeof argon2==='undefined'||!argon2.hash){showErr('argon2-browser library failed to load.');return;}
+    var typeMap={d:0,i:1,id:2};
+    argon2.hash({pass:password,salt:s2,time:t,mem:m,parallelism:pp,hashLen:len,type:typeMap[variant]||2})
+      .then(function(h){addPwResult('Argon2'+variant,meta2,h.encoded);setReady();})
+      .catch(function(e){showErr('Argon2 error: '+(e.message||JSON.stringify(e)));});
+  }
+});
+
+/* ── Add password result card ── */
+function addPwResult(algo,meta,value){
+  var empty=hashPwResults.querySelector('.hash-pw-empty');if(empty)empty.remove();
+  var card=document.createElement('div');card.className='hash-pw-result-card';
+  var ts=new Date().toLocaleTimeString();
+  card.innerHTML=
+    '<div class="hash-pw-result-header">'+
+      '<span class="hash-pw-result-algo">'+algo+'</span>'+
+      '<span class="hash-pw-result-meta">'+esc(meta)+' &nbsp;·&nbsp; '+ts+'</span>'+
+    '</div>'+
+    '<div class="hash-pw-result-val">'+esc(value)+'</div>'+
+    '<div class="hash-pw-result-actions">'+
+      '<button class="hash-paste-btn" style="gap:5px;">'+
+        '<svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy'+
+      '</button>'+
+      '<button class="hash-paste-btn" style="gap:5px;color:var(--err)">'+
+        '<svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg> Remove'+
+      '</button>'+
+    '</div>';
+  hashPwResults.insertBefore(card,hashPwResults.firstChild);
+  var btns=card.querySelectorAll('.hash-paste-btn');
+  btns[0].addEventListener('click',function(){
+    copyText(value);var orig=btns[0].textContent;btns[0].textContent='✓ Copied!';btns[0].classList.add('ok');
+    setTimeout(function(){btns[0].textContent=orig;btns[0].classList.remove('ok');},1500);
+  });
+  btns[1].addEventListener('click',function(){
+    card.remove();
+    if(!hashPwResults.querySelector('.hash-pw-result-card'))
+      hashPwResults.innerHTML='<div class="hash-pw-empty">Configure parameters above and click <strong>Compute Hash</strong></div>';
+  });
+}
+
+/* ── Tab switching ── */
+document.querySelectorAll('.hash-tab').forEach(function(tab){
+  tab.addEventListener('click',function(){
+    document.querySelectorAll('.hash-tab').forEach(function(t){t.classList.remove('active');t.setAttribute('aria-selected','false');});
+    document.querySelectorAll('.hash-panel').forEach(function(p){p.classList.remove('active');});
+    tab.classList.add('active');tab.setAttribute('aria-selected','true');
+    var panel=document.getElementById(tab.getAttribute('aria-controls'));
+    if(panel)panel.classList.add('active');
+  });
+});
+
+/* ── Open / close ── */
+function openHash(){openOverlay('hashOverlay','hashClose');runCryptoHash(hashCryptoInput.value);}
+function closeHash(){closeOverlay('hashOverlay');}
+document.getElementById('hashBtn').addEventListener('click',openHash);
+document.getElementById('hashClose').addEventListener('click',closeHash);
+document.getElementById('hashOverlay').addEventListener('click',function(e){if(e.target===this)closeHash();});
+
+/* Initialise */
+runCryptoHash('');
+hashPwCount.textContent='0 chars';
 })();
 
 })(); // end IIFE
