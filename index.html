@@ -3,22 +3,74 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="robots" content="index, follow">
 <meta name="theme-color" content="#050608" id="metaThemeColor">
-<title>WebKit.uz — Free Online Developer Tools JSON formatter, UUID generator, Base64 decoder, IP info, QR Code</title>
-<meta name="description" content="Free online developer tools: format, validate and syntax-highlight JSON with real-time error detection. Generate cryptographically valid UUIDs v1/v4/v5/v6/v7. No sign-up required.">
-<meta name="keywords" content="json formatter, json validator, json highlighter, uuid generator, uuid v7, uuid v4, uuid v1, online dev tools, json beautifier, json minifier, developer tools">
-<meta name="author" content="webkit.uz">
+
+<!-- ── Primary SEO ── -->
+<title>Webkit.uz — Free Online Developer Tools | JSON Formatter, UUID Generator, Base64, QR Code, IP info &amp; More</title>
+<meta name="description" content="Webkit.uz is a free, open-source, ad-free collection of online developer tools. Format and validate JSON with syntax highlighting, generate UUIDs v1–v7, encode/decode Base64, create QR codes, analyze text, convert units, and look up IP info — all in one fast, privacy-friendly tool that runs entirely in your browser.">
+<meta name="keywords" content="json formatter, json validator, json beautifier, json minifier, json syntax highlighter, uuid generator, uuid v4, uuid v7, uuid v1, uuid v5, uuid v6, base64 encoder, base64 decoder, qr code generator, text analyzer, unit converter, ip address lookup, browser info, online developer tools, free dev tools, open source tools, webkit.uz">
+<meta name="author" content="Webkit.uz">
+<meta name="copyright" content="Webkit.uz">
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+<meta name="revisit-after" content="7 days">
+<meta name="rating" content="general">
 <link rel="canonical" href="https://webkit.uz/">
+
+<!-- ── Open Graph (Facebook, LinkedIn, Discord, etc.) ── -->
 <meta property="og:type" content="website">
+<meta property="og:site_name" content="Webkit.uz">
 <meta property="og:url" content="https://webkit.uz/">
-<meta property="og:title" content="DevTools — JSON Formatter &amp; UUID Generator">
-<meta property="og:description" content="Format, validate and highlight JSON. Generate UUIDs v1/v4/v5/v6/v7. Free, fast, no sign-up.">
+<meta property="og:title" content="Webkit.uz — Free Online Developer Tools">
+<meta property="og:description" content="Free, open-source, ad-free developer toolbox. JSON formatter &amp; validator, UUID generator (v1–v7), Base64 encoder/decoder, QR code generator, text analyzer, unit converters, IP info and more — instant, private, no sign-up.">
 <meta property="og:image" content="https://webkit.uz/og-image.png">
+<meta property="og:image:alt" content="Webkit.uz developer tools preview">
+<meta property="og:locale" content="en_US">
+
+<!-- ── Twitter / X Card ── -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="DevTools — JSON Formatter &amp; UUID Generator">
-<meta name="twitter:description" content="Format, validate and highlight JSON. Generate UUIDs v1–v7. Free, fast, no sign-up.">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"DevTools","url":"https://webkit.uz/","applicationCategory":"DeveloperApplication","operatingSystem":"All","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}</script>
+<meta name="twitter:site" content="@webkituz">
+<meta name="twitter:title" content="Webkit.uz — Free Online Developer Tools">
+<meta name="twitter:description" content="Free, open-source, ad-free. JSON formatter, UUID generator, Base64, QR codes, text analyzer, unit converters and IP info — all in one tool. No sign-up required.">
+<meta name="twitter:image" content="https://webkit.uz/og-image.png">
+<meta name="twitter:image:alt" content="Webkit.uz developer tools preview">
+
+<!-- ── Structured Data (JSON-LD) ── -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Webkit.uz",
+  "alternateName": "Webkit Developer Tools",
+  "url": "https://webkit.uz/",
+  "description": "Free, open-source, ad-free online developer tools including JSON formatter and validator, UUID generator (v1–v7), Base64 encoder/decoder, QR code generator, text analyzer, unit converters, IP address lookup, and browser information.",
+  "applicationCategory": "DeveloperApplication",
+  "operatingSystem": "All",
+  "browserRequirements": "Requires a modern web browser with JavaScript enabled",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "license": "https://opensource.org/licenses/MIT",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "JSON Formatter and Validator",
+    "UUID Generator v1, v4, v5, v6, v7",
+    "Base64 Encoder and Decoder",
+    "QR Code Generator",
+    "Text Analyzer",
+    "Unit Converters (data, length, weight, temperature, time, number base)",
+    "IP Address and Geolocation Lookup",
+    "Browser and System Information"
+  ],
+  "author": {
+    "@type": "Organization",
+    "name": "Webkit.uz",
+    "url": "https://webkit.uz/"
+  }
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -414,6 +466,8 @@ textarea::placeholder{color:var(--txt3)}
 }
 
 /* ── IP MODAL STATES ── */
+#ipInfoTable{ display:none; }
+#ipError{ display:none; }
 .ip-loading{
   display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
   gap:.75rem;padding:1.6rem 1.1rem;color:var(--txt2);font-size:.82rem;
@@ -657,7 +711,46 @@ textarea::placeholder{color:var(--txt3)}
   .conv-base-field{min-width:100%}
 }
 
-/* ── FOOTER ── */
+/* ── INLINE STYLE REPLACEMENTS ── */
+/* QR modal fixed height */
+.modal-qr-height{ height:min(680px,calc(100vh - 4rem)); }
+/* Conv modal fixed height */
+.modal-conv-height{ height:min(820px,calc(100vh - 3rem)); }
+/* Text Analyzer modal fixed height — 2.5× taller than default */
+.modal-ta-height{ height:min(860px,calc(100vh - 3rem)); }
+/* QR options margin */
+.qr-errcol-row-mb{ margin-bottom:.5rem; }
+/* QR size label inline margin */
+.qr-size-lbl{ margin-left:.4rem; }
+/* Number base row margin top */
+.conv-base-row-mt{ margin-top:.65rem; }
+/* Quick base row margin top */
+.conv-quick-bases-mt{ margin-top:.85rem; }
+/* Quick "Set To" span margin */
+.conv-set-to-lbl{ margin-left:.4rem; }
+/* input-wrap position relative */
+.input-wrap-rel{ position:relative; }
+/* QR file input hidden */
+.input-hidden{ display:none; }
+/* QR canvas hidden initially */
+.canvas-hidden{ display:none; }
+/* Base64 drop-zone SVG alignment */
+.b64-drop-icon-svg{ vertical-align:middle; margin-right:4px; }
+/* Base64 choose-file label */
+.b64-file-lbl{ color:var(--accent); cursor:pointer; text-decoration:underline; }
+/* QR gen/save/clear button size override */
+.qr-action-btn{ font-size:.76rem; padding:.32rem .8rem; }
+/* IP table display toggle helpers (applied via JS) */
+.ip-table-visible{ display:table; }
+/* ta textarea sizing */
+.ta-ta-size{ min-height:400px; max-height:900px; }
+/* Converter numeric error */
+.conv-err{
+  font-size:.65rem; color:var(--err);
+  margin-top:.2rem; display:none; line-height:1.3;
+}
+.conv-err.show{ display:block; }
+.conv-input-err{ border-color:var(--err) !important; }
 footer{
   border-top:1px solid var(--border);padding:.45rem 1.2rem;
   display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
@@ -708,6 +801,7 @@ footer a:hover{color:var(--accent)}
 .m-ta::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 .m-ta::placeholder{color:var(--txt3)}
 /* Base64 separator row */
+.b64-enc-err{ color:var(--err) !important; }
 .b64-sep{
   display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
   gap:.5rem;padding:.32rem .85rem;background:var(--panel2);border-bottom:1px solid var(--border);
@@ -743,6 +837,7 @@ footer a:hover{color:var(--accent)}
 .ta-warn.show{display:block}
 
 /* ── JSON SEARCH BAR ── */
+.search-bar-hidden{ display:none; }
 .search-bar{
   display:-webkit-flex;display:flex;
   -webkit-align-items:center;align-items:center;
@@ -894,6 +989,209 @@ mark.s-hit.s-active{
 @supports (-webkit-touch-callout:none){
   .col-body{height:0}
 }
+/* ── JWT MODAL ── */
+.modal-jwt{max-width:960px;width:100%}
+.jwt-body{padding:.75rem .9rem;display:flex;flex-direction:column;gap:.6rem;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.jwt-body::-webkit-scrollbar{width:4px}
+.jwt-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* Mode toggle */
+.jwt-mode-toggle{display:flex;border:1px solid var(--border2);border-radius:8px;overflow:hidden;flex-shrink:0}
+.jwt-mode-btn{
+  background:transparent;border:none;padding:.3rem .7rem;
+  font-family:var(--font-ui);font-size:.72rem;font-weight:500;
+  color:var(--txt2);cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.jwt-mode-btn.active{background:var(--accent);color:#fff}
+.jwt-mode-btn:hover:not(.active){background:var(--bg3);color:var(--txt)}
+
+/* Grid layout (encode) */
+.jwt-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:700px){.jwt-grid{grid-template-columns:1fr}}
+
+.jwt-col{display:flex;flex-direction:column;gap:.65rem}
+.jwt-token-col{min-width:0}
+
+/* Field block */
+.jwt-field-block{display:flex;flex-direction:column;gap:.4rem}
+.jwt-field-label-row{
+  display:flex;align-items:center;justify-content:space-between;
+  min-height:22px;
+}
+.jwt-field-label{
+  font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;
+  font-weight:600;color:var(--txt3);
+}
+.jwt-label-header{color:#e879f9}
+.jwt-label-payload{color:#38bdf8}
+.jwt-label-sig{color:#34d399}
+
+.jwt-field-actions{display:flex;align-items:center;gap:.4rem}
+
+/* Validators */
+.jwt-validator{font-size:.66rem;font-weight:500}
+.jwt-validator.ok{color:var(--ok)}
+.jwt-validator.err{color:var(--err)}
+.jwt-token-valid{font-size:.66rem;font-weight:500}
+.jwt-token-valid.ok{color:var(--ok)}
+.jwt-token-valid.err{color:var(--err)}
+
+/* Copy button */
+.jwt-copy-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:24px;height:24px;border-radius:6px;border:1px solid var(--border2);
+  background:transparent;cursor:pointer;color:var(--txt3);
+  transition:all .15s;flex-shrink:0;
+}
+.jwt-copy-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.jwt-copy-btn:hover{background:var(--bg3);color:var(--accent);border-color:var(--accent2)}
+.jwt-copy-btn.ok{color:var(--ok)!important;border-color:var(--ok)!important}
+.jwt-copy-token-btn{width:auto;padding:0 .6rem;font-size:.68rem;font-family:var(--font-ui);gap:4px}
+
+/* ── Mirror editor (textarea + syntax highlight overlay) ── */
+.jwt-editor-wrap{
+  border:1px solid var(--border2);border-radius:8px;overflow:hidden;
+  background:var(--bg2);transition:border-color .15s;
+}
+.jwt-editor-wrap.err{border-color:var(--err-bd);background:var(--err-bg)}
+.jwt-editor-wrap.ok{border-color:rgba(52,211,153,.25)}
+.jwt-editor-wrap:focus-within{border-color:var(--accent2)}
+.jwt-editor-wrap.err:focus-within{border-color:var(--err)}
+
+.jwt-mirror-root{
+  position:relative;
+  min-height:100px;max-height:180px;
+  overflow:hidden;
+}
+/* The actual textarea — transparent text (caret still visible) */
+.jwt-mirror-ta{
+  position:absolute;inset:0;width:100%;height:100%;
+  border:none;background:transparent;resize:none;
+  padding:.55rem .7rem;
+  font-family:var(--font-code);font-size:.75rem;line-height:1.7;
+  color:transparent;caret-color:var(--txt);
+  outline:none;overflow:auto;
+  white-space:pre;tab-size:2;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+  z-index:1;
+}
+.jwt-mirror-ta::-webkit-scrollbar{width:4px;height:4px}
+.jwt-mirror-ta::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+/* The pre highlight layer — pointer-events off so clicks go to textarea */
+.jwt-mirror-hl{
+  position:relative;
+  display:block;width:100%;
+  min-height:100px;max-height:180px;
+  overflow:auto;
+  margin:0;padding:.55rem .7rem;
+  font-family:var(--font-code);font-size:.75rem;line-height:1.7;
+  white-space:pre;tab-size:2;word-break:break-word;
+  color:var(--txt);background:transparent;
+  pointer-events:none;
+  scrollbar-width:none;
+}
+.jwt-mirror-hl::-webkit-scrollbar{display:none}
+.jwt-mirror-hl code{font-family:inherit;font-size:inherit;background:none;padding:0}
+/* Keep textarea scroll synced via JS */
+
+/* Secret input */
+.jwt-secret-wrap{border:1px solid var(--border2);border-radius:8px;overflow:hidden;background:var(--bg2)}
+.jwt-secret-input{
+  width:100%;border:none;background:transparent;padding:.55rem .7rem;
+  font-family:var(--font-code);font-size:.75rem;color:var(--txt);
+  outline:none;
+}
+.jwt-secret-wrap:focus-within{border-color:var(--accent2)}
+
+/* Base64 toggle */
+.jwt-b64-toggle{display:flex;align-items:center;gap:.3rem;cursor:pointer;font-size:.67rem;color:var(--txt3);user-select:none}
+.jwt-b64-toggle input{accent-color:var(--accent);cursor:pointer}
+
+/* Token display */
+.jwt-token-block{height:100%}
+.jwt-token-display{
+  border:1px solid var(--border2);border-radius:8px;background:var(--bg2);
+  padding:.65rem .8rem;font-family:var(--font-code);font-size:.75rem;line-height:1.9;
+  word-break:break-all;min-height:200px;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.jwt-token-display::-webkit-scrollbar{width:4px}
+.jwt-token-display::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.jwt-part-header{color:#e879f9;font-weight:500}
+.jwt-part-payload{color:#38bdf8;font-weight:500}
+.jwt-part-sig{color:#34d399;font-weight:500}
+.jwt-part-dot{color:var(--txt3);font-weight:700;margin:0 1px}
+.jwt-token-placeholder{color:var(--txt3);font-style:italic;font-size:.72rem}
+
+/* Token legend */
+.jwt-token-legend{display:flex;align-items:center;gap:.65rem;padding:.3rem 0 0;flex-wrap:wrap}
+.jwt-decode-legend{padding:.25rem 0 0}
+.jwt-dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.jwt-dot-header{background:#e879f9}.jwt-dot-payload{background:#38bdf8}.jwt-dot-sig{background:#34d399}
+.jwt-token-legend span:not(.jwt-dot){font-size:.66rem;color:var(--txt3)}
+
+/* ── Decode token input with colour overlay ── */
+.jwt-token-input-wrap{
+  position:relative;
+  border:1px solid var(--border2);border-radius:8px;
+  background:var(--bg2);transition:border-color .15s;
+  min-height:68px;
+  overflow:hidden;
+}
+.jwt-token-input-wrap:focus-within{border-color:var(--accent2)}
+/* Invisible real textarea — captures all typing */
+.jwt-token-ta{
+  position:absolute;inset:0;width:100%;height:100%;
+  border:none;background:transparent;resize:none;
+  padding:.6rem .75rem;
+  font-family:var(--font-code);font-size:.74rem;line-height:1.7;
+  color:transparent;caret-color:var(--txt);
+  outline:none;overflow:auto;
+  white-space:pre-wrap;word-break:break-all;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+  z-index:1;
+}
+.jwt-token-ta::-webkit-scrollbar{width:4px}
+.jwt-token-ta::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.jwt-token-ta::placeholder{color:var(--txt3)}
+/* Colour overlay — sits behind z-index but visible */
+.jwt-token-hl{
+  position:relative;
+  width:100%;
+  min-height:68px;
+  padding:.6rem .75rem;
+  font-family:var(--font-code);font-size:.74rem;line-height:1.7;
+  white-space:pre-wrap;word-break:break-all;
+  pointer-events:none;
+  overflow:hidden;
+  color:var(--txt);
+}
+/* Placeholder shown via hl when textarea is empty */
+.jwt-token-hl-placeholder{color:var(--txt3);font-style:italic}
+
+/* Decode panel */
+.jwt-decode-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+@media(max-width:600px){.jwt-decode-grid{grid-template-columns:1fr}}
+
+.jwt-decode-out-block{display:flex;flex-direction:column;gap:.35rem}
+.jwt-decoded-view{
+  border:1px solid var(--border2);border-radius:8px;background:var(--bg2);
+  padding:.55rem .7rem;font-family:var(--font-code);font-size:.74rem;line-height:1.7;
+  white-space:pre-wrap;word-break:break-word;min-height:90px;max-height:200px;
+  overflow-y:auto;color:var(--txt);
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.jwt-decoded-view::-webkit-scrollbar{width:4px}
+.jwt-decoded-view::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.jwt-decoded-placeholder{color:var(--txt3);font-style:italic;font-size:.72rem}
+
+.jwt-decode-sig-block{display:flex;flex-direction:column;gap:.35rem}
+.jwt-sig-raw{
+  border:1px solid rgba(52,211,153,.2);border-radius:8px;background:rgba(52,211,153,.04);
+  padding:.5rem .7rem;font-family:var(--font-code);font-size:.71rem;line-height:1.7;
+  color:#34d399;word-break:break-all;min-height:44px;
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 </head>
@@ -941,12 +1239,174 @@ mark.s-hit.s-active{
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       <span>Browser Info</span>
     </button>
+    <button class="top-btn" id="jwtBtn" aria-label="JWT Encoder / Decoder" title="JWT">
+      <svg viewBox="0 0 24 24"><rect x="2" y="7" width="6" height="10" rx="1.5"/><rect x="9" y="7" width="6" height="10" rx="1.5"/><rect x="16" y="7" width="6" height="10" rx="1.5"/><line x1="8" y1="12" x2="9" y2="12"/><line x1="15" y1="12" x2="16" y2="12"/></svg>
+      <span>JWT</span>
+    </button>
     <button class="top-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">
       <svg id="themeIcon" viewBox="0 0 24 24"></svg>
       <span id="themeLbl"></span>
     </button>
   </nav>
 </header>
+
+<!-- JWT MODAL -->
+<div class="modal-overlay" id="jwtOverlay" role="dialog" aria-modal="true" aria-labelledby="jwtModalTitle">
+  <div class="modal modal-jwt">
+    <div class="modal-header">
+      <span class="modal-title" id="jwtModalTitle">🔐 JWT Encoder / Decoder</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <div class="jwt-mode-toggle" role="group" aria-label="JWT mode">
+          <button class="jwt-mode-btn active" id="jwtEncodeBtn" aria-pressed="true">Encode</button>
+          <button class="jwt-mode-btn" id="jwtDecodeBtn" aria-pressed="false">Decode</button>
+        </div>
+        <button class="modal-close" id="jwtClose" aria-label="Close JWT modal">✕</button>
+      </div>
+    </div>
+    <div class="modal-body jwt-body">
+
+      <!-- ENCODE MODE -->
+      <div id="jwtEncodePanel">
+        <div class="jwt-grid">
+          <!-- Left column: inputs -->
+          <div class="jwt-col">
+
+            <!-- HEADER -->
+            <div class="jwt-field-block">
+              <div class="jwt-field-label-row">
+                <span class="jwt-field-label jwt-label-header">Header</span>
+                <div class="jwt-field-actions">
+                  <span class="jwt-validator" id="jwtHeaderValid"></span>
+                  <button class="jwt-copy-btn" id="jwtCopyHeader" aria-label="Copy header JSON" title="Copy header">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="jwt-editor-wrap" id="jwtHeaderWrap">
+                <div class="jwt-mirror-root">
+                  <textarea class="jwt-mirror-ta" id="jwtHeaderTa" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="JWT header JSON"></textarea>
+                  <pre class="jwt-mirror-hl" id="jwtHeaderHl" aria-hidden="true"><code id="jwtHeaderCode"></code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- PAYLOAD -->
+            <div class="jwt-field-block">
+              <div class="jwt-field-label-row">
+                <span class="jwt-field-label jwt-label-payload">Payload</span>
+                <div class="jwt-field-actions">
+                  <span class="jwt-validator" id="jwtPayloadValid"></span>
+                  <button class="jwt-copy-btn" id="jwtCopyPayload" aria-label="Copy payload JSON" title="Copy payload">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="jwt-editor-wrap" id="jwtPayloadWrap">
+                <div class="jwt-mirror-root">
+                  <textarea class="jwt-mirror-ta" id="jwtPayloadTa" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="JWT payload JSON"></textarea>
+                  <pre class="jwt-mirror-hl" id="jwtPayloadHl" aria-hidden="true"><code id="jwtPayloadCode"></code></pre>
+                </div>
+              </div>
+            </div>
+
+            <!-- SIGNATURE -->
+            <div class="jwt-field-block">
+              <div class="jwt-field-label-row">
+                <span class="jwt-field-label">Sign Secret</span>
+                <div class="jwt-field-actions">
+                  <label class="jwt-b64-toggle" title="Secret is base64url encoded">
+                    <input type="checkbox" id="jwtSecretB64"> <span>base64url</span>
+                  </label>
+                </div>
+              </div>
+              <div class="jwt-secret-wrap">
+                <input type="text" class="jwt-secret-input" id="jwtSecret" value="your-256-bit-secret" autocomplete="off" spellcheck="false" aria-label="JWT signing secret">
+              </div>
+            </div>
+
+          </div><!-- /.jwt-col -->
+
+          <!-- Right column: token output -->
+          <div class="jwt-col jwt-token-col">
+            <div class="jwt-field-block jwt-token-block">
+              <div class="jwt-field-label-row">
+                <span class="jwt-field-label">Encoded Token</span>
+                <div class="jwt-field-actions">
+                  <span class="jwt-token-valid" id="jwtEncodeValid"></span>
+                  <button class="jwt-copy-btn jwt-copy-token-btn" id="jwtCopyToken" aria-label="Copy JWT token" title="Copy token">
+                    <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="jwt-token-display" id="jwtTokenDisplay" aria-label="Generated JWT token" aria-live="polite"></div>
+              <div class="jwt-token-legend">
+                <span class="jwt-dot jwt-dot-header"></span><span>Header</span>
+                <span class="jwt-dot jwt-dot-payload"></span><span>Payload</span>
+                <span class="jwt-dot jwt-dot-sig"></span><span>Signature</span>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /.jwt-grid -->
+      </div><!-- /#jwtEncodePanel -->
+
+      <!-- DECODE MODE -->
+      <div id="jwtDecodePanel" style="display:none">
+        <div class="jwt-field-block">
+          <div class="jwt-field-label-row">
+            <span class="jwt-field-label">Paste JWT Token</span>
+            <div class="jwt-field-actions">
+              <span class="jwt-token-valid" id="jwtDecodeValid"></span>
+              <button class="jwt-copy-btn" id="jwtClearDecode" aria-label="Clear token" title="Clear">
+                <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+              </button>
+            </div>
+          </div>
+          <!-- Highlighted token input: textarea hidden behind a syntax-coloured overlay -->
+          <div class="jwt-token-input-wrap">
+            <textarea class="jwt-token-ta" id="jwtDecodeInput" placeholder="Paste a JWT token here…" spellcheck="false" autocomplete="off" autocorrect="off" aria-label="JWT token to decode"></textarea>
+            <div class="jwt-token-hl" id="jwtDecodeHl" aria-hidden="true"></div>
+          </div>
+          <!-- Legend for the coloured token -->
+          <div class="jwt-token-legend jwt-decode-legend">
+            <span class="jwt-dot jwt-dot-header"></span><span>Header</span>
+            <span class="jwt-dot jwt-dot-payload"></span><span>Payload</span>
+            <span class="jwt-dot jwt-dot-sig"></span><span>Signature</span>
+          </div>
+        </div>
+
+        <div class="jwt-decode-grid">
+          <div class="jwt-decode-out-block">
+            <div class="jwt-field-label-row">
+              <span class="jwt-field-label jwt-label-header">Header</span>
+              <button class="jwt-copy-btn" id="jwtCopyDecHeader" aria-label="Copy decoded header" title="Copy">
+                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+            <div class="jwt-decoded-view" id="jwtDecHeaderOut" aria-label="Decoded header JSON"></div>
+          </div>
+          <div class="jwt-decode-out-block">
+            <div class="jwt-field-label-row">
+              <span class="jwt-field-label jwt-label-payload">Payload</span>
+              <button class="jwt-copy-btn" id="jwtCopyDecPayload" aria-label="Copy decoded payload" title="Copy">
+                <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+              </button>
+            </div>
+            <div class="jwt-decoded-view" id="jwtDecPayloadOut" aria-label="Decoded payload JSON"></div>
+          </div>
+        </div>
+
+        <div class="jwt-decode-sig-block">
+          <div class="jwt-field-label-row">
+            <span class="jwt-field-label jwt-label-sig">Signature</span>
+          </div>
+          <div class="jwt-sig-raw" id="jwtDecSigOut" aria-label="Token signature"></div>
+        </div>
+      </div><!-- /#jwtDecodePanel -->
+
+    </div><!-- /.modal-body.jwt-body -->
+  </div><!-- /.modal.modal-jwt -->
+</div><!-- /#jwtOverlay -->
 
 <!-- BROWSER INFO MODAL -->
 <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -973,8 +1433,8 @@ mark.s-hit.s-active{
         <div class="ip-spinner"></div>
         <span>Fetching IP information…</span>
       </div>
-      <table class="info-table" id="ipInfoTable" style="display:none"><caption class="sr-only">IP address and location information</caption><tbody></tbody></table>
-      <div class="ip-error" id="ipError" style="display:none">Unable to get IP info. All services are unavailable.</div>
+      <table class="info-table" id="ipInfoTable"><caption class="sr-only">IP address and location information</caption><tbody></tbody></table>
+      <div class="ip-error" id="ipError">Unable to get IP info. All services are unavailable.</div>
     </div>
   </div>
 </div>
@@ -1011,18 +1471,18 @@ mark.s-hit.s-active{
     <!-- File upload -->
     <div class="b64-drop" id="b64Drop" role="button" tabindex="0" aria-label="Drag and drop a file or press Enter to choose a file to encode in Base64">
       <div class="b64-drop-hint">
-        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle;margin-right:4px"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-        Drag &amp; drop a file to encode, or <label for="b64FileIn" style="color:var(--accent);cursor:pointer;text-decoration:underline">choose file</label>
+        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="b64-drop-icon-svg" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Drag &amp; drop a file to encode, or <label for="b64FileIn" class="b64-file-lbl">choose file</label>
       </div>
       <div class="b64-fname" id="b64Fname"></div>
-      <input type="file" id="b64FileIn" style="display:none" aria-label="Choose file to encode">
+      <input type="file" id="b64FileIn" class="input-hidden" aria-label="Choose file to encode">
     </div>
   </div>
 </div>
 
 <!-- TEXT ANALYZER MODAL -->
 <div class="modal-overlay" id="taOverlay" role="dialog" aria-modal="true" aria-labelledby="taModalTitle">
-  <div class="modal modal-wide">
+  <div class="modal modal-wide modal-ta-height">
     <div class="modal-header">
       <span class="modal-title" id="taModalTitle">📝 Text Analyzer</span>
       <button class="modal-close" id="taClose" aria-label="Close">✕</button>
@@ -1038,8 +1498,8 @@ mark.s-hit.s-active{
         <svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Minify
       </button>
     </div>
-    <div class="ta-warn" id="taWarn">⚠ Maximum 100,000 characters reached.</div>
-    <textarea class="m-ta" id="taTa" maxlength="100000" placeholder="Paste or type text here to analyze in real time…" spellcheck="false" autocomplete="off" autocorrect="off" style="min-height:160px;max-height:360px"></textarea>
+    <div class="ta-warn" id="taWarn">⚠ Maximum 500,000 characters reached.</div>
+    <textarea class="m-ta ta-ta-size" id="taTa" maxlength="500000" placeholder="Paste or type text here to analyze in real time…" spellcheck="false" autocomplete="off" autocorrect="off"></textarea>
     <div class="ta-stats">
       <div class="ta-stat"><span class="ta-stat-val" id="taChars">0</span><span class="ta-stat-lbl">Chars</span></div>
       <div class="ta-stat"><span class="ta-stat-val" id="taWords">0</span><span class="ta-stat-lbl">Words</span></div>
@@ -1054,7 +1514,7 @@ mark.s-hit.s-active{
 
 <!-- QR GENERATOR MODAL -->
 <div class="modal-overlay" id="qrOverlay" role="dialog" aria-modal="true" aria-labelledby="qrModalTitle">
-  <div class="modal modal-xl" style="height:min(680px,calc(100vh - 4rem))">
+  <div class="modal modal-xl modal-qr-height">
     <div class="modal-header">
       <span class="modal-title" id="qrModalTitle">⬛ QR Code Generator</span>
       <button class="modal-close" id="qrClose" aria-label="Close">✕</button>
@@ -1064,20 +1524,20 @@ mark.s-hit.s-active{
       <div class="qr-left">
         <div class="qr-section">
           <label class="qr-label" for="qrText">Text / URL</label>
-          <textarea class="qr-ta" id="qrText" placeholder="Enter text, URL or any data to encode…" spellcheck="false"></textarea>
+          <textarea class="qr-ta" id="qrText" placeholder="Enter text, URL or any data to encode…" spellcheck="false" maxlength="500"></textarea>
         </div>
         <div class="qr-section">
           <label class="qr-label" id="qrDropLabel">Center Logo (optional)</label>
           <div class="qr-drop" id="qrDrop" role="button" tabindex="0" aria-labelledby="qrDropLabel">
             <span class="qr-drop-icon">🖼️</span>
             <p>Drag & drop an image, or click to choose</p>
-            <input type="file" id="qrFileIn" accept="image/*" style="display:none">
+            <input type="file" id="qrFileIn" accept="image/*" class="input-hidden">
           </div>
           <div class="qr-fname" id="qrFname"></div>
         </div>
         <div class="qr-section">
           <label class="qr-label">Options</label>
-          <div class="qr-errcol-row" style="margin-bottom:.5rem">
+          <div class="qr-errcol-row qr-errcol-row-mb">
             <label>Error correction:</label>
             <select class="qr-select" id="qrEcc">
               <option value="L">L — 7%</option>
@@ -1085,7 +1545,7 @@ mark.s-hit.s-active{
               <option value="Q">Q — 25%</option>
               <option value="H" selected>H — 30% (logo safe)</option>
             </select>
-            <label style="margin-left:.4rem">Size:</label>
+            <label class="qr-size-lbl">Size:</label>
             <select class="qr-select" id="qrSize">
               <option value="256">256 px</option>
               <option value="512" selected>512 px</option>
@@ -1100,13 +1560,13 @@ mark.s-hit.s-active{
         </div>
         <div class="qr-section">
           <div class="qr-btns">
-            <button class="m-btn primary" id="qrGenBtn" style="font-size:.76rem;padding:.32rem .8rem">
+            <button class="m-btn primary qr-action-btn" id="qrGenBtn">
               <svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>Generate
             </button>
-            <button class="m-btn" id="qrSaveBtn" disabled style="font-size:.76rem;padding:.32rem .8rem">
+            <button class="m-btn qr-action-btn" id="qrSaveBtn" disabled>
               <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Save JPG
             </button>
-            <button class="m-btn" id="qrClearBtn" style="font-size:.76rem;padding:.32rem .8rem">
+            <button class="m-btn qr-action-btn" id="qrClearBtn">
               <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Clear
             </button>
           </div>
@@ -1117,7 +1577,7 @@ mark.s-hit.s-active{
       <div class="qr-right">
         <div class="qr-preview-wrap" id="qrPreviewWrap">
           <div class="qr-placeholder" id="qrPlaceholder">QR code preview<br>will appear here</div>
-          <canvas id="qrCanvas" style="display:none"></canvas>
+          <canvas id="qrCanvas" class="canvas-hidden"></canvas>
         </div>
       </div>
     </div>
@@ -1126,7 +1586,7 @@ mark.s-hit.s-active{
 
 <!-- CONVERTERS MODAL -->
 <div class="modal-overlay" id="convOverlay" role="dialog" aria-modal="true" aria-labelledby="convModalTitle">
-  <div class="modal modal-xl" style="height:min(820px,calc(100vh - 3rem))">
+  <div class="modal modal-xl modal-conv-height">
     <div class="modal-header">
       <span class="modal-title" id="convModalTitle">⇄ Unit Converters</span>
       <button class="modal-close" id="convClose" aria-label="Close">✕</button>
@@ -1147,19 +1607,21 @@ mark.s-hit.s-active{
 
       <!-- DATA STORAGE -->
       <div class="conv-panel active" id="ctab-data" role="tabpanel" aria-labelledby="ctab-btn-data" tabindex="0">
-        <div class="conv-field"><label>Bit (bit)</label><input class="conv-input" data-group="data" data-unit="bit" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Byte (B)</label><input class="conv-input" data-group="data" data-unit="byte" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Kilobyte (KB)</label><input class="conv-input" data-group="data" data-unit="kb" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Megabyte (MB)</label><input class="conv-input" data-group="data" data-unit="mb" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Gigabyte (GB)</label><input class="conv-input" data-group="data" data-unit="gb" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Petabyte (PB)</label><input class="conv-input" data-group="data" data-unit="pb" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Zettabyte (ZB)</label><input class="conv-input" data-group="data" data-unit="zb" placeholder="0" autocomplete="off"></div>
+        <div class="conv-err" id="data-err" role="alert">Only numbers and a decimal point are allowed.</div>
+        <div class="conv-field"><label>Bit (bit)</label><input class="conv-input" data-group="data" data-unit="bit" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Byte (B)</label><input class="conv-input" data-group="data" data-unit="byte" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Kilobyte (KB)</label><input class="conv-input" data-group="data" data-unit="kb" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Megabyte (MB)</label><input class="conv-input" data-group="data" data-unit="mb" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Gigabyte (GB)</label><input class="conv-input" data-group="data" data-unit="gb" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Petabyte (PB)</label><input class="conv-input" data-group="data" data-unit="pb" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Zettabyte (ZB)</label><input class="conv-input" data-group="data" data-unit="zb" placeholder="0" autocomplete="off" inputmode="decimal"></div>
       </div>
 
       <!-- TIME -->
       <div class="conv-panel" id="ctab-time" role="tabpanel" aria-labelledby="ctab-btn-time" tabindex="0">
-        <div class="conv-field"><label>Unix Timestamp — seconds</label><input class="conv-input" id="ctUnixSec" placeholder="e.g. 1700000000" autocomplete="off"></div>
-        <div class="conv-field"><label>Unix Timestamp — milliseconds</label><input class="conv-input" id="ctUnixMs" placeholder="e.g. 1700000000000" autocomplete="off"></div>
+        <div class="conv-err" id="time-err" role="alert">Only numbers and a decimal point are allowed.</div>
+        <div class="conv-field"><label>Unix Timestamp — seconds</label><input class="conv-input" id="ctUnixSec" placeholder="e.g. 1700000000" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Unix Timestamp — milliseconds</label><input class="conv-input" id="ctUnixMs" placeholder="e.g. 1700000000000" autocomplete="off" inputmode="decimal"></div>
         <div class="conv-field"><label>ISO 8601 Date &amp; Time (local)</label><input class="conv-input" id="ctIso" placeholder="e.g. 2024-01-15T14:30:00" autocomplete="off"></div>
         <div class="conv-field"><label>Human Readable (UTC)</label><input class="conv-input" id="ctHuman" placeholder="Result…" readonly></div>
         <button class="conv-now-btn" id="ctNowBtn">⏱ Use current time</button>
@@ -1177,7 +1639,7 @@ mark.s-hit.s-active{
             <select class="conv-base-sel" id="cbFromBase"></select>
           </div>
         </div>
-        <div class="conv-base-row" style="margin-top:.65rem">
+        <div class="conv-base-row conv-base-row-mt">
           <div class="conv-base-field">
             <label>To — Base <span id="cbToLbl">2</span></label>
             <input class="conv-input" id="cbTo" readonly placeholder="Result…">
@@ -1187,13 +1649,13 @@ mark.s-hit.s-active{
             <select class="conv-base-sel" id="cbToBase"></select>
           </div>
         </div>
-        <div class="conv-quick-bases" style="margin-top:.85rem">
+        <div class="conv-quick-bases conv-quick-bases-mt">
           <span>Set From:</span>
           <button class="conv-quick-btn" data-qb="2">BIN 2</button>
           <button class="conv-quick-btn" data-qb="8">OCT 8</button>
           <button class="conv-quick-btn" data-qb="10">DEC 10</button>
           <button class="conv-quick-btn" data-qb="16">HEX 16</button>
-          <span style="margin-left:.4rem">Set To:</span>
+          <span class="conv-set-to-lbl">Set To:</span>
           <button class="conv-quick-btn" data-qb2="2">BIN 2</button>
           <button class="conv-quick-btn" data-qb2="8">OCT 8</button>
           <button class="conv-quick-btn" data-qb2="10">DEC 10</button>
@@ -1203,30 +1665,33 @@ mark.s-hit.s-active{
 
       <!-- TEMPERATURE -->
       <div class="conv-panel" id="ctab-temp" role="tabpanel" aria-labelledby="ctab-btn-temp" tabindex="0">
-        <div class="conv-field"><label>Celsius (°C)</label><input class="conv-input" data-group="temp" data-unit="c" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Fahrenheit (°F)</label><input class="conv-input" data-group="temp" data-unit="f" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Kelvin (K)</label><input class="conv-input" data-group="temp" data-unit="k" placeholder="0" autocomplete="off"></div>
+        <div class="conv-err" id="temp-err" role="alert">Only numbers and a decimal point are allowed.</div>
+        <div class="conv-field"><label>Celsius (°C)</label><input class="conv-input" data-group="temp" data-unit="c" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Fahrenheit (°F)</label><input class="conv-input" data-group="temp" data-unit="f" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Kelvin (K)</label><input class="conv-input" data-group="temp" data-unit="k" placeholder="0" autocomplete="off" inputmode="decimal"></div>
       </div>
 
       <!-- LENGTH -->
       <div class="conv-panel" id="ctab-len" role="tabpanel" aria-labelledby="ctab-btn-len" tabindex="0">
-        <div class="conv-field"><label>Metre (m)</label><input class="conv-input" data-group="len" data-unit="m" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Kilometre (km)</label><input class="conv-input" data-group="len" data-unit="km" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Centimetre (cm)</label><input class="conv-input" data-group="len" data-unit="cm" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Decimetre (dm)</label><input class="conv-input" data-group="len" data-unit="dm" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Inch (in)</label><input class="conv-input" data-group="len" data-unit="in" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Foot (ft)</label><input class="conv-input" data-group="len" data-unit="ft" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Yard (yd)</label><input class="conv-input" data-group="len" data-unit="yd" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Mile (mi)</label><input class="conv-input" data-group="len" data-unit="mi" placeholder="0" autocomplete="off"></div>
+        <div class="conv-err" id="len-err" role="alert">Only numbers and a decimal point are allowed.</div>
+        <div class="conv-field"><label>Metre (m)</label><input class="conv-input" data-group="len" data-unit="m" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Kilometre (km)</label><input class="conv-input" data-group="len" data-unit="km" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Centimetre (cm)</label><input class="conv-input" data-group="len" data-unit="cm" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Decimetre (dm)</label><input class="conv-input" data-group="len" data-unit="dm" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Inch (in)</label><input class="conv-input" data-group="len" data-unit="in" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Foot (ft)</label><input class="conv-input" data-group="len" data-unit="ft" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Yard (yd)</label><input class="conv-input" data-group="len" data-unit="yd" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Mile (mi)</label><input class="conv-input" data-group="len" data-unit="mi" placeholder="0" autocomplete="off" inputmode="decimal"></div>
       </div>
 
       <!-- WEIGHT -->
       <div class="conv-panel" id="ctab-weight" role="tabpanel" aria-labelledby="ctab-btn-weight" tabindex="0">
-        <div class="conv-field"><label>Milligram (mg)</label><input class="conv-input" data-group="weight" data-unit="mg" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Gram (g)</label><input class="conv-input" data-group="weight" data-unit="g" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Kilogram (kg)</label><input class="conv-input" data-group="weight" data-unit="kg" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Pound (lb)</label><input class="conv-input" data-group="weight" data-unit="lb" placeholder="0" autocomplete="off"></div>
-        <div class="conv-field"><label>Tonne (t)</label><input class="conv-input" data-group="weight" data-unit="t" placeholder="0" autocomplete="off"></div>
+        <div class="conv-err" id="weight-err" role="alert">Only numbers and a decimal point are allowed.</div>
+        <div class="conv-field"><label>Milligram (mg)</label><input class="conv-input" data-group="weight" data-unit="mg" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Gram (g)</label><input class="conv-input" data-group="weight" data-unit="g" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Kilogram (kg)</label><input class="conv-input" data-group="weight" data-unit="kg" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Pound (lb)</label><input class="conv-input" data-group="weight" data-unit="lb" placeholder="0" autocomplete="off" inputmode="decimal"></div>
+        <div class="conv-field"><label>Tonne (t)</label><input class="conv-input" data-group="weight" data-unit="t" placeholder="0" autocomplete="off" inputmode="decimal"></div>
       </div>
 
     </div>
@@ -1312,7 +1777,7 @@ mark.s-hit.s-active{
     <button class="btn" id="searchToggleBtn" aria-label="Search JSON output (Ctrl+F)" aria-expanded="false" aria-controls="jsonSearchBar">
       <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search
     </button>
-    <div class="search-bar" id="jsonSearchBar" role="search" aria-label="Search within JSON output" style="display:none">
+    <div class="search-bar search-bar-hidden" id="jsonSearchBar" role="search" aria-label="Search within JSON output">
       <input type="search" id="jsonSearchInput" placeholder="Search JSON…" aria-label="Search JSON output" autocomplete="off" autocorrect="off" spellcheck="false">
       <span class="search-count" id="searchCount" aria-live="polite" aria-atomic="true"></span>
       <button class="search-nav-btn" id="searchPrev" aria-label="Previous match" disabled>
@@ -1339,11 +1804,12 @@ mark.s-hit.s-active{
       </div>
       <div class="col-body">
         <div class="lnums" id="inNums" aria-hidden="true">1</div>
-        <div class="input-wrap" style="position:relative">
+        <div class="input-wrap input-wrap-rel">
           <textarea id="inputArea" spellcheck="false" autocomplete="off" autocorrect="off"
             autocapitalize="off"
             aria-label="JSON input – paste or type JSON here" aria-multiline="true"
             aria-describedby="errorBar"
+            maxlength="100000"
             placeholder="Paste or type JSON here…&#10;&#10;• Unicode is decoded automatically&#10;• Errors shown in real time&#10;• Paste triggers auto-format"></textarea>
         </div>
       </div>
@@ -1370,13 +1836,13 @@ mark.s-hit.s-active{
 
 <footer>
   <span class="footer-copy">
-    &copy; 2025 <a href="https://webkit.uz">webkit.uz</a>
+    &copy; 2026 <a href="https://webkit.uz">webkit.uz</a>
     &nbsp;&middot;&nbsp; JSON Formatter &amp; UUID Generator &nbsp;&middot;&nbsp; Free developer tools
   </span>
   <span class="footer-links">
-    <a class="footer-link" href="https://github.com/JavohirSD/webkit" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+    <a class="footer-link" href="https://github.com/JavohirSD/webkit-uz" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
       <!-- GitHub icon -->
-      <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.49.5.09.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.34-3.369-1.34-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.68a3-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.641.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+     <svg viewBox="0 0 24 24" fill="currentColor" stroke="none" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.49.5.09.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.34-3.369-1.34-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.578 9.578 0 0 1 12 6.836c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.641.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"></path></svg>
       GitHub
     </a>
     <a class="footer-link" href="https://t.me/javohirsd" target="_blank" rel="noopener noreferrer" aria-label="Telegram">
@@ -1392,12 +1858,33 @@ mark.s-hit.s-active{
 'use strict';
 
 /* ══════════════════════════════════════════
+   GLOBAL CONFIGURATION
+══════════════════════════════════════════ */
+var CFG = {
+  /* Text / textarea input limits (characters) */
+  MAX_JSON_CHARS:      100000,
+  MAX_B64_CHARS:       100000,
+  MAX_TA_CHARS:        500000,
+  MAX_QR_CHARS:        500,
+
+  /* File input limits (bytes) */
+  MAX_B64_FILE_BYTES:  10 * 1024 * 1024,  /* 10 MB — Base64 file upload */
+  MAX_QR_FILE_BYTES:   10 * 1024 * 1024,  /* 10 MB — QR logo image upload */
+};
+
+/* ══════════════════════════════════════════
    UTILITIES
 ══════════════════════════════════════════ */
 var $ = function(id){ return document.getElementById(id); };
 var pad = function(n,w){ return String(n).padStart ? String(n).padStart(w||2,'0') : (n < 10 ? '0'+n : String(n)); };
 var rndH = function(n){ var s=''; for(var i=0;i<n;i++) s+=(Math.random()*16|0).toString(16); return s; };
-var esc  = function(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); };
+var esc  = function(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); };
+
+/* XSS-safe helpers — never insert raw user content via innerHTML */
+function xssText(el, text){ if(el) el.textContent = String(text === undefined || text === null ? '' : text); }
+function xssAttr(el, attr, value){ if(el) el.setAttribute(attr, String(value === undefined || value === null ? '' : value)); }
+/* safeHTML — only for trusted, already-escaped or internally-generated markup */
+function safeHTML(el, markup){ if(el) el.innerHTML = markup; }
 
 function decodeUnicode(s){
   try{ return s.replace(/\\u([0-9a-fA-F]{4})/g,function(_,h){ return String.fromCharCode(parseInt(h,16)); }); }
@@ -1691,29 +2178,41 @@ function buildInfoTable(){
   sections.forEach(function(sec){
     var hrow = document.createElement('tr');
     hrow.className = 'info-section-head';
-    hrow.innerHTML = '<td colspan="2">'+esc(sec.head)+'</td>';
+    var htd = document.createElement('td');
+    htd.setAttribute('colspan','2');
+    xssText(htd, sec.head);
+    hrow.appendChild(htd);
     tbody.appendChild(hrow);
     sec.rows.forEach(function(r){
       var tr = document.createElement('tr');
       var val = r[1]||'—';
-      var naClass = (val==='—'||val==='N/A'||val==='Not supported')?' class="info-na"':'';
-      tr.innerHTML = '<td>'+esc(r[0])+'</td><td'+naClass+'>'+esc(val)+'</td>';
+      var td1 = document.createElement('td');
+      var td2 = document.createElement('td');
+      xssText(td1, r[0]);
+      if(val==='—'||val==='N/A'||val==='Not supported'){
+        td2.className = 'info-na';
+        xssText(td2, val);
+      } else {
+        xssText(td2, val);
+      }
+      tr.appendChild(td1); tr.appendChild(td2);
       tbody.appendChild(tr);
     });
   });
 
-  // Async battery (fills in after table renders)
   getBatteryInfo(function(info){
     var rows = tbody.querySelectorAll('tr');
     for(var i=0;i<rows.length;i++){
       var cells = rows[i].querySelectorAll('td');
       if(cells.length===2 && cells[0].textContent==='Battery'){
-        cells[1].textContent = info; return;
+        xssText(cells[1], info); return;
       }
     }
-    // Append battery row to last section
     var tr = document.createElement('tr');
-    tr.innerHTML = '<td>Battery</td><td>'+(info==='—'?'<span class="info-na">—</span>':esc(info))+'</td>';
+    var td1 = document.createElement('td'); xssText(td1,'Battery');
+    var td2 = document.createElement('td');
+    if(info==='—'){ td2.className='info-na'; xssText(td2,'—'); } else { xssText(td2,info); }
+    tr.appendChild(td1); tr.appendChild(td2);
     tbody.appendChild(tr);
   });
 }
@@ -1953,6 +2452,13 @@ var inBadge    = $('inBadge');
 var outBadge   = $('outBadge');
 var plainOutput = '', nodeCount = 0;
 
+/* Apply config limits to inputs */
+inputArea.maxLength = CFG.MAX_JSON_CHARS;
+$('b64DecTa').maxLength = CFG.MAX_B64_CHARS;
+$('b64EncTa').maxLength = CFG.MAX_B64_CHARS;
+$('qrText').maxLength   = CFG.MAX_QR_CHARS;
+$('taTa').maxLength     = CFG.MAX_TA_CHARS;
+
 // Restore JSON input from localStorage on page load
 (function(){
   try{
@@ -2177,7 +2683,7 @@ $('fontDecBtn').addEventListener('click', function(){
   /* ── open / close the search bar ── */
   function openSearch(){
     isOpen = true;
-    searchBar.style.display = 'flex';
+    searchBar.classList.remove('search-bar-hidden');
     toggleBtn.setAttribute('aria-expanded','true');
     toggleBtn.classList.add('primary');
     searchInput.focus();
@@ -2185,7 +2691,7 @@ $('fontDecBtn').addEventListener('click', function(){
   }
   function closeSearch(){
     isOpen = false;
-    searchBar.style.display = 'none';
+    searchBar.classList.add('search-bar-hidden');
     toggleBtn.setAttribute('aria-expanded','false');
     toggleBtn.classList.remove('primary');
     clearHighlights();
@@ -2428,7 +2934,12 @@ function renderIPTable(rows){
   rows.forEach(function(r){
     var val=r[1]||'—';
     var tr=document.createElement('tr');
-    tr.innerHTML='<td>'+esc(r[0])+'</td><td>'+(val==='—'?'<span class="info-na">—</span>':esc(val))+'</td>';
+    var td1=document.createElement('td');
+    var td2=document.createElement('td');
+    xssText(td1, r[0]);
+    if(val==='—'){ var sp=document.createElement('span'); sp.className='info-na'; xssText(sp,'—'); td2.appendChild(sp); }
+    else{ xssText(td2, val); }
+    tr.appendChild(td1); tr.appendChild(td2);
     tbody.appendChild(tr);
   });
   $('ipLoading').style.display='none';
@@ -2517,10 +3028,10 @@ function b64Decode(str){
   }catch(e){ return null; } // null = invalid base64
 }
 
-var B64_ERR_CLS = 'b64-err';
+var B64_ERR_CLS = 'b64-enc-err';
 function setB64Error(ta, on){
-  if(on){ ta.style.color='var(--err)'; }
-  else  { ta.style.color=''; }
+  if(on){ ta.classList.add(B64_ERR_CLS); }
+  else  { ta.classList.remove(B64_ERR_CLS); }
 }
 
 b64EncTa.addEventListener('input', function(){
@@ -2588,17 +3099,21 @@ wireB64Toolbar('b64CopyEnc','b64ClearEnc','b64DlEnc', b64EncTa, 'encoded.txt');
 // File upload → Base64 encode
 function handleB64File(file){
   if(!file) return;
-  $('b64Fname').textContent = file.name+' ('+Math.round(file.size/1024)+' KB)';
+  if(file.size > CFG.MAX_B64_FILE_BYTES){
+    xssText($('b64Fname'), 'File too large — max '+Math.round(CFG.MAX_B64_FILE_BYTES/1048576)+' MB.');
+    return;
+  }
+  xssText($('b64Fname'), file.name+' ('+Math.round(file.size/1024)+' KB)');
   var reader = new FileReader();
   reader.onload = function(e){
-    var result = e.target.result; // data:...;base64,XXXXX
+    var result = e.target.result;
     var b64 = result.indexOf(',') !== -1 ? result.split(',')[1] : result;
     b64EncTa.value = b64;
     var dec = b64Decode(b64);
     b64DecTa.value = (dec !== null) ? dec : '(binary file — encoded above)';
     setB64Error(b64EncTa, false);
   };
-  reader.onerror = function(){ $('b64Fname').textContent = 'Error reading file.'; };
+  reader.onerror = function(){ xssText($('b64Fname'), 'Error reading file.'); };
   reader.readAsDataURL(file);
 }
 
@@ -2631,7 +3146,7 @@ $('b64Overlay').addEventListener('click', function(e){ if(e.target===this) close
 ══════════════════════════════════════════ */
 var taTa   = $('taTa');
 var taWarn = $('taWarn');
-var TA_MAX = 100000;
+var TA_MAX = CFG.MAX_TA_CHARS;
 
 function countBytes(str){
   try{
@@ -2730,7 +3245,7 @@ function qrGenerate(){
       ctx.drawImage(qrLogoImg, x, y, logoSize, logoSize);
     }
     $('qrPlaceholder').style.display = 'none';
-    canvas.style.display = 'block';
+    canvas.classList.remove('canvas-hidden');
     $('qrSaveBtn').disabled = false;
     qrGenerated = true;
     qrSetMsg('QR code ready — '+size+'×'+size+' px','ok');
@@ -2758,10 +3273,10 @@ function qrSave(){
 
 function qrClear(){
   $('qrText').value = '';
-  $('qrFname').textContent = '';
+  xssText($('qrFname'), '');
   qrLogoImg = null; qrGenerated = false;
   var canvas = $('qrCanvas');
-  canvas.style.display = 'none';
+  canvas.classList.add('canvas-hidden');
   $('qrPlaceholder').style.display = '';
   $('qrSaveBtn').disabled = true;
   qrSetMsg('');
@@ -2770,7 +3285,11 @@ function qrClear(){
 
 function qrHandleFile(file){
   if(!file || !file.type.match(/^image\//)) return;
-  $('qrFname').textContent = file.name;
+  if(file.size > CFG.MAX_QR_FILE_BYTES){
+    xssText($('qrFname'), 'Image too large — max '+Math.round(CFG.MAX_QR_FILE_BYTES/1048576)+' MB.');
+    return;
+  }
+  xssText($('qrFname'), file.name);
   var reader = new FileReader();
   reader.onload = function(e){
     var img = new Image();
@@ -2812,23 +3331,75 @@ var WGT_TO_G = { mg:0.001, g:1, kg:1000, lb:453.59237, t:1000000 };
 
 function fmtNum(n){
   if(!isFinite(n)) return '';
-  // show enough precision without scientific for reasonable numbers
   if(Math.abs(n) === 0) return '0';
   if(Math.abs(n) >= 0.0001 && Math.abs(n) < 1e15) return parseFloat(n.toPrecision(10)).toString();
   return n.toExponential(6);
 }
 
-function wireLinearGroup(toBase){
+/* ── Numeric-only input guard ──
+   Allows: digits, one leading minus, one decimal point, Backspace/Delete/arrows/Tab/Enter.
+   Blocks everything else and shows the group error div.                                      */
+var NUMERIC_RE = /^-?\d*\.?\d*$/;
+
+function convNumericKeydown(e){
+  /* allow control keys */
+  var ctrl = e.ctrlKey || e.metaKey;
+  if(ctrl) return; /* allow Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X, etc. */
+  var allowed = ['Backspace','Delete','ArrowLeft','ArrowRight','ArrowUp','ArrowDown','Tab','Enter','Home','End'];
+  if(allowed.indexOf(e.key) !== -1) return;
+  /* allow minus only at position 0 with no existing minus */
+  if(e.key === '-'){
+    if(e.target.selectionStart === 0 && e.target.value.indexOf('-') === -1) return;
+    e.preventDefault(); return;
+  }
+  /* allow one dot */
+  if(e.key === '.'){
+    if(e.target.value.indexOf('.') === -1) return;
+    e.preventDefault(); return;
+  }
+  /* allow digits 0-9 */
+  if(e.key >= '0' && e.key <= '9') return;
+  /* block everything else */
+  e.preventDefault();
+}
+
+function convShowErr(errId, show){
+  var el = $(errId);
+  if(!el) return;
+  if(show){ el.classList.add('show'); }
+  else    { el.classList.remove('show'); }
+}
+
+function convValidateAndMark(inp, errId){
+  var v = inp.value;
+  /* clean: strip anything that isn't a digit, dot, or leading minus */
+  var cleaned = v.replace(/[^\d.\-]/g, '');
+  /* keep only first dot */
+  var dotIdx = cleaned.indexOf('.');
+  if(dotIdx !== -1) cleaned = cleaned.slice(0, dotIdx+1) + cleaned.slice(dotIdx+1).replace(/\./g,'');
+  /* keep leading minus only */
+  if(cleaned.indexOf('-') !== -1){
+    cleaned = '-' + cleaned.replace(/-/g,'');
+  }
+  var invalid = (v !== cleaned);
+  if(invalid) inp.value = cleaned;
+  inp.classList.toggle('conv-input-err', invalid && cleaned === '');
+  convShowErr(errId, invalid);
+  return cleaned;
+}
+
+function wireLinearGroup(toBase, errId){
   return function(e){
     var src = e.target;
-    var unit = src.dataset.unit;
-    var val = parseFloat(src.value);
+    var cleaned = convValidateAndMark(src, errId);
+    var val = parseFloat(cleaned);
     var inputs = document.querySelectorAll('.conv-input[data-group="'+src.dataset.group+'"]');
-    if(src.value.trim() === '' || isNaN(val)){
+    if(cleaned.trim() === '' || isNaN(val)){
       inputs.forEach(function(inp){ if(inp!==src) inp.value=''; });
       return;
     }
-    var base = val * toBase[unit];
+    convShowErr(errId, false);
+    var base = val * toBase[src.dataset.unit];
     inputs.forEach(function(inp){
       if(inp === src) return;
       inp.value = fmtNum(base / toBase[inp.dataset.unit]);
@@ -2836,24 +3407,27 @@ function wireLinearGroup(toBase){
   };
 }
 
-// Wire data group
+/* Wire data group */
 document.querySelectorAll('.conv-input[data-group="data"]').forEach(function(inp){
-  inp.addEventListener('input', wireLinearGroup(DATA_TO_BYTES));
+  inp.addEventListener('keydown', convNumericKeydown);
+  inp.addEventListener('input', wireLinearGroup(DATA_TO_BYTES, 'data-err'));
 });
-// Wire length group
+/* Wire length group */
 document.querySelectorAll('.conv-input[data-group="len"]').forEach(function(inp){
-  inp.addEventListener('input', wireLinearGroup(LEN_TO_M));
+  inp.addEventListener('keydown', convNumericKeydown);
+  inp.addEventListener('input', wireLinearGroup(LEN_TO_M, 'len-err'));
 });
-// Wire weight group
+/* Wire weight group */
 document.querySelectorAll('.conv-input[data-group="weight"]').forEach(function(inp){
-  inp.addEventListener('input', wireLinearGroup(WGT_TO_G));
+  inp.addEventListener('keydown', convNumericKeydown);
+  inp.addEventListener('input', wireLinearGroup(WGT_TO_G, 'weight-err'));
 });
 
-// ── Temperature ──
+/* ── Temperature ── */
 function tempToK(val, unit){
   if(unit==='c') return val + 273.15;
   if(unit==='f') return (val - 32) * 5/9 + 273.15;
-  return val; // kelvin
+  return val;
 }
 function kToUnit(k, unit){
   if(unit==='c') return k - 273.15;
@@ -2861,18 +3435,21 @@ function kToUnit(k, unit){
   return k;
 }
 document.querySelectorAll('.conv-input[data-group="temp"]').forEach(function(inp){
+  inp.addEventListener('keydown', convNumericKeydown);
   inp.addEventListener('input', function(){
-    var val = parseFloat(inp.value);
+    var cleaned = convValidateAndMark(inp, 'temp-err');
+    var val = parseFloat(cleaned);
     var allTemp = document.querySelectorAll('.conv-input[data-group="temp"]');
-    if(inp.value.trim()==='' || isNaN(val)){
+    if(cleaned.trim()==='' || isNaN(val)){
       allTemp.forEach(function(i){ if(i!==inp) i.value=''; }); return;
     }
+    convShowErr('temp-err', false);
     var k = tempToK(val, inp.dataset.unit);
     allTemp.forEach(function(i){ if(i!==inp) i.value = fmtNum(kToUnit(k, i.dataset.unit)); });
   });
 });
 
-// ── Time converter ──
+/* ── Time converter ── */
 var ctLock = false;
 function ctUpdate(srcId, msVal){
   if(ctLock) return; ctLock = true;
@@ -2882,7 +3459,6 @@ function ctUpdate(srcId, msVal){
     if(srcId !== 'ctUnixSec') $('ctUnixSec').value = Math.round(msVal/1000);
     if(srcId !== 'ctUnixMs')  $('ctUnixMs').value  = msVal;
     if(srcId !== 'ctIso'){
-      // local ISO without timezone suffix for datetime-local compatibility
       var tzOff = d.getTimezoneOffset()*60000;
       var local  = new Date(d - tzOff);
       $('ctIso').value = local.toISOString().slice(0,19);
@@ -2892,14 +3468,20 @@ function ctUpdate(srcId, msVal){
   ctLock = false;
 }
 
+$('ctUnixSec').addEventListener('keydown', convNumericKeydown);
 $('ctUnixSec').addEventListener('input', function(){
-  var v = parseFloat(this.value);
-  if(this.value.trim()===''){ [$('ctUnixMs'),$('ctIso'),$('ctHuman')].forEach(function(e){e.value='';}); return; }
+  var cleaned = convValidateAndMark(this, 'time-err');
+  var v = parseFloat(cleaned);
+  if(cleaned.trim()===''){ [$('ctUnixMs'),$('ctIso'),$('ctHuman')].forEach(function(e){e.value='';}); return; }
+  convShowErr('time-err', false);
   if(!isNaN(v)) ctUpdate('ctUnixSec', v * 1000);
 });
+$('ctUnixMs').addEventListener('keydown', convNumericKeydown);
 $('ctUnixMs').addEventListener('input', function(){
-  var v = parseFloat(this.value);
-  if(this.value.trim()===''){ [$('ctUnixSec'),$('ctIso'),$('ctHuman')].forEach(function(e){e.value='';}); return; }
+  var cleaned = convValidateAndMark(this, 'time-err');
+  var v = parseFloat(cleaned);
+  if(cleaned.trim()===''){ [$('ctUnixSec'),$('ctIso'),$('ctHuman')].forEach(function(e){e.value='';}); return; }
+  convShowErr('time-err', false);
   if(!isNaN(v)) ctUpdate('ctUnixMs', v);
 });
 $('ctIso').addEventListener('input', function(){
@@ -2909,7 +3491,7 @@ $('ctIso').addEventListener('input', function(){
 });
 $('ctNowBtn').addEventListener('click', function(){ ctUpdate('', Date.now()); });
 
-// ── Number Base Converter ──
+/* ── Number Base Converter ── */
 (function(){
   var fromSel = $('cbFromBase'), toSel = $('cbToBase');
   for(var b=2; b<=36; b++){
@@ -2921,8 +3503,8 @@ $('ctNowBtn').addEventListener('click', function(){ ctUpdate('', Date.now()); })
     if(b===2)  o2.selected=true;
     fromSel.appendChild(o1); toSel.appendChild(o2);
   }
-  function updateFromLbl(){ $('cbFromLbl').textContent = fromSel.value; }
-  function updateToLbl(){ $('cbToLbl').textContent = toSel.value; }
+  function updateFromLbl(){ xssText($('cbFromLbl'), fromSel.value); }
+  function updateToLbl()  { xssText($('cbToLbl'),   toSel.value); }
   function convert(){
     var raw = ($('cbFrom').value||'').trim();
     if(!raw){ $('cbTo').value=''; return; }
@@ -2935,16 +3517,11 @@ $('ctNowBtn').addEventListener('click', function(){ ctUpdate('', Date.now()); })
   $('cbFrom').addEventListener('input', convert);
   fromSel.addEventListener('change', function(){ updateFromLbl(); convert(); });
   toSel.addEventListener('change',   function(){ updateToLbl();   convert(); });
-  // Quick-set buttons
   document.querySelectorAll('[data-qb]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      fromSel.value = btn.dataset.qb; updateFromLbl(); convert();
-    });
+    btn.addEventListener('click', function(){ fromSel.value = btn.dataset.qb; updateFromLbl(); convert(); });
   });
   document.querySelectorAll('[data-qb2]').forEach(function(btn){
-    btn.addEventListener('click', function(){
-      toSel.value = btn.dataset.qb2; updateToLbl(); convert();
-    });
+    btn.addEventListener('click', function(){ toSel.value = btn.dataset.qb2; updateToLbl(); convert(); });
   });
   updateFromLbl(); updateToLbl();
 })();
@@ -2962,7 +3539,6 @@ document.querySelectorAll('.conv-tab').forEach(function(tab){
     var panel = document.getElementById('ctab-'+tab.dataset.tab);
     if(panel){ panel.classList.add('active'); panel.focus(); }
   });
-  // Arrow key navigation within tablist (ARIA authoring practice)
   tab.addEventListener('keydown', function(e){
     var tabs = Array.from(document.querySelectorAll('.conv-tab'));
     var idx  = tabs.indexOf(tab);
@@ -2978,6 +3554,417 @@ function closeConv(){ closeOverlay('convOverlay'); }
 $('convBtn').addEventListener('click', openConv);
 $('convClose').addEventListener('click', closeConv);
 $('convOverlay').addEventListener('click', function(e){ if(e.target===this) closeConv(); });
+
+/* ══════════════════════════════════════════
+   JWT ENCODER / DECODER
+══════════════════════════════════════════ */
+(function(){
+  /* ── Pure-JS HMAC-SHA256 (byte-array only — no string round-trips) ── */
+
+  /* UTF-8 encode a JS string → Uint8Array-like plain array */
+  function strToBytes(s){
+    var out=[];
+    for(var i=0;i<s.length;i++){
+      var c=s.charCodeAt(i);
+      if(c<0x80){ out.push(c); }
+      else if(c<0x800){ out.push(0xC0|(c>>6), 0x80|(c&0x3F)); }
+      else if(c>=0xD800&&c<=0xDBFF&&i+1<s.length){
+        var lo=s.charCodeAt(++i);
+        var cp=0x10000+((c-0xD800)<<10)+(lo-0xDC00);
+        out.push(0xF0|(cp>>18),0x80|((cp>>12)&0x3F),0x80|((cp>>6)&0x3F),0x80|(cp&0x3F));
+      } else { out.push(0xE0|(c>>12),0x80|((c>>6)&0x3F),0x80|(c&0x3F)); }
+    }
+    return out;
+  }
+
+  function bytesToB64url(bytes){
+    var b=''; for(var i=0;i<bytes.length;i++) b+=String.fromCharCode(bytes[i]);
+    return btoa(b).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  }
+  function b64urlToBytes(s){
+    s=s.replace(/-/g,'+').replace(/_/g,'/');
+    while(s.length%4) s+='=';
+    var bin=atob(s),out=[];
+    for(var i=0;i<bin.length;i++) out.push(bin.charCodeAt(i));
+    return out;
+  }
+  function safeB64urlDecode(s){
+    try{ return b64urlToBytes(s); }catch(e){ return null; }
+  }
+  function bytesToUtf8Str(bytes){
+    /* Used only for JSON.parse after base64url-decoding header/payload */
+    try{ return decodeURIComponent(bytes.map(function(b){ return '%'+('00'+b.toString(16)).slice(-2); }).join('')); }
+    catch(e){ var s=''; for(var i=0;i<bytes.length;i++) s+=String.fromCharCode(bytes[i]); return s; }
+  }
+
+  /* SHA-256: accepts a plain byte array, returns a plain byte array.
+     Never converts to/from string internally — that was the source of corruption. */
+  var SHA256_K=[
+    0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,
+    0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,
+    0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,
+    0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,
+    0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,
+    0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,
+    0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,
+    0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2
+  ];
+  function rotr32(x,n){return(x>>>n)|(x<<(32-n));}
+
+  function sha256(bytes){
+    /* Work on a copy so callers' arrays are not mutated */
+    var msg=bytes.slice();
+    var bitLen=msg.length*8;
+    msg.push(0x80);
+    while((msg.length%64)!==56) msg.push(0);
+    /* Append 64-bit big-endian bit length */
+    for(var i=7;i>=0;i--) msg.push((bitLen / Math.pow(2,i*8)) & 0xFF);
+
+    var h0=0x6a09e667,h1=0xbb67ae85,h2=0x3c6ef372,h3=0xa54ff53a,
+        h4=0x510e527f,h5=0x9b05688c,h6=0x1f83d9ab,h7=0x5be0cd19;
+
+    for(var bi=0;bi<msg.length;bi+=64){
+      var w=new Array(64);
+      for(var j=0;j<16;j++)
+        w[j]=(msg[bi+j*4]<<24)|(msg[bi+j*4+1]<<16)|(msg[bi+j*4+2]<<8)|msg[bi+j*4+3];
+      for(var t=16;t<64;t++){
+        var s0=rotr32(w[t-15],7)^rotr32(w[t-15],18)^(w[t-15]>>>3);
+        var s1=rotr32(w[t-2],17)^rotr32(w[t-2],19)^(w[t-2]>>>10);
+        w[t]=(w[t-16]+s0+w[t-7]+s1)>>>0;
+      }
+      var a=h0,b=h1,c=h2,d=h3,e=h4,f=h5,g=h6,hh=h7;
+      for(var r=0;r<64;r++){
+        var S1=rotr32(e,6)^rotr32(e,11)^rotr32(e,25);
+        var ch=(e&f)^(~e&g);
+        var tmp1=(hh+S1+ch+SHA256_K[r]+w[r])>>>0;
+        var S0=rotr32(a,2)^rotr32(a,13)^rotr32(a,22);
+        var maj=(a&b)^(a&c)^(b&c);
+        var tmp2=(S0+maj)>>>0;
+        hh=g; g=f; f=e; e=(d+tmp1)>>>0; d=c; c=b; b=a; a=(tmp1+tmp2)>>>0;
+      }
+      h0=(h0+a)>>>0; h1=(h1+b)>>>0; h2=(h2+c)>>>0; h3=(h3+d)>>>0;
+      h4=(h4+e)>>>0; h5=(h5+f)>>>0; h6=(h6+g)>>>0; h7=(h7+hh)>>>0;
+    }
+    var out=[];
+    [h0,h1,h2,h3,h4,h5,h6,h7].forEach(function(hv){
+      for(var s=24;s>=0;s-=8) out.push((hv>>>s)&0xFF);
+    });
+    return out;
+  }
+
+  /* HMAC-SHA256: key and message are plain byte arrays throughout */
+  function hmacSha256(keyBytes,msgBytes){
+    /* If key longer than block size, hash it first */
+    var k = keyBytes.length > 64 ? sha256(keyBytes) : keyBytes.slice();
+    /* Pad key to 64 bytes */
+    while(k.length<64) k.push(0);
+    var ipad=[], opad=[];
+    for(var i=0;i<64;i++){ ipad.push(k[i]^0x36); opad.push(k[i]^0x5C); }
+    /* inner = SHA256(ipad ∥ message)   — pure bytes, no string conversion */
+    var inner = sha256(ipad.concat(msgBytes));
+    /* outer = SHA256(opad ∥ inner)     — pure bytes */
+    return sha256(opad.concat(inner));
+  }
+
+  /* ── JSON syntax highlighter ── */
+  function highlightJSON(str){
+    if(!str||!str.trim()) return '';
+    try{ return renderVal(JSON.parse(str),0); }
+    catch(e){ return '<span style="color:var(--err)">'+esc(str)+'</span>'; }
+  }
+  function renderVal(v,depth){
+    if(v===null) return '<span class="t-null">null</span>';
+    if(typeof v==='boolean') return '<span class="t-bool">'+v+'</span>';
+    if(typeof v==='number'){
+      var s=v.toString();
+      return s.indexOf('.')!==-1?'<span class="t-flt">'+s+'</span>':'<span class="t-int">'+s+'</span>';
+    }
+    if(typeof v==='string') return '<span class="t-str">"'+esc(v)+'"</span>';
+    if(Array.isArray(v)){
+      if(!v.length) return '<span class="t-punc">[]</span>';
+      var ind='  '.repeat(depth+1),cind='  '.repeat(depth);
+      return '<span class="t-punc">[</span>\n'+v.map(function(item){return ind+renderVal(item,depth+1);}).join('<span class="t-punc">,</span>\n')+'\n'+cind+'<span class="t-punc">]</span>';
+    }
+    if(typeof v==='object'){
+      var keys=Object.keys(v);
+      if(!keys.length) return '<span class="t-punc">{}</span>';
+      var ind2='  '.repeat(depth+1),cind2='  '.repeat(depth);
+      return '<span class="t-punc">{</span>\n'+keys.map(function(k){
+        return ind2+'<span class="t-key">"'+esc(k)+'"</span><span class="t-punc">: </span>'+renderVal(v[k],depth+1);
+      }).join('<span class="t-punc">,</span>\n')+'\n'+cind2+'<span class="t-punc">}</span>';
+    }
+    return esc(String(v));
+  }
+
+  /* ── JWT core ── */
+  function jsonB64url(obj){
+    /* JSON.stringify → UTF-8 bytes → base64url */
+    return bytesToB64url(strToBytes(JSON.stringify(obj)));
+  }
+  function b64urlToJson(s){
+    var bytes=safeB64urlDecode(s);
+    if(!bytes) return null;
+    try{ return JSON.parse(bytesToUtf8Str(bytes)); }catch(e){ return null; }
+  }
+  function buildToken(hObj,pObj,secret,b64Secret){
+    var h=jsonB64url(hObj), p=jsonB64url(pObj);
+    /* The signing input is the ASCII string "header.payload" — strToBytes is correct here */
+    var msgBytes=strToBytes(h+'.'+p);
+    var keyBytes=b64Secret?(safeB64urlDecode(secret)||strToBytes(secret)):strToBytes(secret);
+    var sig=bytesToB64url(hmacSha256(keyBytes,msgBytes));
+    return h+'.'+p+'.'+sig;
+  }
+
+  /* ── Defaults ── */
+  var DEFAULT_HEADER={alg:'HS256',typ:'JWT'};
+  var DEFAULT_PAYLOAD={sub:'1234567890',name:'John Doe',iat:1516239022};
+  var DEFAULT_SECRET='your-256-bit-secret';
+
+  /* ── DOM refs ── */
+  var headerTa=$('jwtHeaderTa'),   headerCode=$('jwtHeaderCode'),   headerHl=$('jwtHeaderHl');
+  var payloadTa=$('jwtPayloadTa'), payloadCode=$('jwtPayloadCode'), payloadHl=$('jwtPayloadHl');
+  var headerWrap=$('jwtHeaderWrap'), payloadWrap=$('jwtPayloadWrap');
+  var headerValid=$('jwtHeaderValid'), payloadValid=$('jwtPayloadValid');
+  var secretInput=$('jwtSecret'), b64Toggle=$('jwtSecretB64');
+  var tokenDisplay=$('jwtTokenDisplay'), encodeValid=$('jwtEncodeValid');
+  var decodeInput=$('jwtDecodeInput'), decodeHl=$('jwtDecodeHl');
+  var decHeaderOut=$('jwtDecHeaderOut'), decPayloadOut=$('jwtDecPayloadOut');
+  var decSigOut=$('jwtDecSigOut'), decodeValid=$('jwtDecodeValid');
+
+  /* ══ MIRROR EDITOR helpers ══
+     The textarea is transparent (only caret shows). The <pre> overlay renders
+     coloured HTML. We sync scroll so both layers stay aligned. */
+  function syncScroll(ta, hl){
+    hl.scrollTop  = ta.scrollTop;
+    hl.scrollLeft = ta.scrollLeft;
+  }
+  function syncHeight(ta, hl){
+    /* Make the pre the same height as the scrollable area so it never clips */
+    hl.style.minHeight = ta.scrollHeight + 'px';
+  }
+  function setMirrorContent(ta, code, hl, obj){
+    var text=JSON.stringify(obj,null,2);
+    ta.value=text;
+    code.innerHTML=highlightJSON(text)+'<br>';
+    syncHeight(ta,hl);
+  }
+
+  /* Refresh the highlight overlay from the textarea's current value */
+  function refreshMirror(ta, code, hl){
+    /* append '\n' so the last empty line gets correct height */
+    code.innerHTML=highlightJSON(ta.value)+'<br>';
+    syncHeight(ta,hl);
+  }
+
+  /* Wire a mirror pair: textarea → highlight + scroll sync */
+  function wireMirror(ta, code, hl, wrap, badge, onChange){
+    ta.addEventListener('input',function(){
+      refreshMirror(ta,code,hl);
+      validateMirror(ta,wrap,badge);
+      if(onChange) onChange();
+    });
+    ta.addEventListener('scroll',function(){ syncScroll(ta,hl); });
+    ta.addEventListener('keydown',function(e){
+      /* Tab → insert 2 spaces instead of losing focus */
+      if(e.key==='Tab'){
+        e.preventDefault();
+        var s=ta.selectionStart,end=ta.selectionEnd;
+        ta.value=ta.value.substring(0,s)+'  '+ta.value.substring(end);
+        ta.selectionStart=ta.selectionEnd=s+2;
+        refreshMirror(ta,code,hl);
+        validateMirror(ta,wrap,badge);
+        if(onChange) onChange();
+      }
+    });
+  }
+
+  function validateMirror(ta, wrap, badge){
+    var txt=(ta.value||'').trim();
+    if(!txt){ wrap.classList.remove('ok','err'); badge.textContent=''; badge.className='jwt-validator'; return null; }
+    try{
+      var obj=JSON.parse(txt);
+      wrap.classList.add('ok'); wrap.classList.remove('err');
+      badge.textContent='✓ Valid JSON'; badge.className='jwt-validator ok';
+      return obj;
+    }catch(e){
+      wrap.classList.add('err'); wrap.classList.remove('ok');
+      badge.textContent='✗ Invalid JSON'; badge.className='jwt-validator err';
+      return null;
+    }
+  }
+
+  /* ── Render highlighted token parts (encode output) ── */
+  function renderTokenDisplay(token){
+    if(!token){ tokenDisplay.innerHTML='<span class="jwt-token-placeholder">Token will appear here…</span>'; return; }
+    var p=token.split('.');
+    if(p.length!==3){ tokenDisplay.innerHTML='<span style="color:var(--txt2);font-size:.73rem">'+esc(token)+'</span>'; return; }
+    tokenDisplay.innerHTML=
+      '<span class="jwt-part-header">'+esc(p[0])+'</span>'+
+      '<span class="jwt-part-dot">.</span>'+
+      '<span class="jwt-part-payload">'+esc(p[1])+'</span>'+
+      '<span class="jwt-part-dot">.</span>'+
+      '<span class="jwt-part-sig">'+esc(p[2])+'</span>';
+  }
+
+  /* ── Render coloured token inside the decode input overlay ── */
+  function renderDecodeInputHl(raw){
+    if(!raw||!raw.trim()){
+      decodeHl.innerHTML='<span class="jwt-token-hl-placeholder">Paste a JWT token here…</span>';
+      return;
+    }
+    var p=raw.split('.');
+    if(p.length!==3){
+      /* Could be partial or wrong — render whatever we have */
+      var html='';
+      p.forEach(function(seg,i){
+        if(i>0) html+='<span class="jwt-part-dot">.</span>';
+        var cls=i===0?'jwt-part-header':i===1?'jwt-part-payload':'jwt-part-sig';
+        html+='<span class="'+cls+'">'+esc(seg)+'</span>';
+      });
+      decodeHl.innerHTML=html;
+      return;
+    }
+    decodeHl.innerHTML=
+      '<span class="jwt-part-header">'+esc(p[0])+'</span>'+
+      '<span class="jwt-part-dot">.</span>'+
+      '<span class="jwt-part-payload">'+esc(p[1])+'</span>'+
+      '<span class="jwt-part-dot">.</span>'+
+      '<span class="jwt-part-sig">'+esc(p[2])+'</span>';
+  }
+
+  var _currentToken='';
+
+  /* ── Encode update ── */
+  function updateEncode(){
+    var hObj=validateMirror(headerTa,headerWrap,headerValid);
+    var pObj=validateMirror(payloadTa,payloadWrap,payloadValid);
+    if(!hObj||!pObj){
+      encodeValid.textContent=''; renderTokenDisplay(''); _currentToken=''; return;
+    }
+    try{
+      var token=buildToken(hObj,pObj,secretInput.value||'',b64Toggle.checked);
+      _currentToken=token; renderTokenDisplay(token);
+      encodeValid.textContent='✓ Valid'; encodeValid.className='jwt-token-valid ok';
+    }catch(e){
+      _currentToken=''; renderTokenDisplay('');
+      encodeValid.textContent='✗ Error'; encodeValid.className='jwt-token-valid err';
+    }
+  }
+
+  /* ── Initialise mirror editors ── */
+  setMirrorContent(headerTa,  headerCode,  headerHl,  DEFAULT_HEADER);
+  setMirrorContent(payloadTa, payloadCode, payloadHl, DEFAULT_PAYLOAD);
+  secretInput.value=DEFAULT_SECRET;
+  validateMirror(headerTa,  headerWrap,  headerValid);
+  validateMirror(payloadTa, payloadWrap, payloadValid);
+
+  wireMirror(headerTa,  headerCode,  headerHl,  headerWrap,  headerValid,  updateEncode);
+  wireMirror(payloadTa, payloadCode, payloadHl, payloadWrap, payloadValid, updateEncode);
+  secretInput.addEventListener('input', updateEncode);
+  b64Toggle.addEventListener('change', updateEncode);
+
+  /* ── Decode input overlay ── */
+  decodeInput.addEventListener('input', function(){
+    renderDecodeInputHl(decodeInput.value);
+    /* sync overlay height */
+    decodeHl.style.minHeight = decodeInput.scrollHeight + 'px';
+    updateDecode();
+  });
+  decodeInput.addEventListener('scroll', function(){
+    decodeHl.scrollTop  = decodeInput.scrollTop;
+    decodeHl.scrollLeft = decodeInput.scrollLeft;
+  });
+
+  /* ── Decode update ── */
+  function updateDecode(){
+    var raw=(decodeInput.value||'').trim();
+    if(!raw){
+      decHeaderOut.innerHTML='<span class="jwt-decoded-placeholder">Header will appear here…</span>';
+      decPayloadOut.innerHTML='<span class="jwt-decoded-placeholder">Payload will appear here…</span>';
+      decSigOut.textContent='';
+      decodeValid.textContent=''; decodeValid.className='jwt-token-valid';
+      return;
+    }
+    var parts=raw.split('.');
+    if(parts.length!==3){
+      decHeaderOut.innerHTML='<span style="color:var(--err);font-size:.72rem">Not a valid JWT — expected 3 dot-separated parts</span>';
+      decPayloadOut.innerHTML=''; decSigOut.textContent='';
+      decodeValid.textContent='✗ Invalid JWT'; decodeValid.className='jwt-token-valid err';
+      return;
+    }
+    var hObj=b64urlToJson(parts[0]), pObj=b64urlToJson(parts[1]);
+    decHeaderOut.innerHTML = hObj
+      ? highlightJSON(JSON.stringify(hObj,null,2))
+      : '<span style="color:var(--err)">Could not decode header</span>';
+    decPayloadOut.innerHTML = pObj
+      ? highlightJSON(JSON.stringify(pObj,null,2))
+      : '<span style="color:var(--err)">Could not decode payload</span>';
+    decSigOut.textContent=parts[2];
+    if(hObj&&pObj){ decodeValid.textContent='✓ Decoded'; decodeValid.className='jwt-token-valid ok'; }
+    else { decodeValid.textContent='✗ Partial error'; decodeValid.className='jwt-token-valid err'; }
+  }
+
+  /* ── Copy helpers ── */
+  function jwtFlashCopy(btn,text){
+    copyText(text);
+    var orig=btn.innerHTML;
+    btn.innerHTML='<svg viewBox="0 0 24 24" width="11" height="11" stroke="currentColor" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    btn.classList.add('ok');
+    setTimeout(function(){ btn.innerHTML=orig; btn.classList.remove('ok'); },1500);
+  }
+  $('jwtCopyHeader').addEventListener('click',function(){ jwtFlashCopy(this,headerTa.value); });
+  $('jwtCopyPayload').addEventListener('click',function(){ jwtFlashCopy(this,payloadTa.value); });
+  $('jwtCopyToken').addEventListener('click',function(){ if(_currentToken) jwtFlashCopy(this,_currentToken); });
+  $('jwtCopyDecHeader').addEventListener('click',function(){
+    var p=(decodeInput.value||'').trim().split('.');
+    var obj=p.length>=1?b64urlToJson(p[0]):null;
+    if(obj) jwtFlashCopy(this,JSON.stringify(obj,null,2));
+  });
+  $('jwtCopyDecPayload').addEventListener('click',function(){
+    var p=(decodeInput.value||'').trim().split('.');
+    var obj=p.length>=2?b64urlToJson(p[1]):null;
+    if(obj) jwtFlashCopy(this,JSON.stringify(obj,null,2));
+  });
+  $('jwtClearDecode').addEventListener('click',function(){
+    decodeInput.value='';
+    renderDecodeInputHl('');
+    updateDecode();
+  });
+
+  /* ── Mode toggle ── */
+  var encPanel=$('jwtEncodePanel'),decPanel=$('jwtDecodePanel');
+  var encBtn=$('jwtEncodeBtn'),decBtn=$('jwtDecodeBtn');
+  encBtn.addEventListener('click',function(){
+    encPanel.style.display=''; decPanel.style.display='none';
+    encBtn.classList.add('active'); encBtn.setAttribute('aria-pressed','true');
+    decBtn.classList.remove('active'); decBtn.setAttribute('aria-pressed','false');
+  });
+  decBtn.addEventListener('click',function(){
+    decPanel.style.display=''; encPanel.style.display='none';
+    decBtn.classList.add('active'); decBtn.setAttribute('aria-pressed','true');
+    encBtn.classList.remove('active'); encBtn.setAttribute('aria-pressed','false');
+    /* Refresh overlay on first open */
+    renderDecodeInputHl(decodeInput.value);
+  });
+
+  /* ── Open/close ── */
+  function openJWT(){
+    openOverlay('jwtOverlay','jwtClose');
+    /* Re-sync mirror heights after layout paint */
+    requestAnimationFrame(function(){
+      syncHeight(headerTa,  headerHl);
+      syncHeight(payloadTa, payloadHl);
+      updateEncode();
+    });
+  }
+  function closeJWT(){ closeOverlay('jwtOverlay'); }
+  $('jwtBtn').addEventListener('click',openJWT);
+  $('jwtClose').addEventListener('click',closeJWT);
+  $('jwtOverlay').addEventListener('click',function(e){ if(e.target===this) closeJWT(); });
+
+  /* Initialise decode placeholder */
+  renderDecodeInputHl('');
+})();
 
 })(); // end IIFE
 </script>
