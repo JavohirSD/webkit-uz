@@ -1468,6 +1468,193 @@ mark.s-hit.s-active{
   .hash-pw-fields{grid-template-columns:1fr}
   .hash-val-input{font-size:.74rem}
 }
+
+/* ══════════════════════════════════════════
+   TEXT DIFF MODAL
+══════════════════════════════════════════ */
+/*
+  FONT CONSTANTS (must match JS: DIFF_FONT_PX / DIFF_LINE_H / DIFF_LNUMS_W / DIFF_HL_PAD)
+  Content:  14px / line-height 1.65  → each row = 23.1px
+  Lnums:    13px  width: 54px        padding-h: 9px each side (18px total)
+*/
+.modal-diff{
+  max-width:1380px;width:calc(100vw - 1.5rem);
+  display:flex;flex-direction:column;
+}
+.modal-diff-height{height:min(90vh,calc(100vh - 2.5rem))}
+
+/* Stats bar */
+.diff-stats-bar{
+  display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;
+  padding:.5rem 1rem;border-bottom:1px solid var(--border);
+  background:var(--panel2);flex-shrink:0;
+}
+.diff-stat{
+  display:inline-flex;align-items:center;gap:.32rem;
+  padding:.22rem .6rem;border-radius:6px;border:1px solid transparent;
+  font-family:var(--font-code);font-size:.8rem;font-weight:600;flex-shrink:0;line-height:1.3;
+}
+.diff-stat.ds-add{background:rgba(74,222,128,.08);color:#4ade80;border-color:rgba(74,222,128,.2)}
+.diff-stat.ds-del{background:rgba(248,113,113,.08);color:#f87171;border-color:rgba(248,113,113,.2)}
+.diff-stat.ds-chg{background:rgba(251,191,36,.07);color:#fbbf24;border-color:rgba(251,191,36,.2)}
+.diff-stat.ds-tot{background:var(--badge-bg);color:var(--badge-txt);border-color:var(--border2)}
+.diff-stat.ds-inf{background:var(--badge-bg);color:var(--txt3);border-color:var(--border2);font-weight:400}
+.diff-stat-sep{
+  width:1px;height:16px;background:var(--border2);
+  flex-shrink:0;margin:0 .1rem;align-self:center;
+}
+
+/* 2-column split layout */
+.diff-layout{
+  flex:1;display:grid;grid-template-columns:1fr 1px 1fr;
+  min-height:0;overflow:hidden;
+}
+.diff-divider{background:var(--border);flex-shrink:0}
+
+/* Pane */
+.diff-pane{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.diff-pane-hdr{
+  display:flex;align-items:center;gap:.45rem;
+  padding:.5rem .85rem;border-bottom:1px solid var(--border);
+  background:var(--panel2);flex-shrink:0;overflow:hidden;
+}
+.diff-pane-lbl{
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;
+  font-weight:700;flex-shrink:0;
+}
+.diff-pane-lbl.lbl-orig{color:#60a5fa}
+.diff-pane-lbl.lbl-chgd{color:#4ade80}
+.diff-pane-info{
+  flex:1;font-family:var(--font-code);font-size:.78rem;color:var(--txt3);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;
+}
+.diff-btn{
+  display:inline-flex;align-items:center;gap:4px;flex-shrink:0;
+  background:var(--panel);border:1px solid var(--border2);border-radius:6px;
+  padding:.26rem .58rem;font-size:.76rem;font-weight:500;font-family:var(--font-ui);
+  color:var(--txt2);cursor:pointer;transition:all .15s;white-space:nowrap;
+  -webkit-appearance:none;appearance:none;
+}
+.diff-btn:hover{background:var(--bg3);color:var(--txt)}
+.diff-btn.ok{color:var(--ok)!important;border-color:var(--ok)!important}
+.diff-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.diff-btn svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+
+/* Body: scroll wrapper + inner */
+.diff-body{flex:1;display:flex;overflow:hidden;min-height:0}
+.diff-scroll{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.diff-scroll::-webkit-scrollbar{width:5px}
+.diff-scroll::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.diff-inner{display:flex;min-height:100%;min-width:0}
+
+/* Line numbers — width 54px matches JS constant DIFF_LNUMS_W */
+.diff-lnums{
+  padding:.6rem 6px .6rem 4px;text-align:right;
+  width:54px;min-width:54px;max-width:54px;
+  font-family:var(--font-code);font-size:13px;
+  background:var(--panel2);border-right:1px solid var(--border);
+  -webkit-user-select:none;user-select:none;flex-shrink:0;
+}
+/* Each span = one visual row (logical line + wrap continuations) */
+.diff-lnums span{
+  display:block;
+  line-height:1.65;       /* must match .diff-hl line-height */
+  padding:0 5px;
+  min-height:calc(13px * 1.65); /* 13px font × 1.65 lh */
+  box-sizing:border-box;
+}
+.dln-eq{color:var(--lnum)}
+.dln-del{color:#f87171;background:rgba(248,113,113,.1)}
+.dln-add{color:#4ade80;background:rgba(74,222,128,.1)}
+.dln-chg{color:#fbbf24;background:rgba(251,191,36,.12)}
+/* Continuation rows (visual wraps of the same logical line) */
+.dln-cont{color:var(--border2)!important}
+.dln-del.dln-cont{color:rgba(248,113,113,.3)!important}
+.dln-add.dln-cont{color:rgba(74,222,128,.3)!important}
+.dln-chg.dln-cont{color:rgba(251,191,36,.25)!important}
+
+/* Text wrap — positions the transparent textarea over the highlight div */
+.diff-text-wrap{flex:1;position:relative;min-width:0;min-height:100%}
+
+/* Highlight overlay — sets scroll height, renders highlighted content.
+   CRITICAL: font-size 14px and line-height 1.65 must match JS constants
+   DIFF_FONT_PX=14 and .diff-ta below exactly. */
+.diff-hl{
+  display:block;
+  padding:.6rem 13px;           /* 13px = DIFF_HL_PAD/2 — matches JS */
+  font-family:var(--font-code);
+  font-size:14px;               /* DIFF_FONT_PX — matches JS canvas */
+  line-height:1.65;             /* DIFF_LINE_H — matches JS */
+  white-space:pre-wrap;word-break:break-all;tab-size:2;
+  color:var(--txt);box-sizing:border-box;min-height:100%;
+  -webkit-user-select:none;user-select:none;
+}
+.diff-hl-ph{
+  color:var(--txt3);font-style:italic;
+  font-size:14px;pointer-events:none;
+}
+
+/* Transparent textarea — only caret visible; text rendered by overlay.
+   Must share identical font/padding/line-height with .diff-hl */
+.diff-ta{
+  position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;
+  border:none;resize:none;outline:none;
+  background:transparent;color:transparent;caret-color:var(--txt);
+  padding:.6rem 13px;           /* identical to .diff-hl */
+  font-family:var(--font-code);
+  font-size:14px;               /* identical to .diff-hl */
+  line-height:1.65;             /* identical to .diff-hl */
+  white-space:pre-wrap;word-break:break-all;tab-size:2;
+  overflow:hidden;z-index:2;-webkit-appearance:none;appearance:none;
+}
+.diff-ta::placeholder{color:var(--txt3);opacity:1;font-style:italic}
+.diff-ta::-webkit-scrollbar{display:none}
+.diff-ta::selection{background:rgba(0,180,216,.22)}
+
+/* Diff line type spans — margin/padding mirror .diff-hl horizontal pad (13px) */
+.dhl-eq {display:block;line-height:1.65;color:var(--txt)}
+.dhl-del{display:block;line-height:1.65;color:var(--txt);background:rgba(248,113,113,.1);margin:0 -13px;padding:0 13px}
+.dhl-add{display:block;line-height:1.65;color:var(--txt);background:rgba(74,222,128,.09);margin:0 -13px;padding:0 13px}
+.dhl-chg{display:block;line-height:1.65;color:var(--txt);background:rgba(251,191,36,.07);margin:0 -13px;padding:0 13px}
+
+/* Character-level highlights within lines */
+.dhl-char-del{background:rgba(248,113,113,.38);border-radius:2px;padding:0 1px}
+.dhl-char-add{background:rgba(74,222,128,.35);border-radius:2px;padding:0 1px}
+
+/* Light theme adjustments */
+[data-theme="light"] .dhl-del{background:rgba(220,38,38,.07)}
+[data-theme="light"] .dhl-add{background:rgba(22,163,74,.07)}
+[data-theme="light"] .dhl-chg{background:rgba(202,138,4,.07)}
+[data-theme="light"] .dln-del{background:rgba(220,38,38,.08);color:#dc2626}
+[data-theme="light"] .dln-add{background:rgba(22,163,74,.08);color:#16a34a}
+[data-theme="light"] .dln-chg{background:rgba(202,138,4,.08);color:#b45309}
+[data-theme="light"] .diff-stat.ds-add{background:rgba(22,163,74,.07);color:#16a34a;border-color:rgba(22,163,74,.2)}
+[data-theme="light"] .diff-stat.ds-del{background:rgba(220,38,38,.06);color:#dc2626;border-color:rgba(220,38,38,.18)}
+[data-theme="light"] .diff-stat.ds-chg{background:rgba(202,138,4,.06);color:#b45309;border-color:rgba(202,138,4,.18)}
+[data-theme="light"] .dhl-char-del{background:rgba(220,38,38,.28)}
+[data-theme="light"] .dhl-char-add{background:rgba(22,163,74,.25)}
+[data-theme="light"] .diff-pane-lbl.lbl-orig{color:#1d4ed8}
+[data-theme="light"] .diff-pane-lbl.lbl-chgd{color:#15803d}
+
+/* Mobile responsive */
+@media(max-width:768px){
+  .diff-layout{grid-template-columns:1fr;grid-template-rows:1fr auto 1fr}
+  .diff-divider{height:3px;width:auto}
+  .modal-diff{width:calc(100vw - 1rem)}
+  .modal-diff-height{height:min(92vh,calc(100vh - 2rem))}
+  .diff-pane-info{display:none}
+}
+@media(max-width:480px){
+  .diff-pane-hdr{gap:.3rem;padding:.4rem .6rem}
+  .diff-btn{font-size:.72rem;padding:.22rem .48rem}
+  .diff-lnums{width:44px;min-width:44px;max-width:44px;font-size:12px}
+  .diff-stats-bar{gap:.35rem;padding:.4rem .7rem}
+  .diff-stat{font-size:.74rem;padding:.18rem .5rem}
+}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/node-forge@1.3.1/dist/forge.min.js"></script>
@@ -1475,6 +1662,16 @@ mark.s-hit.s-active{
 <script src="https://cdn.jsdelivr.net/npm/argon2-browser@1.18.0/dist/argon2-bundled.min.js"></script>
 </head>
 <body>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GYVCCJDCZD"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-GYVCCJDCZD');
+</script>
+
 <a class="skip-link" href="#json-main">Skip to JSON formatter</a>
 
 <!-- SITE HEADER -->
@@ -1525,6 +1722,10 @@ mark.s-hit.s-active{
     <button class="top-btn" id="hashBtn" aria-label="Hashing Tools" title="Hash">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16M4 16h16M9 3l-1 18M16 3l-1 18"/></svg>
       <span>Hash</span>
+    </button>
+    <button class="top-btn" id="diffBtn" aria-label="Text Diff Analyzer" title="Text Diff">
+      <svg viewBox="0 0 24 24"><path d="M3 6h8M3 10h6M3 14h8M3 18h5"/><path d="M13 6h8M15 10h6M13 14h8M16 18h5"/><line x1="11.5" y1="6" x2="11.5" y2="18" stroke-dasharray="2 2"/></svg>
+      <span>Text Diff</span>
     </button>
     <span class="theme-sep" aria-hidden="true"></span>
     <button class="theme-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">
@@ -1818,6 +2019,104 @@ mark.s-hit.s-active{
     </div><!-- /.modal-body.jwt-body -->
   </div><!-- /.modal.modal-jwt -->
 </div><!-- /#jwtOverlay -->
+
+<!-- TEXT DIFF MODAL -->
+<div class="modal-overlay" id="diffOverlay" role="dialog" aria-modal="true" aria-labelledby="diffModalTitle" aria-hidden="true">
+  <div class="modal modal-diff modal-diff-height">
+    <div class="modal-header">
+      <span class="modal-title" id="diffModalTitle">⟷ Text Diff Analyzer</span>
+      <button class="modal-close" id="diffClose" aria-label="Close diff modal">✕</button>
+    </div>
+
+    <!-- Stats summary bar -->
+    <div class="diff-stats-bar" id="diffStatsBar" aria-live="polite" aria-atomic="true">
+      <span class="diff-stat ds-tot" id="diffStatTotal">Paste text in both panels to begin</span>
+      <span class="diff-stat-sep" id="diffStatSep1" style="display:none"></span>
+      <span class="diff-stat ds-add" id="diffStatAdd" style="display:none">+ 0 added</span>
+      <span class="diff-stat ds-del" id="diffStatDel" style="display:none">− 0 deleted</span>
+      <span class="diff-stat ds-chg" id="diffStatChg" style="display:none">~ 0 changed</span>
+      <span class="diff-stat-sep" id="diffStatSep2" style="display:none"></span>
+      <span class="diff-stat ds-inf" id="diffStatOrig">Original: 0 chars</span>
+      <span class="diff-stat ds-inf" id="diffStatChgd">Changed: 0 chars</span>
+    </div>
+
+    <!-- Two-column split layout -->
+    <div class="diff-layout">
+
+      <!-- ── ORIGINAL pane (left) ── -->
+      <div class="diff-pane" id="diffPaneOrig">
+        <div class="diff-pane-hdr">
+          <span class="diff-pane-lbl lbl-orig">Original</span>
+          <span class="diff-pane-info" id="diffOrigInfo">0 chars · 1 line</span>
+          <button class="diff-btn" id="diffOrigCopy" title="Copy original text">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy
+          </button>
+          <button class="diff-btn" id="diffOrigPaste" title="Paste from clipboard">
+            <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>Paste
+          </button>
+          <button class="diff-btn" id="diffOrigClear" title="Clear original text">
+            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Clear
+          </button>
+        </div>
+        <div class="diff-body">
+          <div class="diff-scroll" id="diffOrigScroll">
+            <div class="diff-inner">
+              <div class="diff-lnums" id="diffOrigLnums" aria-hidden="true"><span class="dln-eq">1</span></div>
+              <div class="diff-text-wrap">
+                <div class="diff-hl" id="diffOrigHL" aria-hidden="true"><span class="dhl-eq diff-hl-ph">Paste original text here…</span></div>
+                <textarea
+                  class="diff-ta" id="diffOrigTa"
+                  placeholder="Paste original text here…"
+                  maxlength="100000"
+                  spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"
+                  aria-label="Original text input — type or paste text to compare"
+                  aria-describedby="diffModalTitle"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Column divider -->
+      <div class="diff-divider" aria-hidden="true" role="separator"></div>
+
+      <!-- ── CHANGED pane (right) ── -->
+      <div class="diff-pane" id="diffPaneChgd">
+        <div class="diff-pane-hdr">
+          <span class="diff-pane-lbl lbl-chgd">Changed</span>
+          <span class="diff-pane-info" id="diffChgdInfo">0 chars · 1 line</span>
+          <button class="diff-btn" id="diffChgdCopy" title="Copy changed text">
+            <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy
+          </button>
+          <button class="diff-btn" id="diffChgdPaste" title="Paste from clipboard">
+            <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>Paste
+          </button>
+          <button class="diff-btn" id="diffChgdClear" title="Clear changed text">
+            <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Clear
+          </button>
+        </div>
+        <div class="diff-body">
+          <div class="diff-scroll" id="diffChgdScroll">
+            <div class="diff-inner">
+              <div class="diff-lnums" id="diffChgdLnums" aria-hidden="true"><span class="dln-eq">1</span></div>
+              <div class="diff-text-wrap">
+                <div class="diff-hl" id="diffChgdHL" aria-hidden="true"><span class="dhl-eq diff-hl-ph">Paste changed text here…</span></div>
+                <textarea
+                  class="diff-ta" id="diffChgdTa"
+                  placeholder="Paste changed text here…"
+                  maxlength="100000"
+                  spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"
+                  aria-label="Changed text input — type or paste the modified version"
+                  aria-describedby="diffModalTitle"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.diff-layout -->
+  </div><!-- /.modal.modal-diff -->
+</div><!-- /#diffOverlay -->
 
 <!-- BROWSER INFO MODAL -->
 <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -2665,14 +2964,14 @@ function trapFocus(overlay, e){
 // Global Escape handler for all overlays
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
-  ['modalOverlay','ipModalOverlay','b64Overlay','taOverlay','qrOverlay','convOverlay'].forEach(function(id){
+  ['modalOverlay','ipModalOverlay','b64Overlay','taOverlay','qrOverlay','convOverlay','diffOverlay'].forEach(function(id){
     var ov = $(id);
     if(ov && ov.classList.contains('open')) closeOverlay(id);
   });
 });
 
 // Focus trap for all overlays
-['modalOverlay','ipModalOverlay','b64Overlay','taOverlay','qrOverlay','convOverlay'].forEach(function(id){
+['modalOverlay','ipModalOverlay','b64Overlay','taOverlay','qrOverlay','convOverlay','diffOverlay'].forEach(function(id){
   var ov = $(id);
   if(!ov) return;
   ov.setAttribute('aria-hidden','true');
@@ -4738,6 +5037,425 @@ document.getElementById('hashOverlay').addEventListener('click',function(e){if(e
 runCryptoHash('');
 hashPwCount.textContent='0 chars';
 })();
+
+/* ══════════════════════════════════════════
+   TEXT DIFF ANALYZER
+══════════════════════════════════════════ */
+(function(){
+'use strict';
+
+/* ── DOM refs ── */
+var diffOrigTa    = $('diffOrigTa');
+var diffChgdTa    = $('diffChgdTa');
+var diffOrigHL    = $('diffOrigHL');
+var diffChgdHL    = $('diffChgdHL');
+var diffOrigLnums = $('diffOrigLnums');
+var diffChgdLnums = $('diffChgdLnums');
+var diffOrigInfo  = $('diffOrigInfo');
+var diffChgdInfo  = $('diffChgdInfo');
+var diffStatTotal = $('diffStatTotal');
+var diffStatAdd   = $('diffStatAdd');
+var diffStatDel   = $('diffStatDel');
+var diffStatChg   = $('diffStatChg');
+var diffStatOrig  = $('diffStatOrig');
+var diffStatChgd  = $('diffStatChgd');
+var diffStatSep1  = $('diffStatSep1');
+var diffStatSep2  = $('diffStatSep2');
+
+/* ── Constants: MUST match CSS values exactly ──
+   .diff-hl  → font-size:14px  line-height:1.65  padding-h:13px
+   .diff-lnums → width:54px                                       */
+var DIFF_FONT_PX  = 14;      /* px — .diff-hl font-size           */
+var DIFF_LINE_H   = 1.65;    /* .diff-hl line-height ratio        */
+var DIFF_LNUMS_W  = 54;      /* px — .diff-lnums width            */
+var DIFF_HL_PAD   = 26;      /* px — total horizontal padding (13px × 2) */
+var DIFF_MAX_CHARS = 100000; /* per-input character limit         */
+
+/* ── Canvas for precise text-width measurement ── */
+var _mc = document.createElement('canvas');
+var _mctx = _mc.getContext('2d');
+var _diffFont = DIFF_FONT_PX + 'px "JetBrains Mono", Consolas, "Courier New", monospace';
+_mctx.font = _diffFont;
+
+/* Re-measure after web fonts load (avoids fallback-font measurements) */
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(function() {
+    _mctx.font = _diffFont;
+    scheduleDiff();
+  });
+}
+
+/* ── Available text width (updated by ResizeObserver) ── */
+var _origAvailW = 0;
+var _chgdAvailW = 0;
+
+function _calcAvailW(scrollEl) {
+  /* clientWidth excludes scrollbar; subtract lnums + horizontal padding */
+  return Math.max(1, scrollEl.clientWidth - DIFF_LNUMS_W - DIFF_HL_PAD);
+}
+
+/* How many visual rows does a single logical line occupy? */
+function visualRows(line, availW) {
+  if (!line || availW <= 0) return 1;
+  _mctx.font = _diffFont; /* ensure font is set */
+  var w = _mctx.measureText(line).width;
+  return Math.max(1, Math.ceil(w / availW));
+}
+
+/* ResizeObserver — keeps available-width in sync with actual layout */
+if (window.ResizeObserver) {
+  var _ro = new ResizeObserver(function(entries) {
+    var changed = false;
+    entries.forEach(function(e) {
+      if (e.target.id === 'diffOrigScroll') {
+        var nw = _calcAvailW(e.target); if (nw !== _origAvailW) { _origAvailW = nw; changed = true; }
+      } else if (e.target.id === 'diffChgdScroll') {
+        var nw = _calcAvailW(e.target); if (nw !== _chgdAvailW) { _chgdAvailW = nw; changed = true; }
+      }
+    });
+    if (changed) scheduleDiff();
+  });
+  _ro.observe($('diffOrigScroll'));
+  _ro.observe($('diffChgdScroll'));
+}
+
+/* ── Core LCS diff (works on any array of values) ── */
+function lcsOps(a, b) {
+  var m = a.length, n = b.length;
+  if (m === 0 && n === 0) return [];
+  if (m === 0) return b.map(function(v){ return {t:'i', v:v}; });
+  if (n === 0) return a.map(function(v){ return {t:'d', v:v}; });
+
+  var dp = new Uint32Array((m+1)*(n+1));
+  var stride = n + 1, i, j;
+  for (i = 1; i <= m; i++) {
+    for (j = 1; j <= n; j++) {
+      if (a[i-1] === b[j-1]) {
+        dp[i*stride+j] = dp[(i-1)*stride+(j-1)] + 1;
+      } else {
+        var u = dp[(i-1)*stride+j], l = dp[i*stride+(j-1)];
+        dp[i*stride+j] = u > l ? u : l;
+      }
+    }
+  }
+  var ops = []; i = m; j = n;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && a[i-1] === b[j-1]) {
+      ops.push({t:'e', v:a[i-1]}); i--; j--;
+    } else if (j > 0 && (i===0 || dp[i*stride+(j-1)] >= dp[(i-1)*stride+j])) {
+      ops.push({t:'i', v:b[j-1]}); j--;
+    } else {
+      ops.push({t:'d', v:a[i-1]}); i--;
+    }
+  }
+  ops.reverse();
+  return ops;
+}
+
+/* ── Group consecutive delete+insert sequences into replace blocks ── */
+function groupOps(ops) {
+  var groups = [], k = 0, len = ops.length;
+  while (k < len) {
+    var op = ops[k];
+    if (op.t === 'e') {
+      groups.push({t:'eq', line: op.v}); k++;
+    } else if (op.t === 'd') {
+      var dels = [];
+      while (k < len && ops[k].t === 'd') { dels.push(ops[k].v); k++; }
+      var ins = [];
+      while (k < len && ops[k].t === 'i') { ins.push(ops[k].v); k++; }
+      if (ins.length > 0) {
+        groups.push({t:'rp', dels:dels, ins:ins});
+      } else {
+        for (var di=0; di<dels.length; di++) groups.push({t:'del', line:dels[di]});
+      }
+    } else {
+      groups.push({t:'ins', line: op.v}); k++;
+    }
+  }
+  return groups;
+}
+
+/* ── Character-level diff for inline highlights ── */
+function charDiff(a, b) {
+  if (a.length + b.length > 800) return null;
+  var ops = lcsOps(a.split(''), b.split(''));
+  var merged = [];
+  for (var k=0; k<ops.length; k++) {
+    var op = ops[k];
+    if (merged.length && merged[merged.length-1].t === op.t) merged[merged.length-1].v += op.v;
+    else merged.push({t:op.t, v:op.v});
+  }
+  return merged;
+}
+
+function renderCharOrig(line, cOps) {
+  if (!cOps) return '<span class="dhl-char-del">' + esc(line) + '</span>';
+  var h = '';
+  for (var k=0; k<cOps.length; k++) {
+    var op = cOps[k];
+    if      (op.t === 'e') h += esc(op.v);
+    else if (op.t === 'd') h += '<span class="dhl-char-del">' + esc(op.v) + '</span>';
+  }
+  return h;
+}
+
+function renderCharChgd(line, cOps) {
+  if (!cOps) return '<span class="dhl-char-add">' + esc(line) + '</span>';
+  var h = '';
+  for (var k=0; k<cOps.length; k++) {
+    var op = cOps[k];
+    if      (op.t === 'e') h += esc(op.v);
+    else if (op.t === 'i') h += '<span class="dhl-char-add">' + esc(op.v) + '</span>';
+  }
+  return h;
+}
+
+/* ── Build rendered HTML for one pane.
+   availW: usable pixel width for text (used for visual-row wrap counting). ── */
+function buildPane(groups, side, availW) {
+  var lnHtml = '', hlHtml = '', ln = 0;
+
+  /* Helper: emit line-number spans including visual continuation rows */
+  function emitLnums(lnClass, line) {
+    ln++;
+    var vr = visualRows(line, availW);
+    lnHtml += '<span class="' + lnClass + '">' + ln + '</span>';
+    for (var r = 1; r < vr; r++) {
+      lnHtml += '<span class="' + lnClass + ' dln-cont">↵</span>';
+    }
+  }
+
+  for (var k=0; k<groups.length; k++) {
+    var g = groups[k];
+
+    if (g.t === 'eq') {
+      emitLnums('dln-eq', g.line);
+      hlHtml += '<span class="dhl-eq">' + esc(g.line) + '\n</span>';
+
+    } else if (g.t === 'del') {
+      if (side === 'orig') {
+        emitLnums('dln-del', g.line);
+        hlHtml += '<span class="dhl-del">' + esc(g.line) + '\n</span>';
+      }
+
+    } else if (g.t === 'ins') {
+      if (side === 'chgd') {
+        emitLnums('dln-add', g.line);
+        hlHtml += '<span class="dhl-add">' + esc(g.line) + '\n</span>';
+      }
+
+    } else if (g.t === 'rp') {
+      var lines    = side === 'orig' ? g.dels : g.ins;
+      var partners = side === 'orig' ? g.ins  : g.dels;
+      var cls      = side === 'orig' ? 'dln-chg' : 'dln-chg';
+      for (var li=0; li<lines.length; li++) {
+        emitLnums(cls, lines[li]);
+        var partner  = partners[li] !== undefined ? partners[li] : '';
+        var cOps     = side === 'orig' ? charDiff(lines[li], partner) : charDiff(partner, lines[li]);
+        var rendered = side === 'orig' ? renderCharOrig(lines[li], cOps) : renderCharChgd(lines[li], cOps);
+        hlHtml += '<span class="dhl-chg">' + rendered + '\n</span>';
+      }
+    }
+  }
+  return {lnHtml: lnHtml, hlHtml: hlHtml};
+}
+
+/* ── Reset a pane to its empty/placeholder state ── */
+function resetPane(hlEl, lnEl, phText) {
+  safeHTML(hlEl, '<span class="dhl-eq diff-hl-ph">' + esc(phText) + '</span>');
+  safeHTML(lnEl, '<span class="dln-eq">1</span>');
+}
+
+/* ── Render a pane in read-only plain mode (no diff, just numbered lines) ── */
+function renderPlain(text, hlEl, lnEl, availW) {
+  var lines = text.split('\n');
+  var lnHtml = '', hlHtml = '', ln = 0;
+  for (var i=0; i<lines.length; i++) {
+    ln++;
+    var vr = visualRows(lines[i], availW);
+    lnHtml += '<span class="dln-eq">' + ln + '</span>';
+    for (var r=1; r<vr; r++) lnHtml += '<span class="dln-eq dln-cont">↵</span>';
+    hlHtml += '<span class="dhl-eq">' + esc(lines[i]) + '\n</span>';
+  }
+  safeHTML(hlEl, hlHtml || '<span class="dhl-eq diff-hl-ph">…</span>');
+  safeHTML(lnEl, lnHtml || '<span class="dln-eq">1</span>');
+}
+
+/* ── Main diff runner ── */
+var _diffTimer = null;
+
+function runDiff() {
+  /* Seed available widths on first run if ResizeObserver hasn't fired yet */
+  if (!_origAvailW) _origAvailW = _calcAvailW($('diffOrigScroll'));
+  if (!_chgdAvailW) _chgdAvailW = _calcAvailW($('diffChgdScroll'));
+
+  var origText = diffOrigTa.value;
+  var chgdText = diffChgdTa.value;
+
+  /* Enforce per-input character limit (truncate silently if pasted over) */
+  if (origText.length > DIFF_MAX_CHARS) {
+    origText = origText.slice(0, DIFF_MAX_CHARS);
+    diffOrigTa.value = origText;
+  }
+  if (chgdText.length > DIFF_MAX_CHARS) {
+    chgdText = chgdText.slice(0, DIFF_MAX_CHARS);
+    diffChgdTa.value = chgdText;
+  }
+
+  /* Per-pane counters */
+  var origLineCount = origText.length ? origText.split('\n').length : 0;
+  var chgdLineCount = chgdText.length ? chgdText.split('\n').length : 0;
+  diffOrigInfo.textContent = origText.length + ' chars · ' + origLineCount + ' line' + (origLineCount !== 1 ? 's' : '');
+  diffChgdInfo.textContent = chgdText.length + ' chars · ' + chgdLineCount + ' line' + (chgdLineCount !== 1 ? 's' : '');
+  diffStatOrig.textContent = 'Original: ' + origText.length + ' / ' + DIFF_MAX_CHARS + ' chars';
+  diffStatChgd.textContent = 'Changed: '  + chgdText.length + ' / ' + DIFF_MAX_CHARS + ' chars';
+
+  /* ── FIX 4: Only diff when BOTH inputs have content ── */
+  if (!origText.length && !chgdText.length) {
+    /* Both empty — full placeholder state */
+    resetPane(diffOrigHL, diffOrigLnums, 'Paste original text here…');
+    resetPane(diffChgdHL, diffChgdLnums, 'Paste changed text here…');
+    diffStatTotal.textContent = 'Paste text in both panels to begin';
+    diffStatSep1.style.display = diffStatSep2.style.display = 'none';
+    diffStatAdd.style.display  = diffStatDel.style.display  = diffStatChg.style.display = 'none';
+    return;
+  }
+
+  if (!origText.length) {
+    /* Only original is empty */
+    resetPane(diffOrigHL, diffOrigLnums, 'Paste original text here…');
+    renderPlain(chgdText, diffChgdHL, diffChgdLnums, _chgdAvailW);
+    diffStatTotal.textContent = 'Enter text in the Original panel to compare';
+    diffStatSep1.style.display = diffStatSep2.style.display = 'none';
+    diffStatAdd.style.display  = diffStatDel.style.display  = diffStatChg.style.display = 'none';
+    return;
+  }
+
+  if (!chgdText.length) {
+    /* Only changed is empty */
+    renderPlain(origText, diffOrigHL, diffOrigLnums, _origAvailW);
+    resetPane(diffChgdHL, diffChgdLnums, 'Paste changed text here…');
+    diffStatTotal.textContent = 'Enter text in the Changed panel to compare';
+    diffStatSep1.style.display = diffStatSep2.style.display = 'none';
+    diffStatAdd.style.display  = diffStatDel.style.display  = diffStatChg.style.display = 'none';
+    return;
+  }
+
+  /* Both panels have content — run the diff */
+  var origLines = origText.split('\n');
+  var chgdLines = chgdText.split('\n');
+
+  /* Performance guard */
+  if (origLines.length > 3000 || chgdLines.length > 3000) {
+    renderPlain(origText, diffOrigHL, diffOrigLnums, _origAvailW);
+    renderPlain(chgdText, diffChgdHL, diffChgdLnums, _chgdAvailW);
+    diffStatTotal.textContent = '⚠ Input exceeds 3,000 lines — diff skipped, showing plain text';
+    diffStatSep1.style.display = diffStatSep2.style.display = 'none';
+    diffStatAdd.style.display  = diffStatDel.style.display  = diffStatChg.style.display = 'none';
+    return;
+  }
+
+  var lineOps = lcsOps(origLines, chgdLines);
+  var groups  = groupOps(lineOps);
+
+  /* Count change categories */
+  var adds = 0, dels = 0, chgs = 0;
+  for (var k=0; k<groups.length; k++) {
+    var g = groups[k];
+    if      (g.t === 'ins') adds++;
+    else if (g.t === 'del') dels++;
+    else if (g.t === 'rp')  chgs += Math.max(g.dels.length, g.ins.length);
+  }
+  var total = adds + dels + chgs;
+
+  /* Update stats bar */
+  diffStatTotal.textContent = total === 0
+    ? '✓ Identical — no differences found'
+    : total + ' change' + (total !== 1 ? 's' : '');
+  var hasCounts = total > 0;
+  diffStatSep1.style.display = diffStatSep2.style.display = hasCounts ? '' : 'none';
+  if (adds > 0) { diffStatAdd.textContent = '+ ' + adds + ' added';   diffStatAdd.style.display = ''; }
+  else            diffStatAdd.style.display = 'none';
+  if (dels > 0) { diffStatDel.textContent = '− ' + dels + ' deleted'; diffStatDel.style.display = ''; }
+  else            diffStatDel.style.display = 'none';
+  if (chgs > 0) { diffStatChg.textContent = '~ ' + chgs + ' changed'; diffStatChg.style.display = ''; }
+  else            diffStatChg.style.display = 'none';
+
+  /* Render both panes */
+  var origPane = buildPane(groups, 'orig', _origAvailW);
+  var chgdPane = buildPane(groups, 'chgd', _chgdAvailW);
+
+  safeHTML(diffOrigHL,    origPane.hlHtml || '<span class="dhl-eq diff-hl-ph">…</span>');
+  safeHTML(diffChgdHL,    chgdPane.hlHtml || '<span class="dhl-eq diff-hl-ph">…</span>');
+  safeHTML(diffOrigLnums, origPane.lnHtml || '<span class="dln-eq">1</span>');
+  safeHTML(diffChgdLnums, chgdPane.lnHtml || '<span class="dln-eq">1</span>');
+}
+
+function scheduleDiff() {
+  clearTimeout(_diffTimer);
+  _diffTimer = setTimeout(runDiff, 120);
+}
+
+/* ── Input listeners (real-time) ── */
+diffOrigTa.addEventListener('input', scheduleDiff);
+diffChgdTa.addEventListener('input', scheduleDiff);
+
+/* ── Tab key support ── */
+function insertTab(ta) {
+  var s = ta.selectionStart, e = ta.selectionEnd;
+  ta.value = ta.value.substring(0, s) + '  ' + ta.value.substring(e);
+  ta.selectionStart = ta.selectionEnd = s + 2;
+  scheduleDiff();
+}
+diffOrigTa.addEventListener('keydown', function(e){ if(e.key==='Tab'){e.preventDefault();insertTab(this);} });
+diffChgdTa.addEventListener('keydown', function(e){ if(e.key==='Tab'){e.preventDefault();insertTab(this);} });
+
+/* ── Copy / Paste / Clear buttons ── */
+function wireDiffCopy(btnId, ta) {
+  $(btnId).addEventListener('click', function() {
+    if (ta.value) { copyText(ta.value); flashBtn(this, 'Copied!'); }
+  });
+}
+function wireDiffPaste(btnId, ta) {
+  $(btnId).addEventListener('click', function() {
+    var btn = this;
+    if (navigator.clipboard && navigator.clipboard.readText) {
+      navigator.clipboard.readText().then(function(text) {
+        /* Enforce limit on paste */
+        ta.value = text.length > DIFF_MAX_CHARS ? text.slice(0, DIFF_MAX_CHARS) : text;
+        scheduleDiff();
+        flashBtn(btn, 'Pasted!');
+      }).catch(function() { ta.focus(); });
+    } else { ta.focus(); }
+  });
+}
+function wireDiffClear(btnId, ta) {
+  $(btnId).addEventListener('click', function() {
+    ta.value = '';
+    scheduleDiff();
+    ta.focus();
+  });
+}
+
+wireDiffCopy('diffOrigCopy',   diffOrigTa);
+wireDiffPaste('diffOrigPaste', diffOrigTa);
+wireDiffClear('diffOrigClear', diffOrigTa);
+wireDiffCopy('diffChgdCopy',   diffChgdTa);
+wireDiffPaste('diffChgdPaste', diffChgdTa);
+wireDiffClear('diffChgdClear', diffChgdTa);
+
+/* ── Open / close ── */
+function openDiff()  { openOverlay('diffOverlay', 'diffClose'); }
+function closeDiff() { closeOverlay('diffOverlay'); }
+$('diffBtn').addEventListener('click',     openDiff);
+$('diffClose').addEventListener('click',   closeDiff);
+$('diffOverlay').addEventListener('click', function(e){ if (e.target === this) closeDiff(); });
+
+/* Initialise */
+runDiff();
+
+})(); /* end text-diff IIFE */
 
 })(); // end IIFE
 </script>
