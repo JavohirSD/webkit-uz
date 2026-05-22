@@ -667,21 +667,45 @@ textarea::placeholder{color:var(--txt3)}
 .qr-drop-icon{font-size:1.4rem;display:block}
 .qr-fname{font-size:.68rem;color:var(--accent);margin-top:.4rem;word-break:break-all;min-height:1rem}
 .qr-preview-wrap{
-  width:100%;max-width:360px;
-  background:#fff;border-radius:10px;overflow:hidden;
+  width:100%;max-width:340px;
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-radius:16px;overflow:hidden;
   display:-webkit-flex;display:flex;
   -webkit-align-items:center;align-items:center;
   -webkit-justify-content:center;justify-content:center;
-  padding:.5rem;
-  -webkit-box-shadow:0 4px 20px rgba(0,0,0,.18);box-shadow:0 4px 20px rgba(0,0,0,.18);
+  padding:1.5rem;
+  -webkit-box-shadow:0 8px 32px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.04);
+  box-shadow:0 8px 32px rgba(0,0,0,.22),inset 0 1px 0 rgba(255,255,255,.04);
+  -webkit-transition:background .2s,border-color .2s,padding .2s;
+  transition:background .2s,border-color .2s,padding .2s;
+}
+.qr-preview-wrap.qr-has-result{
+  background:#fff;border-color:transparent;padding:.5rem;
+  -webkit-box-shadow:0 8px 32px rgba(0,0,0,.28);box-shadow:0 8px 32px rgba(0,0,0,.28);
 }
 #qrCanvas{
   display:block;
-  width:100%!important;   /* fill container width */
-  height:auto!important;  /* let intrinsic 1:1 ratio set height naturally */
+  width:100%!important;
+  height:auto!important;
   max-width:100%;
+  border-radius:4px;
 }
-.qr-placeholder{font-size:.75rem;color:var(--txt3);text-align:center;padding:2rem 1rem}
+.qr-placeholder{
+  width:100%;padding:.25rem;text-align:center;
+}
+.qr-ph-svg{
+  display:block;margin:0 auto 0.85rem;
+  width:88px;height:88px;
+  color:var(--accent);
+  opacity:.75;
+  -webkit-filter:drop-shadow(0 0 8px rgba(99,179,237,.28));
+  filter:drop-shadow(0 0 8px rgba(99,179,237,.28));
+}
+.qr-ph-label{
+  display:block;font-size:.72rem;color:var(--txt3);text-align:center;line-height:1.5;
+}
+.qr-ph-label strong{color:var(--accent);font-weight:600;}
 .qr-errcol-row{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:.6rem;-webkit-flex-wrap:wrap;flex-wrap:wrap}
 .qr-errcol-row label{font-size:.72rem;color:var(--txt2)}
 .qr-select{
@@ -785,9 +809,29 @@ textarea::placeholder{color:var(--txt3)}
 .conv-now-btn:hover{color:var(--accent);border-color:var(--accent2)}
 
 @media(max-width:768px){
-  .qr-layout{-webkit-flex-direction:column;flex-direction:column}
-  .qr-left{border-right:none;border-bottom:1px solid var(--border)}
-  .qr-right{min-height:260px}
+  .qr-layout{
+    -webkit-flex-direction:column;flex-direction:column;
+    /* Single scroll zone — remove the desktop overflow:hidden so the whole
+       stacked layout scrolls as one natural unit instead of two clipped panels */
+    overflow-y:auto;overflow-x:hidden;
+    -webkit-overflow-scrolling:touch;
+    overscroll-behavior-y:contain;
+    /* Styled scrollbar so it's visible and clearly tappable on mobile */
+    scrollbar-width:thin;
+    scrollbar-color:var(--accent) transparent;
+  }
+  .qr-layout::-webkit-scrollbar{width:4px}
+  .qr-layout::-webkit-scrollbar-thumb{background:var(--accent);border-radius:2px;opacity:.7}
+  .qr-layout::-webkit-scrollbar-track{background:transparent}
+  .qr-left{
+    overflow:visible;   /* no independent sub-scroll; parent handles it */
+    -webkit-flex-shrink:0;flex-shrink:0;
+    border-right:none;border-bottom:1px solid var(--border);
+  }
+  .qr-right{
+    -webkit-flex-shrink:0;flex-shrink:0;
+    min-height:auto;padding:1.5rem 1rem 2rem;
+  }
   .conv-base-field{min-width:100%}
 }
 
@@ -2299,7 +2343,28 @@ mark.s-hit.s-active{
       <!-- Right: preview -->
       <div class="qr-right">
         <div class="qr-preview-wrap" id="qrPreviewWrap">
-          <div class="qr-placeholder" id="qrPlaceholder">QR code preview<br>will appear here</div>
+          <div class="qr-placeholder" id="qrPlaceholder">
+            <svg class="qr-ph-svg" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <!-- Finder TL --><rect x="2" y="2" width="24" height="24" rx="4.5" stroke="currentColor" stroke-width="2.2"/><rect x="8" y="8" width="12" height="12" rx="2.5" fill="currentColor" opacity=".5"/>
+              <!-- Finder TR --><rect x="62" y="2" width="24" height="24" rx="4.5" stroke="currentColor" stroke-width="2.2"/><rect x="68" y="8" width="12" height="12" rx="2.5" fill="currentColor" opacity=".5"/>
+              <!-- Finder BL --><rect x="2" y="62" width="24" height="24" rx="4.5" stroke="currentColor" stroke-width="2.2"/><rect x="8" y="68" width="12" height="12" rx="2.5" fill="currentColor" opacity=".5"/>
+              <!-- Top strip data modules -->
+              <rect x="33" y="4" width="5" height="5" rx="1.5" fill="currentColor" opacity=".25"/><rect x="41" y="4" width="5" height="5" rx="1.5" fill="currentColor" opacity=".15"/><rect x="49" y="4" width="5" height="5" rx="1.5" fill="currentColor" opacity=".3"/><rect x="57" y="4" width="5" height="5" rx="1.5" fill="currentColor" opacity=".18"/>
+              <rect x="41" y="12" width="5" height="5" rx="1.5" fill="currentColor" opacity=".22"/><rect x="57" y="12" width="5" height="5" rx="1.5" fill="currentColor" opacity=".3"/><rect x="33" y="20" width="5" height="5" rx="1.5" fill="currentColor" opacity=".18"/><rect x="49" y="20" width="5" height="5" rx="1.5" fill="currentColor" opacity=".25"/>
+              <!-- Left strip data modules -->
+              <rect x="4" y="33" width="5" height="5" rx="1.5" fill="currentColor" opacity=".2"/><rect x="12" y="33" width="5" height="5" rx="1.5" fill="currentColor" opacity=".3"/><rect x="20" y="33" width="5" height="5" rx="1.5" fill="currentColor" opacity=".15"/>
+              <rect x="4" y="41" width="5" height="5" rx="1.5" fill="currentColor" opacity=".28"/><rect x="20" y="41" width="5" height="5" rx="1.5" fill="currentColor" opacity=".18"/><rect x="12" y="49" width="5" height="5" rx="1.5" fill="currentColor" opacity=".22"/><rect x="4" y="57" width="5" height="5" rx="1.5" fill="currentColor" opacity=".2"/><rect x="20" y="57" width="5" height="5" rx="1.5" fill="currentColor" opacity=".3"/>
+              <!-- Center + right data area -->
+              <rect x="33" y="33" width="5" height="5" rx="1.5" fill="currentColor" opacity=".18"/><rect x="49" y="33" width="5" height="5" rx="1.5" fill="currentColor" opacity=".28"/><rect x="65" y="33" width="5" height="5" rx="1.5" fill="currentColor" opacity=".15"/><rect x="73" y="33" width="5" height="5" rx="1.5" fill="currentColor" opacity=".3"/><rect x="81" y="33" width="5" height="5" rx="1.5" fill="currentColor" opacity=".2"/>
+              <rect x="41" y="41" width="5" height="5" rx="1.5" fill="currentColor" opacity=".38"/><rect x="57" y="41" width="5" height="5" rx="1.5" fill="currentColor" opacity=".18"/><rect x="73" y="41" width="5" height="5" rx="1.5" fill="currentColor" opacity=".25"/>
+              <rect x="33" y="49" width="5" height="5" rx="1.5" fill="currentColor" opacity=".15"/><rect x="49" y="49" width="5" height="5" rx="1.5" fill="currentColor" opacity=".28"/><rect x="65" y="49" width="5" height="5" rx="1.5" fill="currentColor" opacity=".2"/><rect x="81" y="49" width="5" height="5" rx="1.5" fill="currentColor" opacity=".25"/>
+              <!-- Bottom-right quadrant -->
+              <rect x="33" y="65" width="5" height="5" rx="1.5" fill="currentColor" opacity=".2"/><rect x="49" y="65" width="5" height="5" rx="1.5" fill="currentColor" opacity=".3"/><rect x="65" y="65" width="5" height="5" rx="1.5" fill="currentColor" opacity=".15"/><rect x="81" y="65" width="5" height="5" rx="1.5" fill="currentColor" opacity=".25"/>
+              <rect x="41" y="73" width="5" height="5" rx="1.5" fill="currentColor" opacity=".22"/><rect x="57" y="73" width="5" height="5" rx="1.5" fill="currentColor" opacity=".18"/><rect x="73" y="73" width="5" height="5" rx="1.5" fill="currentColor" opacity=".3"/>
+              <rect x="33" y="81" width="5" height="5" rx="1.5" fill="currentColor" opacity=".28"/><rect x="49" y="81" width="5" height="5" rx="1.5" fill="currentColor" opacity=".15"/><rect x="65" y="81" width="5" height="5" rx="1.5" fill="currentColor" opacity=".2"/><rect x="81" y="81" width="5" height="5" rx="1.5" fill="currentColor" opacity=".3"/>
+            </svg>
+            <span class="qr-ph-label">Enter text &amp; press <strong>Generate</strong></span>
+          </div>
           <canvas id="qrCanvas" class="canvas-hidden"></canvas>
         </div>
       </div>
@@ -4127,6 +4192,8 @@ function qrGenerate(){
     }
     $('qrPlaceholder').style.display = 'none';
     canvas.classList.remove('canvas-hidden');
+    $('qrPreviewWrap').classList.add('qr-has-result');
+    $('qrPreviewWrap').style.background = bg;
     $('qrSaveBtn').disabled = false;
     qrGenerated = true;
     qrSetMsg('QR code ready — '+size+'×'+size+' px','ok');
@@ -4159,6 +4226,8 @@ function qrClear(){
   var canvas = $('qrCanvas');
   canvas.classList.add('canvas-hidden');
   $('qrPlaceholder').style.display = '';
+  $('qrPreviewWrap').classList.remove('qr-has-result');
+  $('qrPreviewWrap').style.background = '';
   $('qrSaveBtn').disabled = true;
   qrSetMsg('');
   $('qrFileIn').value = '';
