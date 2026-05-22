@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
@@ -34,8 +34,7 @@
 <meta name="twitter:image" content="https://webkit.uz/og-image.png">
 <meta name="twitter:image:alt" content="Webkit.uz developer tools preview">
 
-<link rel="apple-touch-icon" sizes="32x32" href="favicon.ico">
-<link rel="icon" type="image/x-icon" sizes="32x32" href="favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
 <link rel="icon" type="image/x-icon" sizes="32x32" href="favicon.ico">
 
 <!-- ── Structured Data (JSON-LD) ── -->
@@ -66,7 +65,10 @@
     "Text Analyzer",
     "Unit Converters (data, length, weight, temperature, time, number base)",
     "IP Address and Geolocation Lookup",
-    "Browser and System Information"
+    "Browser and System Information",
+    "JWT Encoder and Decoder",
+    "Password and Cryptographic Hash Generator (MD5, SHA-1, SHA-256, SHA-512, bcrypt, Argon2)",
+    "Text Diff Analyzer"
   ],
   "author": {
     "@type": "Organization",
@@ -201,7 +203,8 @@ body{
   display:-webkit-flex;display:flex;
   -webkit-align-items:center;align-items:center;
   -webkit-justify-content:space-between;justify-content:space-between;
-  padding:0 1rem;height:52px;
+  padding:env(safe-area-inset-top,0px) calc(1rem + env(safe-area-inset-right,0px)) 0 calc(1rem + env(safe-area-inset-left,0px));
+  height:calc(52px + env(safe-area-inset-top,0px));
   background:var(--panel);border-bottom:1px solid var(--border);
   -webkit-box-shadow:0 2px 16px rgba(0,0,0,.18);box-shadow:0 2px 16px rgba(0,0,0,.18);
   -webkit-flex-shrink:0;flex-shrink:0;
@@ -527,11 +530,20 @@ textarea::placeholder{color:var(--txt3)}
 .collapsed>.collapsible{display:none}.collapsed>.ellipsis{display:inline}
 .collapsed>.closing{display:none}.collapsed>.closing-inline{display:inline}
 
-/* ── FONT SIZE LABEL ── */
-.font-size-lbl{
-  font-family:var(--font-code);font-size:.68rem;color:var(--txt3);
-  min-width:30px;text-align:center;-webkit-flex-shrink:0;flex-shrink:0;
+/* ── SAVE MODAL OPTIONS ── */
+.save-options{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:.5rem}
+.save-opt-btn{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:.75rem;
+  width:100%;padding:.75rem .85rem;border-radius:8px;border:1px solid var(--border);
+  background:var(--bg2);cursor:pointer;text-align:left;color:var(--txt);
+  -webkit-transition:background .12s,border-color .12s;transition:background .12s,border-color .12s;
 }
+.save-opt-btn:hover{background:var(--bg3);border-color:var(--accent)}
+.save-opt-btn svg{-webkit-flex-shrink:0;flex-shrink:0;color:var(--accent)}
+.save-opt-btn span{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:2px}
+.save-opt-btn strong{font-size:.82rem;font-weight:600;color:var(--txt)}
+.save-opt-btn small{font-size:.72rem;color:var(--txt3)}
+.save-status{margin-top:.65rem;font-size:.78rem;min-height:1.2em;text-align:center;color:var(--txt2)}
 
 /* ── IP MODAL STATES ── */
 #ipInfoTable{ display:none; }
@@ -820,7 +832,8 @@ textarea::placeholder{color:var(--txt3)}
 .conv-err.show{ display:block; }
 .conv-input-err{ border-color:var(--err) !important; }
 footer{
-  border-top:1px solid var(--border);padding:.45rem 1.2rem;
+  border-top:1px solid var(--border);
+  padding:.45rem calc(1.2rem + env(safe-area-inset-right,0px)) calc(.45rem + env(safe-area-inset-bottom,0px)) calc(1.2rem + env(safe-area-inset-left,0px));
   display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
   -webkit-justify-content:space-between;justify-content:space-between;
   font-size:.61rem;color:var(--txt3);letter-spacing:.04em;background:var(--panel2);
@@ -1805,10 +1818,10 @@ mark.s-hit.s-active{
           <div id="pw-params-bcrypt" class="hash-pw-fields">
             <div class="hash-pw-field">
               <label>Cost factor (rounds)</label>
-              <input type="number" id="bcrypt-cost" value="10" min="4" max="14" step="1">
+              <input type="number" id="bcrypt-cost" value="10" min="4" max="20" step="1">
             </div>
             <div class="hash-pw-field" style="align-self:flex-end;">
-              <div class="hash-warn">⚠ Higher cost = slower. Max 14 recommended in browser.</div>
+              <div class="hash-warn">⚠ Higher cost = slower. Max recommended in browser: 20.</div>
             </div>
           </div>
 
@@ -2447,13 +2460,46 @@ mark.s-hit.s-active{
   </div>
 </section>
 
+<!-- SAVE MODAL -->
+<div class="modal-overlay" id="saveOverlay" role="dialog" aria-modal="true" aria-labelledby="saveModalTitle">
+  <div class="modal" style="max-width:360px;width:100%">
+    <div class="modal-header">
+      <span class="modal-title" id="saveModalTitle">Save</span>
+      <button class="modal-close" id="saveClose" aria-label="Close save modal">✕</button>
+    </div>
+    <div class="modal-body" style="padding:.75rem 1rem 1rem">
+      <div class="save-options">
+        <button class="save-opt-btn" id="saveImgFileBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <span>
+            <strong>Save image as file</strong>
+            <small>High-quality PNG screenshot of the formatted output</small>
+          </span>
+        </button>
+        <button class="save-opt-btn" id="saveImgClipBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/></svg>
+          <span>
+            <strong>Copy image to clipboard</strong>
+            <small>Paste with Ctrl+V into any application</small>
+          </span>
+        </button>
+        <button class="save-opt-btn" id="saveJsonFileBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+          <span>
+            <strong>Save as JSON file</strong>
+            <small>Download the formatted JSON as a .json file</small>
+          </span>
+        </button>
+      </div>
+      <div class="save-status" id="saveStatus"></div>
+    </div>
+  </div>
+</div>
+
 <!-- JSON FORMATTER -->
 <main id="json-main" aria-label="JSON Formatter">
   <div class="toolbar" role="toolbar" aria-label="JSON formatting tools">
     <span class="toolbar-sep" aria-hidden="true">JSON</span>
-    <button class="btn primary" id="formatBtn" aria-label="Format JSON">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Format
-    </button>
     <button class="btn" id="minifyBtn" aria-label="Minify JSON">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Minify
     </button>
@@ -2461,26 +2507,15 @@ mark.s-hit.s-active{
       <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>Clear
     </button>
     <div class="vdiv" aria-hidden="true"></div>
-    <button class="btn" id="expandBtn" aria-label="Expand all JSON nodes">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>Expand all
-    </button>
-    <button class="btn" id="collapseBtn" aria-label="Collapse all JSON nodes">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>Collapse all
+    <button class="btn" id="toggleExpandBtn" aria-label="Collapse all JSON nodes" data-expanded="true">
+      <svg viewBox="0 0 24 24" aria-hidden="true" id="toggleExpandIcon"><polyline points="18 15 12 9 6 15"/></svg><span id="toggleExpandLbl">Collapse all</span>
     </button>
     <div class="vdiv" aria-hidden="true"></div>
     <button class="btn" id="copyBtn" aria-label="Copy formatted JSON">
       <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy
     </button>
-    <button class="btn" id="downloadBtn" aria-label="Download formatted JSON as file">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download
-    </button>
-    <div class="vdiv" aria-hidden="true"></div>
-    <button class="btn" id="fontDecBtn" aria-label="Decrease JSON font size">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><text x="3" y="17" font-size="13" fill="currentColor" stroke="none" font-family="monospace">A</text><text x="13" y="19" font-size="9" fill="currentColor" stroke="none" font-family="monospace">A</text></svg>A−
-    </button>
-    <span class="font-size-lbl" id="fontSizeLbl" aria-live="polite" aria-label="Current font size">12px</span>
-    <button class="btn" id="fontIncBtn" aria-label="Increase JSON font size">
-      <svg viewBox="0 0 24 24" aria-hidden="true"><text x="2" y="15" font-size="9" fill="currentColor" stroke="none" font-family="monospace">A</text><text x="10" y="19" font-size="13" fill="currentColor" stroke="none" font-family="monospace">A</text></svg>A+
+    <button class="btn" id="saveBtn" aria-label="Save JSON or image">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Save
     </button>
     <div class="vdiv" aria-hidden="true"></div>
     <!-- Search toggle button + bar -->
@@ -2546,7 +2581,7 @@ mark.s-hit.s-active{
 
 <footer>
   <span class="footer-copy">
-    &copy; 2026 <a href="https://webkit.uz">webkit.uz</a>
+    &copy; <span id="footerYear"></span> <a href="https://webkit.uz">webkit.uz</a>
     &nbsp;&middot;&nbsp; JSON Formatter &amp; UUID Generator &nbsp;&middot;&nbsp; Free developer tools
   </span>
   <span class="footer-links">
@@ -2562,6 +2597,8 @@ mark.s-hit.s-active{
     </a>
   </span>
 </footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" integrity="sha512-BNaRQnYJYiPSqHHDb58B0yaPfCu+Wgds8Gp/gU33kqBtgNS4tSPHuGibyoeqMV/TJlSKda6FXzoEyYGjTe+vXA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <script>
 (function(){
@@ -2580,6 +2617,9 @@ var CFG = {
   /* File input limits (bytes) */
   MAX_B64_FILE_BYTES:  10 * 1024 * 1024,  /* 10 MB — Base64 file upload */
   MAX_QR_FILE_BYTES:   10 * 1024 * 1024,  /* 10 MB — QR logo image upload */
+
+  /* bcrypt cost factor ceiling */
+  MAX_BCRYPT_COST:     20,
 };
 
 /* ══════════════════════════════════════════
@@ -2648,7 +2688,10 @@ var lineNums = function(n){
 var SUN_ICON  = '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M2 12h2M20 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
 var MOON_ICON = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
 var dark;
-try{ dark = (localStorage.getItem('theme')||'dark')==='dark'; }catch(e){ dark=true; }
+try{
+  var _stored = localStorage.getItem('theme');
+  dark = _stored !== null ? _stored === 'dark' : (window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)').matches : true);
+}catch(e){ dark = true; }
 
 function applyTheme(){
   document.documentElement.setAttribute('data-theme', dark?'dark':'light');
@@ -2660,6 +2703,7 @@ function applyTheme(){
 }
 applyTheme();
 $('themeBtn').addEventListener('click', function(){ dark=!dark; applyTheme(); });
+$('footerYear').textContent = new Date().getFullYear();
 
 /* ══════════════════════════════════════════
    BROWSER INFO MODAL
@@ -2693,6 +2737,7 @@ function getBrowserVersion(ua, name){
 
 function getOS(ua){
   if(!ua) return '—';
+  var m;
   if(ua.indexOf('Windows NT 10.0')!==-1) return 'Windows 10/11';
   if(ua.indexOf('Windows NT 6.3')!==-1) return 'Windows 8.1';
   if(ua.indexOf('Windows NT 6.2')!==-1) return 'Windows 8';
@@ -2700,8 +2745,8 @@ function getOS(ua){
   if(ua.indexOf('Windows')!==-1) return 'Windows';
   if(ua.indexOf('iPhone')!==-1) return 'iOS (iPhone)';
   if(ua.indexOf('iPad')!==-1) return 'iOS (iPad)';
-  if(ua.indexOf('Mac OS X')!==-1){ var m=ua.match(/Mac OS X ([\d_]+)/); return 'macOS'+(m?' '+m[1].replace(/_/g,'.'):''); }
-  if(ua.indexOf('Android')!==-1){ var m2=ua.match(/Android ([\d.]+)/); return 'Android'+(m2?' '+m2[1]:''); }
+  if(ua.indexOf('Mac OS X')!==-1){ m=ua.match(/Mac OS X ([\d_]+)/); return 'macOS'+(m?' '+m[1].replace(/_/g,'.'):''); }
+  if(ua.indexOf('Android')!==-1){ m=ua.match(/Android ([\d.]+)/); return 'Android'+(m?' '+m[1]:''); }
   if(ua.indexOf('Linux')!==-1) return 'Linux';
   if(ua.indexOf('CrOS')!==-1) return 'Chrome OS';
   return '—';
@@ -3292,10 +3337,7 @@ inputArea.addEventListener('keydown', function(e){
 outWrap.addEventListener('scroll', function(){ outNums.scrollTop=outWrap.scrollTop; });
 
 // Toolbar
-$('formatBtn').addEventListener('click', function(){ doFormat(inputArea.value); });
 $('clearBtn').addEventListener('click', function(){ inputArea.value=''; updInNums(); clearErr(); resetOut(); try{ localStorage.removeItem('json_input'); }catch(e){} });
-$('expandBtn').addEventListener('click', function(){ setAllNodes(false); });
-$('collapseBtn').addEventListener('click', function(){ setAllNodes(true); });
 $('minifyBtn').addEventListener('click', function(){
   var raw=inputArea.value.trim();
   if(!raw){ showErr('Nothing to minify.'); return; }
@@ -3306,12 +3348,166 @@ $('copyBtn').addEventListener('click', function(){
   if(!plainOutput){ showErr('Nothing to copy — format valid JSON first.'); return; }
   copyText(plainOutput); flashBtn($('copyBtn'),'Copied!');
 });
-$('downloadBtn').addEventListener('click', function(){
-  if(!plainOutput){ showErr('Nothing to download — format valid JSON first.'); return; }
-  var ts=new Date().toISOString().replace(/[:.]/g,'-').slice(0,19);
-  downloadFile(plainOutput,'formatted_'+ts+'.json');
-  flashBtn($('downloadBtn'),'Saved!');
-});
+
+// Toggle expand / collapse
+(function(){
+  var btn = $('toggleExpandBtn');
+  var icon = $('toggleExpandIcon');
+  var lbl  = $('toggleExpandLbl');
+  var expanded = true;
+  btn.addEventListener('click', function(){
+    if(!plainOutput) return;
+    expanded = !expanded;
+    setAllNodes(!expanded);
+    if(expanded){
+      icon.innerHTML = '<polyline points="18 15 12 9 6 15"/>';
+      lbl.textContent = 'Collapse all';
+      btn.setAttribute('aria-label','Collapse all JSON nodes');
+    } else {
+      icon.innerHTML = '<polyline points="6 9 12 15 18 9"/>';
+      lbl.textContent = 'Expand all';
+      btn.setAttribute('aria-label','Expand all JSON nodes');
+    }
+  });
+  // Reset to expanded state when new JSON is formatted
+  var origDoFormat = doFormat;
+  doFormat = function(raw){
+    origDoFormat(raw);
+    expanded = true;
+    icon.innerHTML = '<polyline points="18 15 12 9 6 15"/>';
+    lbl.textContent = 'Collapse all';
+    btn.setAttribute('aria-label','Collapse all JSON nodes');
+  };
+})();
+
+// Save modal
+(function(){
+  var overlay  = $('saveOverlay');
+  var closeBtn = $('saveClose');
+  var status   = $('saveStatus');
+
+  function openSaveModal(){
+    if(!plainOutput){ showErr('Nothing to save — format valid JSON first.'); return; }
+    status.textContent = '';
+    overlay.classList.add('open');
+  }
+  function closeSaveModal(){ overlay.classList.remove('open'); }
+
+  $('saveBtn').addEventListener('click', openSaveModal);
+  closeBtn.addEventListener('click', closeSaveModal);
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) closeSaveModal(); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape' && overlay.classList.contains('open')) closeSaveModal(); });
+
+  function saveFilename(ext){
+    var now = new Date();
+    var pad2 = function(n){ return n<10?'0'+n:String(n); };
+    var dt = now.getFullYear()+pad2(now.getMonth()+1)+pad2(now.getDate())+'-'+pad2(now.getHours())+pad2(now.getMinutes())+pad2(now.getSeconds());
+    return 'webkit-uz-json-'+dt+'.'+ext;
+  }
+
+  function captureTarget(){
+    var el = $('colRight');
+    var scale = Math.max(window.devicePixelRatio || 1, 2);
+    var bg = getComputedStyle(el).backgroundColor;
+    if(!bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent'){
+      bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#050608';
+    }
+    return html2canvas(el, {
+      scale: scale,
+      useCORS: true,
+      allowTaint: false,
+      backgroundColor: bg,
+      logging: false,
+      onclone: function(doc){
+        var clonedEl = doc.getElementById('colRight');
+        if(clonedEl){
+          clonedEl.style.overflow = 'visible';
+          clonedEl.style.height = 'auto';
+        }
+        var clonedWrap = doc.getElementById('outWrap');
+        if(clonedWrap){
+          clonedWrap.style.overflow = 'visible';
+          clonedWrap.style.height = 'auto';
+          clonedWrap.style.maxHeight = 'none';
+        }
+        var clonedNums = doc.getElementById('outNums');
+        if(clonedNums){
+          clonedNums.style.overflow = 'visible';
+          clonedNums.style.height = 'auto';
+        }
+      }
+    });
+  }
+
+  $('saveImgFileBtn').addEventListener('click', function(){
+    if(typeof html2canvas === 'undefined'){ status.textContent = 'html2canvas not loaded.'; return; }
+    var fname = saveFilename('png');
+
+    if(window.showSaveFilePicker){
+      // Chrome / Edge: showSaveFilePicker must be called synchronously inside
+      // the click handler to keep the browser's user-gesture activation context.
+      var pickerPromise = window.showSaveFilePicker({
+        suggestedName: fname,
+        types: [{ description: 'PNG Image', accept: {'image/png': ['.png']} }]
+      });
+      status.textContent = 'Capturing…';
+      Promise.all([pickerPromise, captureTarget()])
+        .then(function(r){
+          var fileHandle = r[0], canvas = r[1];
+          canvas.toBlob(function(blob){
+            fileHandle.createWritable()
+              .then(function(w){ return w.write(blob).then(function(){ return w.close(); }); })
+              .then(function(){ status.textContent = 'Image saved!'; setTimeout(closeSaveModal, 1200); })
+              .catch(function(e){ status.textContent = 'Write failed: '+e.message; });
+          }, 'image/png');
+        })
+        .catch(function(e){
+          if(e.name === 'AbortError'){ status.textContent = ''; return; }
+          status.textContent = 'Failed: '+e.message;
+        });
+    } else {
+      status.textContent = 'Capturing…';
+      captureTarget().then(function(canvas){
+        canvas.toBlob(function(blob){
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url; a.download = fname;
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          setTimeout(function(){ URL.revokeObjectURL(url); }, 30000);
+          status.textContent = 'Image saved!';
+          setTimeout(closeSaveModal, 1200);
+        }, 'image/png');
+      }).catch(function(e){ status.textContent = 'Capture failed: '+e.message; });
+    }
+  });
+
+  $('saveImgClipBtn').addEventListener('click', function(){
+    if(typeof html2canvas === 'undefined'){ status.textContent = 'html2canvas not loaded.'; return; }
+    status.textContent = 'Capturing…';
+    captureTarget().then(function(canvas){
+      canvas.toBlob(function(blob){
+        if(!navigator.clipboard || !window.ClipboardItem){
+          status.textContent = 'Clipboard API not supported in this browser.';
+          return;
+        }
+        var item = new ClipboardItem({'image/png': blob});
+        navigator.clipboard.write([item]).then(function(){
+          status.textContent = 'Image copied to clipboard!';
+          setTimeout(closeSaveModal, 1200);
+        }).catch(function(e){
+          status.textContent = 'Clipboard permission denied: '+e.message;
+        });
+      }, 'image/png');
+    }).catch(function(e){ status.textContent = 'Capture failed: '+e.message; });
+  });
+
+  $('saveJsonFileBtn').addEventListener('click', function(){
+    if(!plainOutput){ status.textContent = 'No formatted JSON to save.'; return; }
+    downloadFile(plainOutput, saveFilename('json'));
+    status.textContent = 'JSON file saved!';
+    setTimeout(closeSaveModal, 1200);
+  });
+})();
 
 // Init from restored localStorage value
 if(inputArea.value){ updInNums(); doFormat(inputArea.value); }
@@ -3349,31 +3545,6 @@ if(inputArea.value){ updInNums(); doFormat(inputArea.value); }
 
 updInNums();
 
-/* ══════════════════════════════════════════
-   FONT SIZE CONTROL
-══════════════════════════════════════════ */
-var JSON_FONT_SIZES = [10, 11, 12, 13, 14, 15, 16, 18, 20];
-var fontSizeIdx = 2; // default → 12px
-
-function applyFontSize(){
-  var px = JSON_FONT_SIZES[fontSizeIdx];
-  var pxStr = px + 'px';
-  inputArea.style.fontSize   = pxStr;
-  outContent.style.fontSize  = pxStr;
-  inNums.style.fontSize      = Math.max(9, px - 2) + 'px';
-  outNums.style.fontSize     = Math.max(9, px - 2) + 'px';
-  $('fontSizeLbl').textContent = pxStr;
-  try{ localStorage.setItem('jsonFontIdx', fontSizeIdx); }catch(e){}
-}
-try{ var fi=parseInt(localStorage.getItem('jsonFontIdx'),10); if(!isNaN(fi)&&fi>=0&&fi<JSON_FONT_SIZES.length) fontSizeIdx=fi; }catch(e){}
-applyFontSize();
-
-$('fontIncBtn').addEventListener('click', function(){
-  if(fontSizeIdx < JSON_FONT_SIZES.length-1){ fontSizeIdx++; applyFontSize(); }
-});
-$('fontDecBtn').addEventListener('click', function(){
-  if(fontSizeIdx > 0){ fontSizeIdx--; applyFontSize(); }
-});
 
 /* ══════════════════════════════════════════
    JSON SEARCH
@@ -4954,7 +5125,7 @@ document.getElementById('hashPwCompute').addEventListener('click',function(){
   setBusy();
 
   if(curPwAlgo==='bcrypt'){
-    var cost=Math.min(14,Math.max(4,parseInt(document.getElementById('bcrypt-cost').value)||10));
+    var cost=Math.min(CFG.MAX_BCRYPT_COST,Math.max(4,parseInt(document.getElementById('bcrypt-cost').value)||10));
     setTimeout(function(){
       try{
         /* bcryptjs: window.dcodeIO.bcrypt or window.bcrypt */
