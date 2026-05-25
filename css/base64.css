@@ -1,0 +1,27 @@
+/* ── BASE64 ENCODER/DECODER ── */
+.b64-enc-err{ color:var(--err) !important; }
+.b64-sep{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  gap:.5rem;padding:.32rem .85rem;background:var(--panel2);border-bottom:1px solid var(--border);
+  -webkit-flex-shrink:0;flex-shrink:0;
+}
+.b64-sep-line{-webkit-flex:1;flex:1;height:1px;background:var(--border)}
+.b64-sep-lbl{font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;color:var(--txt3);white-space:nowrap}
+
+/* File drop zone */
+.b64-drop{
+  margin:.55rem .85rem .6rem;
+  border:2px dashed var(--border2);border-radius:8px;
+  padding:.72rem .85rem;text-align:center;cursor:pointer;
+  -webkit-transition:all .18s;transition:all .18s;font-size:.74rem;color:var(--txt3);
+  -webkit-flex-shrink:0;flex-shrink:0;
+}
+.b64-drop:hover,.b64-drop.drag-over{border-color:var(--accent2);color:var(--accent);background:var(--accent-bg)}
+.b64-drop-hint{line-height:1.5}
+.b64-drop-hint label{color:var(--accent);cursor:pointer;text-decoration:underline}
+.b64-fname{font-size:.69rem;color:var(--t-str);margin-top:.28rem}
+
+/* Base64 drop-zone SVG alignment */
+.b64-drop-icon-svg{ vertical-align:middle; margin-right:4px; }
+/* Base64 choose-file label */
+.b64-file-lbl{ color:var(--accent); cursor:pointer; text-decoration:underline; }

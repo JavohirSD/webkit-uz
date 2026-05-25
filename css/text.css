@@ -1,0 +1,19 @@
+/* ── TEXT ANALYZER ── */
+.ta-stats{
+  display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;gap:.4rem;
+  padding:.55rem .85rem;border-top:1px solid var(--border);-webkit-flex-shrink:0;flex-shrink:0;
+}
+.ta-stat{
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;
+  -webkit-align-items:center;align-items:center;
+  background:var(--badge-bg);border-radius:7px;padding:.28rem .52rem;min-width:56px;
+}
+.ta-stat-val{font-family:var(--font-code);font-size:.82rem;font-weight:600;color:var(--accent);line-height:1.2}
+.ta-stat-lbl{font-size:.54rem;letter-spacing:.07em;text-transform:uppercase;color:var(--txt3);margin-top:2px}
+.ta-warn{font-size:.7rem;color:var(--err);padding:.28rem .85rem;display:none;-webkit-flex-shrink:0;flex-shrink:0}
+.ta-warn.show{display:block}
+
+/* Text Analyzer modal fixed height — 2.5× taller than default */
+.modal-ta-height{ height:min(860px,calc(100vh - 3rem)); }
+/* ta textarea sizing */
+.ta-ta-size{ min-height:400px; max-height:900px; }

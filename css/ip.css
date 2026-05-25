@@ -1,0 +1,18 @@
+/* ── IP MODAL STATES ── */
+#ipInfoTable{ display:none; }
+#ipError{ display:none; }
+.ip-loading{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  gap:.75rem;padding:1.6rem 1.1rem;color:var(--txt2);font-size:.82rem;
+}
+.ip-spinner{
+  width:18px;height:18px;border-radius:50%;-webkit-flex-shrink:0;flex-shrink:0;
+  border:2px solid var(--border2);border-top-color:var(--accent);
+  -webkit-animation:spin .7s linear infinite;animation:spin .7s linear infinite;
+}
+.ip-error{
+  padding:1.4rem 1.1rem;color:var(--err);font-size:.8rem;
+  font-family:var(--font-code);line-height:1.5;
+}
+/* IP table display toggle helpers (applied via JS) */
+.ip-table-visible{ display:table; }

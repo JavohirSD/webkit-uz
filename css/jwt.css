@@ -1,0 +1,203 @@
+/* ── JWT MODAL ── */
+.modal-jwt{max-width:960px;width:100%}
+.jwt-body{padding:.75rem .9rem;display:flex;flex-direction:column;gap:.6rem;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.jwt-body::-webkit-scrollbar{width:4px}
+.jwt-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* Mode toggle */
+.jwt-mode-toggle{display:flex;border:1px solid var(--border2);border-radius:8px;overflow:hidden;flex-shrink:0}
+.jwt-mode-btn{
+  background:transparent;border:none;padding:.3rem .7rem;
+  font-family:var(--font-ui);font-size:.72rem;font-weight:500;
+  color:var(--txt2);cursor:pointer;transition:all .15s;white-space:nowrap;
+}
+.jwt-mode-btn.active{background:var(--accent);color:#fff}
+.jwt-mode-btn:hover:not(.active){background:var(--bg3);color:var(--txt)}
+
+/* Grid layout (encode) */
+.jwt-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:700px){.jwt-grid{grid-template-columns:1fr}}
+
+.jwt-col{display:flex;flex-direction:column;gap:.65rem}
+.jwt-token-col{min-width:0}
+
+/* Field block */
+.jwt-field-block{display:flex;flex-direction:column;gap:.4rem}
+.jwt-field-label-row{
+  display:flex;align-items:center;justify-content:space-between;
+  min-height:22px;
+}
+.jwt-field-label{
+  font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;
+  font-weight:600;color:var(--txt3);
+}
+.jwt-label-header{color:#e879f9}
+.jwt-label-payload{color:#38bdf8}
+.jwt-label-sig{color:#34d399}
+
+.jwt-field-actions{display:flex;align-items:center;gap:.4rem}
+
+/* Validators */
+.jwt-validator{font-size:.66rem;font-weight:500}
+.jwt-validator.ok{color:var(--ok)}
+.jwt-validator.err{color:var(--err)}
+.jwt-token-valid{font-size:.66rem;font-weight:500}
+.jwt-token-valid.ok{color:var(--ok)}
+.jwt-token-valid.err{color:var(--err)}
+
+/* Copy button */
+.jwt-copy-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:24px;height:24px;border-radius:6px;border:1px solid var(--border2);
+  background:transparent;cursor:pointer;color:var(--txt3);
+  transition:all .15s;flex-shrink:0;
+}
+.jwt-copy-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.jwt-copy-btn:hover{background:var(--bg3);color:var(--accent);border-color:var(--accent2)}
+.jwt-copy-btn.ok{color:var(--ok)!important;border-color:var(--ok)!important}
+.jwt-copy-token-btn{width:auto;padding:0 .6rem;font-size:.68rem;font-family:var(--font-ui);gap:4px}
+
+/* ── Mirror editor (textarea + syntax highlight overlay) ── */
+.jwt-editor-wrap{
+  border:1px solid var(--border2);border-radius:8px;overflow:hidden;
+  background:var(--bg2);transition:border-color .15s;
+}
+.jwt-editor-wrap.err{border-color:var(--err-bd);background:var(--err-bg)}
+.jwt-editor-wrap.ok{border-color:rgba(52,211,153,.25)}
+.jwt-editor-wrap:focus-within{border-color:var(--accent2)}
+.jwt-editor-wrap.err:focus-within{border-color:var(--err)}
+
+.jwt-mirror-root{
+  position:relative;
+  min-height:100px;max-height:180px;
+  overflow:hidden;
+}
+/* The actual textarea — transparent text (caret still visible) */
+.jwt-mirror-ta{
+  position:absolute;inset:0;width:100%;height:100%;
+  border:none;background:transparent;resize:none;
+  padding:.55rem .7rem;
+  font-family:var(--font-code);font-size:.75rem;line-height:1.7;
+  color:transparent;caret-color:var(--txt);
+  outline:none;overflow:auto;
+  white-space:pre;tab-size:2;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+  z-index:1;
+}
+.jwt-mirror-ta::-webkit-scrollbar{width:4px;height:4px}
+.jwt-mirror-ta::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+/* The pre highlight layer — pointer-events off so clicks go to textarea */
+.jwt-mirror-hl{
+  position:relative;
+  display:block;width:100%;
+  min-height:100px;max-height:180px;
+  overflow:auto;
+  margin:0;padding:.55rem .7rem;
+  font-family:var(--font-code);font-size:.75rem;line-height:1.7;
+  white-space:pre;tab-size:2;word-break:break-word;
+  color:var(--txt);background:transparent;
+  pointer-events:none;
+  scrollbar-width:none;
+}
+.jwt-mirror-hl::-webkit-scrollbar{display:none}
+.jwt-mirror-hl code{font-family:inherit;font-size:inherit;background:none;padding:0}
+/* Keep textarea scroll synced via JS */
+
+/* Secret input */
+.jwt-secret-wrap{border:1px solid var(--border2);border-radius:8px;overflow:hidden;background:var(--bg2)}
+.jwt-secret-input{
+  width:100%;border:none;background:transparent;padding:.55rem .7rem;
+  font-family:var(--font-code);font-size:.75rem;color:var(--txt);
+  outline:none;
+}
+.jwt-secret-wrap:focus-within{border-color:var(--accent2)}
+
+/* Base64 toggle */
+.jwt-b64-toggle{display:flex;align-items:center;gap:.3rem;cursor:pointer;font-size:.67rem;color:var(--txt3);user-select:none}
+.jwt-b64-toggle input{accent-color:var(--accent);cursor:pointer}
+
+/* Token display */
+.jwt-token-block{height:100%}
+.jwt-token-display{
+  border:1px solid var(--border2);border-radius:8px;background:var(--bg2);
+  padding:.65rem .8rem;font-family:var(--font-code);font-size:.75rem;line-height:1.9;
+  word-break:break-all;min-height:200px;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.jwt-token-display::-webkit-scrollbar{width:4px}
+.jwt-token-display::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.jwt-part-header{color:#e879f9;font-weight:500}
+.jwt-part-payload{color:#38bdf8;font-weight:500}
+.jwt-part-sig{color:#34d399;font-weight:500}
+.jwt-part-dot{color:var(--txt3);font-weight:700;margin:0 1px}
+.jwt-token-placeholder{color:var(--txt3);font-style:italic;font-size:.72rem}
+
+/* Token legend */
+.jwt-token-legend{display:flex;align-items:center;gap:.65rem;padding:.3rem 0 0;flex-wrap:wrap}
+.jwt-decode-legend{padding:.25rem 0 0}
+.jwt-dot{display:inline-block;width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.jwt-dot-header{background:#e879f9}.jwt-dot-payload{background:#38bdf8}.jwt-dot-sig{background:#34d399}
+.jwt-token-legend span:not(.jwt-dot){font-size:.66rem;color:var(--txt3)}
+
+/* ── Decode token input with colour overlay ── */
+.jwt-token-input-wrap{
+  position:relative;
+  border:1px solid var(--border2);border-radius:8px;
+  background:var(--bg2);transition:border-color .15s;
+  min-height:68px;
+  overflow:hidden;
+}
+.jwt-token-input-wrap:focus-within{border-color:var(--accent2)}
+/* Invisible real textarea — captures all typing */
+.jwt-token-ta{
+  position:absolute;inset:0;width:100%;height:100%;
+  border:none;background:transparent;resize:none;
+  padding:.6rem .75rem;
+  font-family:var(--font-code);font-size:.74rem;line-height:1.7;
+  color:transparent;caret-color:var(--txt);
+  outline:none;overflow:auto;
+  white-space:pre-wrap;word-break:break-all;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+  z-index:1;
+}
+.jwt-token-ta::-webkit-scrollbar{width:4px}
+.jwt-token-ta::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.jwt-token-ta::placeholder{color:var(--txt3)}
+/* Colour overlay — sits behind z-index but visible */
+.jwt-token-hl{
+  position:relative;
+  width:100%;
+  min-height:68px;
+  padding:.6rem .75rem;
+  font-family:var(--font-code);font-size:.74rem;line-height:1.7;
+  white-space:pre-wrap;word-break:break-all;
+  pointer-events:none;
+  overflow:hidden;
+  color:var(--txt);
+}
+/* Placeholder shown via hl when textarea is empty */
+.jwt-token-hl-placeholder{color:var(--txt3);font-style:italic}
+
+/* Decode panel */
+.jwt-decode-grid{display:grid;grid-template-columns:1fr 1fr;gap:.65rem}
+@media(max-width:600px){.jwt-decode-grid{grid-template-columns:1fr}}
+
+.jwt-decode-out-block{display:flex;flex-direction:column;gap:.35rem}
+.jwt-decoded-view{
+  border:1px solid var(--border2);border-radius:8px;background:var(--bg2);
+  padding:.55rem .7rem;font-family:var(--font-code);font-size:.74rem;line-height:1.7;
+  white-space:pre-wrap;word-break:break-word;min-height:90px;max-height:200px;
+  overflow-y:auto;color:var(--txt);
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.jwt-decoded-view::-webkit-scrollbar{width:4px}
+.jwt-decoded-view::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.jwt-decoded-placeholder{color:var(--txt3);font-style:italic;font-size:.72rem}
+
+.jwt-decode-sig-block{display:flex;flex-direction:column;gap:.35rem}
+.jwt-sig-raw{
+  border:1px solid rgba(52,211,153,.2);border-radius:8px;background:rgba(52,211,153,.04);
+  padding:.5rem .7rem;font-family:var(--font-code);font-size:.71rem;line-height:1.7;
+  color:#34d399;word-break:break-all;min-height:44px;
+}

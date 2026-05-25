@@ -1,0 +1,23 @@
+/* ── BROWSER INFO MODAL (info table shared by IP & Browser modals) ── */
+.info-table{width:100%;border-collapse:collapse}
+.info-table tr:hover td{background:var(--bg3)}
+.info-table td{
+  padding:.48rem 1.1rem;font-size:.75rem;line-height:1.4;
+  border-bottom:1px solid var(--border);vertical-align:top;
+}
+.info-table td:first-child{
+  color:var(--txt3);font-weight:500;white-space:nowrap;
+  width:42%;font-size:.72rem;letter-spacing:.01em;padding-right:.5rem;
+}
+.info-table td:last-child{
+  color:var(--txt);font-family:var(--font-code);font-size:.71rem;
+  word-break:break-all;
+}
+.info-table tr:last-child td{border-bottom:none}
+.info-section-head td{
+  background:var(--panel2)!important;color:var(--txt3)!important;
+  font-size:.6rem!important;letter-spacing:.14em!important;
+  text-transform:uppercase!important;font-weight:600!important;
+  padding:.35rem 1.1rem!important;border-bottom:1px solid var(--border)!important;
+}
+.info-na{color:var(--txt3)!important;font-style:italic}
