@@ -205,21 +205,44 @@ mark.s-hit.s-active{
   background:var(--accent-bg);border-bottom-color:var(--accent2);
 }
 
-/* ── FULLSCREEN ── */
-#colLeft:fullscreen,#colRight:fullscreen{
-  border-radius:0;width:100% !important;height:100vh !important;background:var(--bg);
+/* ── FULLSCREEN (CSS-based — works on mobile incl. iOS Safari) ── */
+.col.is-fullscreen{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  width:100vw !important;height:100vh !important;
+  height:100dvh !important;
+  z-index:9999;border-radius:0 !important;background:var(--bg);
+  margin:0;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);
 }
-#colLeft:-webkit-full-screen,#colRight:-webkit-full-screen{
-  border-radius:0;width:100% !important;height:100vh !important;background:var(--bg);
+body.has-fs-col{overflow:hidden}
+/* Active-state visual cue on the fullscreen button when its col is fullscreen */
+.col.is-fullscreen #fullscreenLeftBtn,
+.col.is-fullscreen #fullscreenRightBtn{
+  background:var(--accent-bg);color:var(--accent);border-color:var(--accent2);
 }
 
+/* Allow col-header to wrap if buttons overflow on narrow screens */
+.col-header{-webkit-flex-wrap:wrap;flex-wrap:wrap;gap:.3rem}
+
 @media (max-width:768px){
-  .col-header-right{gap:.15rem;}
-  .col-header-right .btn{padding:.28rem .48rem;font-size:.7rem;}
-  .col-header-right .btn.btn-icon{padding:.28rem .36rem;}
+  .col-header-right{gap:.18rem;}
+  /* Override global .btn{min-height:42px} so header stays compact */
+  .col-header-right .btn{
+    padding:.34rem .5rem;font-size:.72rem;min-height:auto;border-radius:6px;
+  }
+  .col-header-right .btn.btn-icon{padding:.34rem .4rem;}
+  .col-header-right .btn svg{width:13px;height:13px;}
   .col-header-right .vdiv{height:14px;}
+  .col-header{padding:.4rem .6rem;}
 }
 @media (max-width:480px){
-  .col-header-right .btn{padding:.22rem .38rem;font-size:.66rem;}
-  .col-header-right .btn.btn-icon{padding:.22rem .3rem;}
+  /* Icon-only buttons on small phones — labels hide via .btn-lbl rule */
+  .col-header-right{gap:.12rem;}
+  .col-header-right .btn{padding:.34rem .42rem;font-size:.7rem;min-height:auto;}
+  .col-header-right .btn.btn-icon{padding:.34rem .38rem;}
+  .col-header-right .btn .btn-lbl,
+  .col-header-right .btn #toggleExpandLbl{display:none;}
+  .col-header-right .vdiv{height:13px;}
+  .col-header-left .col-tag{display:none}
+  /* Search bar input fills remaining width on small screens */
+  #colRight .search-bar input{width:auto;-webkit-flex:1;flex:1;min-width:0;}
 }

@@ -900,11 +900,15 @@
       <div class="wd" data-d="0">Su</div>
     </div>
     <div class="dt-sep" aria-hidden="true"></div>
-    <span class="dt-date" id="dtDate" aria-label="Today's date"></span>
-    <span class="dt-time" id="dtTime" aria-label="Current time"></span>
+    <div class="dt-group">
+      <span class="dt-date" id="dtDate" aria-label="Today's date"></span>
+      <span class="dt-time" id="dtTime" aria-label="Current time"></span>
+    </div>
     <div class="dt-sep" aria-hidden="true"></div>
-    <span class="dt-unix-lbl" aria-hidden="true">unix</span>
-    <span class="dt-unix" id="dtUnix" aria-label="Unix timestamp"></span>
+    <div class="dt-group">
+      <span class="dt-unix-lbl" aria-hidden="true">unix</span>
+      <span class="dt-unix" id="dtUnix" aria-label="Unix timestamp"></span>
+    </div>
   </div>
 </section>
 
@@ -966,15 +970,15 @@
         </div>
         <div class="col-header-right">
           <button class="btn" id="openFileBtn" aria-label="Open JSON or text file">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>Open
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span class="btn-lbl">Open</span>
           </button>
           <div class="vdiv" aria-hidden="true"></div>
           <button class="btn" id="minifyBtn" aria-label="Minify JSON">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Minify
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="btn-lbl">Minify</span>
           </button>
           <div class="vdiv" aria-hidden="true"></div>
           <button class="btn" id="clearBtn" aria-label="Clear JSON input">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>Clear
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg><span class="btn-lbl">Clear</span>
           </button>
           <div class="vdiv" aria-hidden="true"></div>
           <button class="btn btn-icon" id="fullscreenLeftBtn" aria-label="Fullscreen input view">
@@ -1009,14 +1013,14 @@
           </button>
           <div class="vdiv" aria-hidden="true"></div>
           <button class="btn" id="copyBtn" aria-label="Copy formatted JSON">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>Copy
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="btn-lbl">Copy</span>
           </button>
           <button class="btn" id="saveBtn" aria-label="Save JSON or image">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Save
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg><span class="btn-lbl">Save</span>
           </button>
           <div class="vdiv" aria-hidden="true"></div>
           <button class="btn" id="searchToggleBtn" aria-label="Search JSON output (Ctrl+F)" aria-expanded="false" aria-controls="jsonSearchBar">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>Search
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><span class="btn-lbl">Search</span>
           </button>
           <div class="vdiv" aria-hidden="true"></div>
           <button class="btn btn-icon" id="fullscreenRightBtn" aria-label="Fullscreen output view">
@@ -1050,7 +1054,6 @@
 <footer>
   <span class="footer-copy">
     &copy; <span id="footerYear"></span> <a href="https://webkit.uz">webkit.uz</a>
-    &nbsp;&middot;&nbsp; JSON Formatter &amp; UUID Generator &nbsp;&middot;&nbsp; Free developer tools
   </span>
   <span class="footer-links">
     <a class="footer-link" href="https://github.com/JavohirSD/webkit-uz" target="_blank" rel="noopener noreferrer" aria-label="GitHub">

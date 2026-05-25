@@ -164,21 +164,28 @@ $('jsonFileInput').addEventListener('change', function(){
   this.value = '';
 });
 
-// Fullscreen
+// Fullscreen — CSS-based (works reliably on desktop and mobile, incl. iOS Safari)
 (function(){
-  function requestFS(el){
-    var fn = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
-    if(fn) fn.call(el);
+  function exitAny(){
+    var fs = document.querySelector('.col.is-fullscreen');
+    if(fs){
+      fs.classList.remove('is-fullscreen');
+      document.body.classList.remove('has-fs-col');
+    }
   }
-  function exitFS(){
-    var fn = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen;
-    if(fn) fn.call(document);
+  function toggle(el){
+    if(el.classList.contains('is-fullscreen')){
+      exitAny();
+    } else {
+      exitAny();
+      el.classList.add('is-fullscreen');
+      document.body.classList.add('has-fs-col');
+    }
   }
-  $('fullscreenLeftBtn').addEventListener('click', function(){
-    if(document.fullscreenElement || document.webkitFullscreenElement){ exitFS(); } else { requestFS($('colLeft')); }
-  });
-  $('fullscreenRightBtn').addEventListener('click', function(){
-    if(document.fullscreenElement || document.webkitFullscreenElement){ exitFS(); } else { requestFS($('colRight')); }
+  $('fullscreenLeftBtn').addEventListener('click', function(){ toggle($('colLeft')); });
+  $('fullscreenRightBtn').addEventListener('click', function(){ toggle($('colRight')); });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') exitAny();
   });
 })();
 $('copyBtn').addEventListener('click', function(){
@@ -282,12 +289,22 @@ $('copyBtn').addEventListener('click', function(){
         if(clonedNums){ clonedNums.style.overflow = 'visible'; clonedNums.style.height = 'auto'; }
       }
     };
-    /* Browsers render fullscreen elements in a separate compositing layer
-       that html2canvas cannot read — exit fullscreen first, then capture. */
-    var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
-    if(fsEl){
+    /* Exit any fullscreen state first so html2canvas can reach the element's pixels.
+       Handles both native fullscreen and our CSS .is-fullscreen mode. */
+    var nativeFsEl = document.fullscreenElement || document.webkitFullscreenElement;
+    if(nativeFsEl){
       var exitFn = document.exitFullscreen || document.webkitExitFullscreen;
       return exitFn.call(document).then(function(){ return html2canvas(el, opts); });
+    }
+    var cssFs = document.querySelector('.col.is-fullscreen');
+    if(cssFs){
+      cssFs.classList.remove('is-fullscreen');
+      document.body.classList.remove('has-fs-col');
+      return new Promise(function(resolve, reject){
+        requestAnimationFrame(function(){
+          html2canvas(el, opts).then(resolve, reject);
+        });
+      });
     }
     return html2canvas(el, opts);
   }
@@ -379,7 +396,13 @@ if(inputArea.value){ updInNums(); doFormat(inputArea.value); }
   var MIN=180, drag=false, x0=0, lw=0, rw=0;
 
   function split(){
-    if(window.innerWidth<=768) return;
+    if(window.innerWidth<=768){
+      /* On mobile, columns stack vertically and span full width — clear any
+         persisted desktop inline widths from previous resizing. */
+      left.style.width='';
+      right.style.width='';
+      return;
+    }
     var avail=cols.offsetWidth-handle.offsetWidth;
     left.style.width=(avail/2)+'px';
     right.style.width=(avail/2)+'px';

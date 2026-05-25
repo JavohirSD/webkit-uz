@@ -71,6 +71,11 @@
 }
 .wd.today{background:var(--accent-bg);border-color:var(--accent2);color:var(--accent);font-weight:600}
 .dt-sep{width:1px;height:15px;background:var(--border);-webkit-flex-shrink:0;flex-shrink:0}
+.dt-group{
+  display:-webkit-flex;display:flex;
+  -webkit-align-items:center;align-items:center;
+  gap:.5rem;
+}
 .dt-date{font-family:var(--font-code);font-size:.79rem;color:var(--txt);letter-spacing:.03em}
 .dt-time{font-family:var(--font-code);font-size:.79rem;color:var(--accent);letter-spacing:.05em;font-weight:500}
 .dt-unix-lbl{font-size:.57rem;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3)}
