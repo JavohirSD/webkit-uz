@@ -161,3 +161,32 @@ uuidHistVal.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key==
 })();
 
 renderUUID();
+
+// UUID section collapse
+(function(){
+  var section = $('uuid-section');
+  var btn     = $('uuidToggleBtn');
+
+  function setCollapsed(on){
+    if(on){
+      section.classList.add('uuid-hidden');
+      btn.setAttribute('aria-label','Expand UUID section');
+      btn.setAttribute('aria-expanded','false');
+      btn.setAttribute('title','Expand UUID section');
+      btn.classList.add('is-collapsed');
+    } else {
+      section.classList.remove('uuid-hidden');
+      btn.setAttribute('aria-label','Collapse UUID section');
+      btn.setAttribute('aria-expanded','true');
+      btn.setAttribute('title','Collapse UUID section');
+      btn.classList.remove('is-collapsed');
+    }
+    try{ localStorage.setItem('uuid_col', on ? '1' : '0'); }catch(e){}
+  }
+
+  btn.addEventListener('click', function(){
+    setCollapsed(!section.classList.contains('uuid-hidden'));
+  });
+
+  try{ if(localStorage.getItem('uuid_col') === '1') setCollapsed(true); }catch(e){}
+})();

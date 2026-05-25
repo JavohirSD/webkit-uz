@@ -150,6 +150,37 @@ $('minifyBtn').addEventListener('click', function(){
   try{ var min=JSON.stringify(JSON.parse(decodeUnicode(raw))); inputArea.value=min; updInNums(); doFormat(min); }
   catch(e){ showErr('Cannot minify — invalid JSON: '+e.message); }
 });
+// Open file
+$('openFileBtn').addEventListener('click', function(){ $('jsonFileInput').click(); });
+$('jsonFileInput').addEventListener('change', function(){
+  var file = this.files[0];
+  if(!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e){
+    inputArea.value = e.target.result;
+    updInNums(); clearErr(); doFormat(e.target.result);
+  };
+  reader.readAsText(file);
+  this.value = '';
+});
+
+// Fullscreen
+(function(){
+  function requestFS(el){
+    var fn = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen;
+    if(fn) fn.call(el);
+  }
+  function exitFS(){
+    var fn = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen;
+    if(fn) fn.call(document);
+  }
+  $('fullscreenLeftBtn').addEventListener('click', function(){
+    if(document.fullscreenElement || document.webkitFullscreenElement){ exitFS(); } else { requestFS($('colLeft')); }
+  });
+  $('fullscreenRightBtn').addEventListener('click', function(){
+    if(document.fullscreenElement || document.webkitFullscreenElement){ exitFS(); } else { requestFS($('colRight')); }
+  });
+})();
 $('copyBtn').addEventListener('click', function(){
   if(!plainOutput){ showErr('Nothing to copy — format valid JSON first.'); return; }
   copyText(plainOutput); flashBtn($('copyBtn'),'Copied!');
@@ -211,14 +242,32 @@ $('copyBtn').addEventListener('click', function(){
     return 'webkit-uz-json-'+dt+'.'+ext;
   }
 
+  function addWatermark(canvas){
+    var dark  = document.documentElement.getAttribute('data-theme') !== 'light';
+    var scale = Math.max(window.devicePixelRatio || 1, 3);
+    var fs    = Math.round(11 * scale);
+    var pad   = Math.round(12 * scale);
+    var ctx   = canvas.getContext('2d');
+    ctx.save();
+    /* html2canvas leaves scale(n,n) on the context; reset to physical pixels */
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.font = '500 '+fs+'px "JetBrains Mono",Consolas,"Courier New",monospace';
+    ctx.textAlign    = 'right';
+    ctx.textBaseline = 'bottom';
+    ctx.globalAlpha  = 0.30;
+    ctx.fillStyle    = dark ? '#c8d0e0' : '#1a2236';
+    ctx.fillText('webkit.uz', canvas.width - pad, canvas.height - pad);
+    ctx.restore();
+  }
+
   function captureTarget(){
     var el = $('colRight');
-    var scale = Math.max(window.devicePixelRatio || 1, 2);
+    var scale = Math.max(window.devicePixelRatio || 1, 3);
     var bg = getComputedStyle(el).backgroundColor;
     if(!bg || bg === 'rgba(0, 0, 0, 0)' || bg === 'transparent'){
       bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#050608';
     }
-    return html2canvas(el, {
+    var opts = {
       scale: scale,
       useCORS: true,
       allowTaint: false,
@@ -226,23 +275,21 @@ $('copyBtn').addEventListener('click', function(){
       logging: false,
       onclone: function(doc){
         var clonedEl = doc.getElementById('colRight');
-        if(clonedEl){
-          clonedEl.style.overflow = 'visible';
-          clonedEl.style.height = 'auto';
-        }
+        if(clonedEl){ clonedEl.style.overflow = 'visible'; clonedEl.style.height = 'auto'; }
         var clonedWrap = doc.getElementById('outWrap');
-        if(clonedWrap){
-          clonedWrap.style.overflow = 'visible';
-          clonedWrap.style.height = 'auto';
-          clonedWrap.style.maxHeight = 'none';
-        }
+        if(clonedWrap){ clonedWrap.style.overflow = 'visible'; clonedWrap.style.height = 'auto'; clonedWrap.style.maxHeight = 'none'; }
         var clonedNums = doc.getElementById('outNums');
-        if(clonedNums){
-          clonedNums.style.overflow = 'visible';
-          clonedNums.style.height = 'auto';
-        }
+        if(clonedNums){ clonedNums.style.overflow = 'visible'; clonedNums.style.height = 'auto'; }
       }
-    });
+    };
+    /* Browsers render fullscreen elements in a separate compositing layer
+       that html2canvas cannot read — exit fullscreen first, then capture. */
+    var fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+    if(fsEl){
+      var exitFn = document.exitFullscreen || document.webkitExitFullscreen;
+      return exitFn.call(document).then(function(){ return html2canvas(el, opts); });
+    }
+    return html2canvas(el, opts);
   }
 
   $('saveImgFileBtn').addEventListener('click', function(){
@@ -260,6 +307,7 @@ $('copyBtn').addEventListener('click', function(){
       Promise.all([pickerPromise, captureTarget()])
         .then(function(r){
           var fileHandle = r[0], canvas = r[1];
+          addWatermark(canvas);
           canvas.toBlob(function(blob){
             fileHandle.createWritable()
               .then(function(w){ return w.write(blob).then(function(){ return w.close(); }); })
@@ -274,6 +322,7 @@ $('copyBtn').addEventListener('click', function(){
     } else {
       status.textContent = 'Capturing…';
       captureTarget().then(function(canvas){
+        addWatermark(canvas);
         canvas.toBlob(function(blob){
           var url = URL.createObjectURL(blob);
           var a = document.createElement('a');
@@ -291,6 +340,7 @@ $('copyBtn').addEventListener('click', function(){
     if(typeof html2canvas === 'undefined'){ status.textContent = 'html2canvas not loaded.'; return; }
     status.textContent = 'Capturing…';
     captureTarget().then(function(canvas){
+      addWatermark(canvas);
       canvas.toBlob(function(blob){
         if(!navigator.clipboard || !window.ClipboardItem){
           status.textContent = 'Clipboard API not supported in this browser.';

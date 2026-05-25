@@ -428,7 +428,7 @@ footer a:hover{color:var(--accent)}
   .footer-copy{font-size:.72rem}
   .footer-link{font-size:.7rem}
   /* Search */
-  .search-bar input{width:90px}
+  .search-bar input{width:130px}
 }
 @media (max-width:480px){
   .site-header{padding:.45rem .65rem .5rem}
