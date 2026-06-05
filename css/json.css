@@ -68,8 +68,7 @@ textarea::placeholder{color:var(--txt3)}
 /* ── OUTPUT (formatted side) ── */
 .out-wrap{
   -webkit-flex:1;flex:1;
-  /* vertical scroll enabled, horizontal scroll for wide formatted JSON */
-  overflow-y:auto;overflow-x:auto;
+  overflow-y:auto;overflow-x:hidden;
   -webkit-overflow-scrolling:touch;
   scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
 }
@@ -78,7 +77,7 @@ textarea::placeholder{color:var(--txt3)}
 .out-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
 .out-content{
   padding:.62rem .78rem;font-family:var(--font-code);font-size:.76rem;line-height:1.65;
-  white-space:pre;min-width:-webkit-max-content;min-width:max-content;
+  white-space:pre-wrap;word-break:break-all;overflow-wrap:break-word;
 }
 /* JSON token colors */
 .t-key{color:var(--t-key)}.t-str{color:var(--t-str)}

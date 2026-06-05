@@ -140,14 +140,14 @@ function trapFocus(overlay, e){
 // Global Escape handler for all overlays
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
-  ['modalOverlay','ipModalOverlay','b64Overlay','taOverlay','qrOverlay','convOverlay','diffOverlay'].forEach(function(id){
+  ['modalOverlay','ipModalOverlay','b64Overlay','taOverlay','qrOverlay','convOverlay','diffOverlay','tgOverlay'].forEach(function(id){
     var ov = $(id);
     if(ov && ov.classList.contains('open')) closeOverlay(id);
   });
 });
 
 // Focus trap for all overlays
-['modalOverlay','ipModalOverlay','b64Overlay','taOverlay','qrOverlay','convOverlay','diffOverlay'].forEach(function(id){
+['modalOverlay','ipModalOverlay','b64Overlay','taOverlay','qrOverlay','convOverlay','diffOverlay','tgOverlay'].forEach(function(id){
   var ov = $(id);
   if(!ov) return;
   ov.setAttribute('aria-hidden','true');

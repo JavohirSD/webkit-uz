@@ -94,6 +94,7 @@
 <link rel="stylesheet" href="css/jwt.css">
 <link rel="stylesheet" href="css/hash.css">
 <link rel="stylesheet" href="css/difference.css">
+<link rel="stylesheet" href="css/telegram.css">
 
 <!-- ── Vendor libraries (CDN, blocking — required before page scripts) ── -->
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
@@ -166,6 +167,10 @@
     <button class="top-btn" id="diffBtn" aria-label="Text Diff Analyzer" title="Text Diff">
       <svg viewBox="0 0 24 24"><path d="M3 6h8M3 10h6M3 14h8M3 18h5"/><path d="M13 6h8M15 10h6M13 14h8M16 18h5"/><line x1="11.5" y1="6" x2="11.5" y2="18" stroke-dasharray="2 2"/></svg>
       <span>Text Diff</span>
+    </button>
+    <button class="top-btn" id="tgBtn" aria-label="Telegram bot manager" title="Telegram Bots">
+      <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      <span>Telegram</span>
     </button>
     <span class="theme-sep" aria-hidden="true"></span>
     <button class="theme-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">
@@ -869,6 +874,171 @@
   </div>
 </div>
 
+<!-- TELEGRAM BOTS MODAL -->
+<div class="modal-overlay" id="tgOverlay" role="dialog" aria-modal="true" aria-labelledby="tgModalTitle">
+  <div class="modal modal-tg">
+    <div class="modal-header">
+      <span class="modal-title" id="tgModalTitle">✈ Telegram Bot Manager</span>
+      <button class="modal-close" id="tgClose" aria-label="Close Telegram tool">✕</button>
+    </div>
+
+    <div class="tg-body" id="tgBody">
+
+      <!-- BOT TOKEN -->
+      <div>
+        <label class="tg-label" for="tgToken">Bot Token</label>
+        <div class="tg-token-row">
+          <input type="text" id="tgToken" class="tg-input mono"
+            placeholder="123456789:AAExample-token-from-BotFather"
+            spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"
+            aria-describedby="tgTokenHint">
+          <button class="tg-reset-btn" id="tgReset" type="button" title="Reset form settings" aria-label="Reset form settings">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          </button>
+        </div>
+        <p class="tg-hint" id="tgTokenHint">Just the bot token from <strong>@BotFather</strong> — no URL.</p>
+      </div>
+
+      <!-- ACTION BAR -->
+      <div class="tg-tabs" role="group" aria-label="Telegram bot actions">
+        <button class="tg-tab active"     id="tgtab-set"    type="button" aria-pressed="true">Set Webhook</button>
+        <button class="tg-tab tg-warning" id="tgtab-drop"   type="button" aria-pressed="false">Drop Updates</button>
+        <button class="tg-tab tg-danger"  id="tgtab-del"    type="button" aria-pressed="false">Delete Webhook</button>
+        <span class="tg-tabs-div" aria-hidden="true"></span>
+        <button class="tg-tab tg-success" id="tgtab-info"   type="button" aria-pressed="false">Webhook Info</button>
+        <button class="tg-tab"            id="tgtab-custom" type="button" aria-pressed="false">Custom Request</button>
+      </div>
+
+      <!-- ══ SET WEBHOOK (shared by Set / Drop / Delete) ══ -->
+      <div class="tg-panel active" id="tgpanel-set">
+        <div class="tg-grid2">
+          <div class="tg-field tg-col-full">
+            <label class="tg-field-label" for="tgUrl">Webhook URL <span class="tg-req" aria-hidden="true">*</span></label>
+            <input type="text" id="tgUrl" class="tg-input mono" placeholder="https://your-domain.com/webhook-path" spellcheck="false" autocomplete="off">
+            <div class="tg-field-err" id="tgUrlErr" role="alert"></div>
+            <div class="tg-field-note">HTTPS endpoint Telegram will POST updates to.</div>
+          </div>
+          <div class="tg-field">
+            <label class="tg-field-label" for="tgSecret">Secret token</label>
+            <input type="text" id="tgSecret" class="tg-input mono" placeholder="A–Z a–z 0–9 _ -" spellcheck="false" autocomplete="off">
+            <div class="tg-field-err" id="tgSecretErr" role="alert"></div>
+            <div class="tg-field-note">Returned in the <code>X-Telegram-Bot-Api-Secret-Token</code> header.</div>
+          </div>
+          <div class="tg-field">
+            <label class="tg-field-label" for="tgIp">IP address</label>
+            <input type="text" id="tgIp" class="tg-input mono" placeholder="Optional fixed IP" spellcheck="false" autocomplete="off">
+            <div class="tg-field-note">Use this IP instead of resolving the URL host.</div>
+          </div>
+          <div class="tg-field">
+            <label class="tg-field-label" for="tgMax">Max connections</label>
+            <input type="number" id="tgMax" class="tg-input mono" placeholder="40" min="1" max="100" inputmode="numeric">
+            <div class="tg-field-err" id="tgMaxErr" role="alert"></div>
+            <div class="tg-field-note">1–100, default 40.</div>
+          </div>
+          <div class="tg-field">
+            <label class="tg-field-label" for="tgCert">Certificate</label>
+            <div class="tg-file-row">
+              <label class="tg-file" for="tgCert">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                <span id="tgCertPrompt">Choose certificate (.pem)</span>
+                <span class="tg-file-name" id="tgCertName"></span>
+              </label>
+              <button type="button" class="tg-file-clear" id="tgCertClear" title="Remove file" aria-label="Remove certificate" style="display:none">✕</button>
+            </div>
+            <input type="file" id="tgCert" class="input-hidden" accept=".pem,.crt,.cer,application/x-pem-file" aria-label="Webhook certificate file">
+            <div class="tg-field-note">Public key for a self-signed certificate (optional).</div>
+          </div>
+        </div>
+
+        <div class="tg-field">
+          <div class="tg-au-head">
+            <span class="tg-field-label" style="margin:0">Allowed updates</span>
+            <div class="tg-au-actions">
+              <button type="button" class="tg-mini-btn" id="tgAuAll">Select all</button>
+              <button type="button" class="tg-mini-btn" id="tgAuNone">Clear</button>
+            </div>
+          </div>
+          <div class="tg-au-grid" id="tgAllowedUpdates"></div>
+          <div class="tg-field-note">Leave empty for Telegram's default (all types except <code>chat_member</code>).</div>
+        </div>
+      </div>
+
+      <!-- ══ CUSTOM REQUEST ══ -->
+      <div class="tg-panel" id="tgpanel-custom">
+        <div class="tg-field">
+          <label class="tg-field-label" for="tgCustomMethod">API method</label>
+          <input type="text" id="tgCustomMethod" class="tg-input mono" value="sendMessage" placeholder="e.g. sendMessage" spellcheck="false" autocomplete="off" autocapitalize="off">
+          <div class="tg-field-err" id="tgCustomMethodErr" role="alert"></div>
+        </div>
+        <div class="tg-field">
+          <div class="tg-au-head">
+            <label class="tg-field-label" for="tgCustomBody" style="margin:0">Request body (JSON)</label>
+            <span class="tg-validator" id="tgCustomValid"></span>
+          </div>
+          <div class="tg-mirror" id="tgCustomMirror">
+            <textarea id="tgCustomBody" class="tg-mirror-ta" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off" aria-label="Custom request JSON body">{
+  "chat_id": 1234567,
+  "text": "hello world",
+  "parse_mode": "html"
+}</textarea>
+            <pre class="tg-mirror-pre" id="tgCustomPre" aria-hidden="true"><code id="tgCustomCode"></code></pre>
+          </div>
+          <div class="tg-field-note">Top-level keys become request parameters; nested objects/arrays are JSON-encoded automatically.</div>
+        </div>
+      </div>
+
+      <!-- GENERATED URL -->
+      <div class="tg-url-block">
+        <div class="tg-url-head">
+          <span class="tg-method-badge" id="tgMethodBadge">GET</span>
+          <span class="tg-url-label">Generated request URL</span>
+          <button class="tg-mini-btn" id="tgCopyUrl" type="button">Copy</button>
+        </div>
+        <div class="tg-url-box" id="tgUrlBox" aria-live="polite"></div>
+        <div class="tg-url-extra" id="tgUrlExtra" style="display:none"></div>
+      </div>
+
+      <!-- RUN -->
+      <button class="tg-run-btn" id="tgRunBtn" type="button">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        Send Request
+      </button>
+
+      <!-- RESPONSE -->
+      <div class="tg-response" id="tgResponse" style="display:none" aria-live="polite">
+        <div class="tg-resp-head">
+          <span class="tg-resp-status" id="tgRespStatus"></span>
+          <button class="tg-mini-btn" id="tgCopyResp" type="button">Copy</button>
+        </div>
+        <pre class="tg-resp-body" id="tgRespBody"></pre>
+      </div>
+
+      <!-- API DOCS LINK -->
+      <a class="tg-docs-link" href="https://core.telegram.org/bots/api" target="_blank" rel="noopener noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        Telegram Bot API documentation
+      </a>
+
+    </div><!-- /.tg-body -->
+
+    <!-- DELETE CONFIRM DIALOG -->
+    <div class="tg-confirm" id="tgConfirm" style="display:none" role="alertdialog" aria-modal="true" aria-labelledby="tgConfirmTitle" aria-describedby="tgConfirmMsg">
+      <div class="tg-confirm-card">
+        <div class="tg-confirm-title" id="tgConfirmTitle">⚠ Delete webhook?</div>
+        <div class="tg-confirm-msg" id="tgConfirmMsg">This removes the webhook integration and switches the bot back to long-polling (<code>getUpdates</code>).</div>
+        <label class="tg-confirm-check" for="tgConfirmDrop">
+          <input type="checkbox" id="tgConfirmDrop">
+          <span>Also drop all pending updates (<code>drop_pending_updates=true</code>)</span>
+        </label>
+        <div class="tg-confirm-actions">
+          <button type="button" class="tg-mini-btn" id="tgConfirmCancel">Cancel</button>
+          <button type="button" class="tg-confirm-del" id="tgConfirmOk">Delete webhook</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /#tgOverlay -->
+
 <!-- UUID SECTION -->
 <section class="uuid-section" aria-label="UUID Generator" id="uuid-section">
   <div class="uuid-label" id="uuidLabel" aria-live="polite">UUID Generator</div>
@@ -1085,5 +1255,6 @@
 <script src="js/jwt.js"></script>
 <script src="js/hash.js"></script>
 <script src="js/difference.js"></script>
+<script src="js/telegram.js"></script>
 </body>
 </html>
