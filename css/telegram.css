@@ -7,9 +7,9 @@
 .modal-tg{max-width:720px;position:relative}
 .tg-body{
   overflow-y:auto;-webkit-overflow-scrolling:touch;-webkit-flex:1;flex:1;
-  padding:.9rem 1.1rem 1.15rem;
+  padding:1rem 1.1rem 1.25rem;
   display:-webkit-flex;display:flex;
-  -webkit-flex-direction:column;flex-direction:column;gap:.9rem;
+  -webkit-flex-direction:column;flex-direction:column;gap:1.1rem;
 }
 .tg-body::-webkit-scrollbar{width:4px}
 .tg-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
@@ -85,8 +85,14 @@
 .tg-mirror-ta::-webkit-scrollbar-thumb,.tg-mirror-pre::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
 
 /* ── panels ── */
-.tg-panel{display:none;-webkit-flex-direction:column;flex-direction:column;gap:.75rem}
+.tg-panel{display:none;-webkit-flex-direction:column;flex-direction:column;gap:1.1rem}
 .tg-panel.active{display:-webkit-flex;display:flex}
+/* separator line between the grid and the allowed-updates section */
+.tg-panel > .tg-grid2 + .tg-field{
+  border-top:1px solid var(--border);
+  padding-top:1rem;
+  margin-top:.1rem;
+}
 .tg-field{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;min-width:0}
 .tg-field-label{font-size:.7rem;color:var(--txt2);font-weight:500;margin-bottom:.32rem;display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:.3rem}
 .tg-req{color:var(--err);font-weight:700}
@@ -95,7 +101,7 @@
 .tg-field-note{font-size:.66rem;color:var(--txt3);margin-top:.28rem;line-height:1.45}
 
 /* ── two-column grid (setWebhook) ── */
-.tg-grid2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.tg-grid2{display:grid;grid-template-columns:1fr 1fr;gap:1rem .85rem}
 .tg-col-full{grid-column:1 / -1}
 
 /* ── file input ── */
@@ -131,7 +137,12 @@
 .tg-check:hover{color:var(--txt)}
 
 /* ── generated URL ── */
-.tg-url-block{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:.42rem}
+.tg-url-block{
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:.42rem;
+  border-top:1px solid var(--border);
+  padding-top:1rem;
+  margin-top:.05rem;
+}
 .tg-url-head{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:.5rem}
 .tg-method-badge{
   font-family:var(--font-code);font-size:.62rem;font-weight:700;letter-spacing:.06em;
@@ -223,7 +234,7 @@
 
 /* ── mobile ── */
 @media (max-width:768px){
-  .tg-body{padding:.8rem .85rem 1rem;gap:.8rem}
+  .tg-body{padding:.85rem .85rem 1.1rem;gap:.95rem}
   .tg-grid2{grid-template-columns:1fr}
   .tg-tab{-webkit-flex:1 1 calc(50% - .35rem);flex:1 1 calc(50% - .35rem);font-size:.74rem;min-height:40px}
   .tg-tabs-div{display:none}

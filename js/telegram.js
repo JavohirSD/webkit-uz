@@ -20,6 +20,7 @@
 
   var TG_PREFIX = 'https://api.telegram.org/bot';
   var LS_TOKEN  = 'tg_bot_token';
+  var LS_URL    = 'tg_webhook_url';
   var DEFAULT_CUSTOM_BODY = '{\n  "chat_id": 1234567,\n  "text": "hello world",\n  "parse_mode": "html"\n}';
 
   /* allowed_updates types (Telegram Bot API) */
@@ -61,8 +62,9 @@
   var urlTouched = false;
   var infoCache  = null;    /* cached getWebhookInfo result: {status,data} */
 
-  /* ── Restore saved token ── */
+  /* ── Restore saved token + webhook URL ── */
   try{ var saved=localStorage.getItem(LS_TOKEN); if(saved) tokenInput.value=saved; }catch(e){}
+  try{ var savedUrl=localStorage.getItem(LS_URL); if(savedUrl) fUrl.value=savedUrl; }catch(e){}
 
   /* ── Build allowed_updates checkboxes ── */
   UPDATE_TYPES.forEach(function(t){
@@ -402,6 +404,7 @@
   /* ── Live update; editing the Set form returns to the Set operation ── */
   function onFormActivity(e){
     if(e.target===tokenInput){ infoCache=null; try{ localStorage.setItem(LS_TOKEN, tokenInput.value.trim()); }catch(err){} }
+    if(e.target===fUrl){ var u=(fUrl.value||'').trim(); if(u) try{ localStorage.setItem(LS_URL,u); }catch(err){} }
     if(e.target===cBody) refreshCustomMirror();
     if(activeView==='set'&&setAction==='drop'&&isSetField(e.target)){
       setAction='set'; highlight('tgtab-set'); clearResponse();

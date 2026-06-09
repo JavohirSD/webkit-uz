@@ -168,7 +168,7 @@
       <svg viewBox="0 0 24 24"><path d="M3 6h8M3 10h6M3 14h8M3 18h5"/><path d="M13 6h8M15 10h6M13 14h8M16 18h5"/><line x1="11.5" y1="6" x2="11.5" y2="18" stroke-dasharray="2 2"/></svg>
       <span>Text Diff</span>
     </button>
-    <button class="top-btn" id="tgBtn" aria-label="Telegram bot manager" title="Telegram Bots">
+    <button class="top-btn" id="tgBtn" aria-label="Telegram bot webhook manager" title="Telegram Bots">
       <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       <span>Telegram</span>
     </button>
@@ -878,7 +878,7 @@
 <div class="modal-overlay" id="tgOverlay" role="dialog" aria-modal="true" aria-labelledby="tgModalTitle">
   <div class="modal modal-tg">
     <div class="modal-header">
-      <span class="modal-title" id="tgModalTitle">✈ Telegram Bot Manager</span>
+      <span class="modal-title" id="tgModalTitle">✈ Telegram Bot Webhook Manager</span>
       <button class="modal-close" id="tgClose" aria-label="Close Telegram tool">✕</button>
     </div>
 
@@ -896,16 +896,16 @@
             <svg viewBox="0 0 24 24" aria-hidden="true"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
           </button>
         </div>
-        <p class="tg-hint" id="tgTokenHint">Just the bot token from <strong>@BotFather</strong> — no URL.</p>
+        <p class="tg-hint" id="tgTokenHint">Bot token from <strong>@BotFather</strong></p>
       </div>
 
       <!-- ACTION BAR -->
       <div class="tg-tabs" role="group" aria-label="Telegram bot actions">
         <button class="tg-tab active"     id="tgtab-set"    type="button" aria-pressed="true">Set Webhook</button>
+        <button class="tg-tab tg-success" id="tgtab-info"   type="button" aria-pressed="false">Webhook Info</button>
         <button class="tg-tab tg-warning" id="tgtab-drop"   type="button" aria-pressed="false">Drop Updates</button>
         <button class="tg-tab tg-danger"  id="tgtab-del"    type="button" aria-pressed="false">Delete Webhook</button>
         <span class="tg-tabs-div" aria-hidden="true"></span>
-        <button class="tg-tab tg-success" id="tgtab-info"   type="button" aria-pressed="false">Webhook Info</button>
         <button class="tg-tab"            id="tgtab-custom" type="button" aria-pressed="false">Custom Request</button>
       </div>
 
@@ -922,7 +922,7 @@
             <label class="tg-field-label" for="tgSecret">Secret token</label>
             <input type="text" id="tgSecret" class="tg-input mono" placeholder="A–Z a–z 0–9 _ -" spellcheck="false" autocomplete="off">
             <div class="tg-field-err" id="tgSecretErr" role="alert"></div>
-            <div class="tg-field-note">Returned in the <code>X-Telegram-Bot-Api-Secret-Token</code> header.</div>
+
           </div>
           <div class="tg-field">
             <label class="tg-field-label" for="tgIp">IP address</label>
