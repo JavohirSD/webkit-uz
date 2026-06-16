@@ -95,6 +95,7 @@
 <link rel="stylesheet" href="css/hash.css">
 <link rel="stylesheet" href="css/difference.css">
 <link rel="stylesheet" href="css/telegram.css">
+<link rel="stylesheet" href="css/time.css">
 
 <!-- ── Vendor libraries (CDN, blocking — required before page scripts) ── -->
 <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
@@ -171,6 +172,10 @@
     <button class="top-btn" id="tgBtn" aria-label="Telegram bot webhook manager" title="Telegram Bots">
       <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       <span>Telegram</span>
+    </button>
+    <button class="top-btn" id="timeBtn" aria-label="Time tools" title="Time">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15.5 14"/></svg>
+      <span>Time</span>
     </button>
     <span class="theme-sep" aria-hidden="true"></span>
     <button class="theme-btn" id="themeBtn" aria-label="Toggle theme" title="Toggle theme">
@@ -1039,6 +1044,147 @@
   </div>
 </div><!-- /#tgOverlay -->
 
+<!-- TIME MODAL -->
+<div class="modal-overlay" id="timeOverlay" role="dialog" aria-modal="true" aria-labelledby="timeModalTitle">
+  <div class="modal modal-time">
+    <div class="modal-header">
+      <span class="modal-title" id="timeModalTitle">🕐 Time Tools</span>
+      <button class="modal-close" id="timeClose" aria-label="Close Time tool">✕</button>
+    </div>
+
+    <div class="time-body" id="timeBody">
+
+      <!-- TABS -->
+      <div class="time-tabs" role="tablist" aria-label="Time tools">
+        <button class="time-tab active" id="ttab-clock"     role="tab" aria-selected="true"  aria-controls="tpanel-clock">Clock</button>
+        <button class="time-tab"        id="ttab-countdown" role="tab" aria-selected="false" aria-controls="tpanel-countdown">Countdown</button>
+        <button class="time-tab"        id="ttab-stopwatch" role="tab" aria-selected="false" aria-controls="tpanel-stopwatch">Stopwatch</button>
+        <button class="time-tab"        id="ttab-world"     role="tab" aria-selected="false" aria-controls="tpanel-world">World Clocks</button>
+      </div>
+
+      <!-- ══ CLOCK PANEL ══ -->
+      <div class="time-panel active" id="tpanel-clock" role="tabpanel" aria-labelledby="ttab-clock">
+
+        <!-- Row 1: live current time -->
+        <div class="time-now-card">
+          <div class="time-now-bar">
+            <div class="time-tz-field">
+              <span class="time-field-label">Timezone</span>
+              <div class="time-select-wrap has-icon">
+                <svg class="time-select-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <div id="tzWrap"></div>
+              </div>
+            </div>
+            <button class="time-icon-btn" id="clockFsBtn" type="button" title="Fullscreen clock" aria-label="Open fullscreen clock">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M16 21h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            </button>
+          </div>
+          <div class="time-now-clock" id="nowClock">00:00:00</div>
+          <div class="time-now-meta">
+            <span class="time-now-unix">unix <strong id="nowUnix">0</strong></span>
+            <span class="time-now-date" id="nowDate"></span>
+          </div>
+        </div>
+
+        <!-- Row 2: epoch ↔ human (paired inputs update each other) -->
+        <div class="time-conv">
+          <div class="time-conv-title">Epoch ↔ Human readable</div>
+          <div class="time-conv-grid">
+            <div class="time-field">
+              <label class="time-field-label" for="epIn">Unix timestamp (s or ms)</label>
+              <input type="text" id="epIn" class="time-input mono" inputmode="numeric" placeholder="e.g. 1750000000" spellcheck="false" autocomplete="off">
+            </div>
+            <div class="time-field">
+              <label class="time-field-label" for="huIn">Date &amp; time</label>
+              <input type="datetime-local" id="huIn" class="time-input mono" step="1">
+            </div>
+          </div>
+        </div>
+
+        <!-- Row 3: 12-hour (AM/PM) ↔ 24-hour converter -->
+        <div class="time-conv">
+          <div class="time-conv-title">12-hour (AM/PM) ↔ 24-hour</div>
+          <div class="time-conv-row">
+            <div class="time-picker" id="ampmPicker" role="group" aria-label="12-hour time">
+              <input class="time-picker-num" id="ap12h" type="text" inputmode="numeric" maxlength="2" placeholder="hh" aria-label="Hours (1–12)" autocomplete="off">
+              <span class="time-picker-colon">:</span>
+              <input class="time-picker-num" id="ap12m" type="text" inputmode="numeric" maxlength="2" placeholder="mm" aria-label="Minutes" autocomplete="off">
+              <span class="time-picker-colon">:</span>
+              <input class="time-picker-num" id="ap12s" type="text" inputmode="numeric" maxlength="2" placeholder="ss" aria-label="Seconds" autocomplete="off">
+              <div id="apMerWrap" class="time-picker-mer-wrap"></div>
+            </div>
+            <span class="time-conv-swap" aria-hidden="true">
+              <svg viewBox="0 0 24 12" width="22" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 3H2M18 0l4 3-4 3"/><path d="M2 9h20M6 12L2 9l4-3"/></svg>
+            </span>
+            <div class="time-picker" id="h24Picker" role="group" aria-label="24-hour time">
+              <input class="time-picker-num" id="h24h" type="text" inputmode="numeric" maxlength="2" placeholder="hh" aria-label="Hours (0–23)" autocomplete="off">
+              <span class="time-picker-colon">:</span>
+              <input class="time-picker-num" id="h24m" type="text" inputmode="numeric" maxlength="2" placeholder="mm" aria-label="Minutes" autocomplete="off">
+              <span class="time-picker-colon">:</span>
+              <input class="time-picker-num" id="h24s" type="text" inputmode="numeric" maxlength="2" placeholder="ss" aria-label="Seconds" autocomplete="off">
+            </div>
+          </div>
+        </div>
+      </div><!-- /#tpanel-clock -->
+
+      <!-- ══ COUNTDOWN PANEL ══ -->
+      <div class="time-panel" id="tpanel-countdown" role="tabpanel" aria-labelledby="ttab-countdown">
+        <div class="time-conv">
+          <div class="time-conv-head">
+            <span class="time-conv-title">Countdown to a date</span>
+            <span class="time-tz-badge" id="cdTzBadge"></span>
+          </div>
+          <div class="time-cd-controls">
+            <label class="sr-only" for="cdTarget">Target date and time</label>
+            <input type="datetime-local" id="cdTarget" class="time-input mono" step="1">
+            <button class="btn primary" id="cdStartBtn" type="button">Start</button>
+            <button class="btn" id="cdResetBtn" type="button">Reset</button>
+            <button class="time-icon-btn" id="cdFsBtn" type="button" title="Fullscreen countdown" aria-label="Open fullscreen countdown">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M16 21h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            </button>
+          </div>
+          <div class="time-cd-display" id="cdDisplay">—</div>
+          <div class="time-cd-note" id="cdNote"></div>
+        </div>
+      </div><!-- /#tpanel-countdown -->
+
+      <!-- ══ STOPWATCH PANEL ══ -->
+      <div class="time-panel" id="tpanel-stopwatch" role="tabpanel" aria-labelledby="ttab-stopwatch">
+        <div class="time-conv">
+          <div class="time-sw-display" id="swDisplay">00:00:00.000</div>
+          <div class="time-sw-controls">
+            <button class="btn primary" id="swToggleBtn" type="button">Start</button>
+            <button class="btn" id="swLapBtn" type="button" disabled>Lap</button>
+            <button class="btn" id="swResetBtn" type="button" disabled>Reset</button>
+            <button class="time-icon-btn" id="swFsBtn" type="button" title="Fullscreen stopwatch" aria-label="Open fullscreen stopwatch">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M21 8V5a2 2 0 0 0-2-2h-3M16 21h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            </button>
+          </div>
+          <ol class="time-sw-laps" id="swLaps" aria-label="Lap times"></ol>
+        </div>
+      </div><!-- /#tpanel-stopwatch -->
+
+      <!-- ══ WORLD CLOCKS PANEL ══ -->
+      <div class="time-panel" id="tpanel-world" role="tabpanel" aria-labelledby="ttab-world">
+        <div class="time-conv">
+          <div class="time-conv-title">Compare time across the world</div>
+          <div class="time-world-list" id="worldList"></div>
+        </div>
+      </div><!-- /#tpanel-world -->
+
+    </div><!-- /.time-body -->
+
+    <!-- SHARED FULLSCREEN OVERLAY -->
+    <div class="time-fs" id="timeFs" style="display:none" role="dialog" aria-modal="true" aria-label="Fullscreen time display">
+      <button class="time-fs-close" id="timeFsClose" type="button" aria-label="Exit fullscreen">✕</button>
+      <div class="time-fs-label" id="timeFsLabel"></div>
+      <div class="time-fs-main" id="timeFsMain">00:00:00</div>
+      <div class="time-fs-sub" id="timeFsSub"></div>
+    </div>
+
+  </div>
+</div><!-- /#timeOverlay -->
+
 <!-- UUID SECTION -->
 <section class="uuid-section" aria-label="UUID Generator" id="uuid-section">
   <div class="uuid-label" id="uuidLabel" aria-live="polite">UUID Generator</div>
@@ -1256,5 +1402,6 @@
 <script src="js/hash.js"></script>
 <script src="js/difference.js"></script>
 <script src="js/telegram.js"></script>
+<script src="js/time.js"></script>
 </body>
 </html>
