@@ -1,0 +1,122 @@
+/* ══════════════════════════════════════════
+   XML FORMATTER
+   Side-by-side modal like the JSON formatter: raw input on the left,
+   live formatted output on the right; the panes stack on phones.
+   Reuses global tokens and the shared .modal, .m-btn and .m-ta classes
+   from style.css — only XML-specific layout and syntax colours live here.
+══════════════════════════════════════════ */
+.modal-xml{
+  max-width:1240px;
+  height:min(820px,calc(100vh - 4rem));
+  height:min(820px,calc(100dvh - 4rem));
+}
+
+/* ── error / warning detail (spans both panes) ── */
+.xml-msg{
+  display:none;-webkit-flex-shrink:0;flex-shrink:0;
+  padding:.4rem .85rem;border-bottom:1px solid var(--border);
+  font-family:var(--font-code);font-size:.7rem;line-height:1.5;word-break:break-word;
+}
+.xml-msg.warn{display:block;color:var(--t-flt);background:rgba(255,179,71,.07)}
+.xml-msg.err{display:block;color:var(--err);background:var(--err-bg)}
+
+/* ── split: two equal panes ── */
+.xml-split{display:-webkit-flex;display:flex;-webkit-flex:1;flex:1;min-height:0}
+.xml-pane{
+  position:relative;
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;
+  -webkit-flex:1 1 0;flex:1 1 0;min-width:0;min-height:0;background:var(--bg2);
+}
+.xml-pane + .xml-pane{border-left:1px solid var(--border)}
+.xml-pane-head{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  -webkit-flex-wrap:wrap;flex-wrap:wrap;gap:.35rem .45rem;-webkit-flex-shrink:0;flex-shrink:0;
+  min-height:2.7rem;padding:.4rem .6rem .4rem .85rem;
+  border-bottom:1px solid var(--border);background:var(--panel2);   /* matches the JSON column headers */
+}
+.xml-pane-title{font-size:.62rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:var(--txt3)}
+.xml-badge{
+  font-family:var(--font-code);font-size:.6rem;line-height:1.5;
+  padding:0 6px;border-radius:4px;background:var(--badge-bg);color:var(--badge-txt);
+}
+.xml-pane-actions{display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:.3rem;margin-left:auto}
+.xml-status:not(:empty) + .xml-pane-actions{margin-left:0}
+
+/* ── validation pill (formatted pane header) ── */
+.xml-status{
+  margin-left:auto;padding:.16rem .5rem;border-radius:6px;
+  font-family:var(--font-code);font-size:.66rem;font-weight:600;white-space:nowrap;
+}
+.xml-status:empty{display:none}
+.xml-status.ok{color:var(--ok);background:rgba(52,211,153,.12)}
+.xml-status.warn{color:var(--t-flt);background:rgba(255,179,71,.14)}
+.xml-status.err{color:var(--err);background:var(--err-bg)}
+
+/* ── input: shared .m-ta stretched to fill its pane ── */
+.xml-ta{-webkit-flex:1;flex:1;min-height:0;max-height:none;resize:none;border-bottom:none}
+
+/* ── output: one .xml-ln per line, CSS-counter line numbers (never copied),
+      hanging indent so wrapped lines stay aligned with their indentation ── */
+.xml-out-wrap{
+  --xml-gutter:calc(var(--xml-digits,2) * 1ch + 1.1rem);
+  -webkit-flex:1;flex:1;min-height:0;
+  overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;
+  font-family:var(--font-code);font-size:.76rem;line-height:1.62;color:var(--txt);tab-size:2;
+  background:linear-gradient(90deg,
+    var(--panel2) var(--xml-gutter),
+    var(--border) var(--xml-gutter), var(--border) calc(var(--xml-gutter) + 1px),
+    transparent calc(var(--xml-gutter) + 1px));
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.xml-out-wrap:focus-visible{outline-offset:-2px}
+.xml-out-wrap::-webkit-scrollbar{width:5px}
+.xml-out-wrap::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.xml-out{counter-reset:xml-ln;padding:.58rem 0}
+.xml-ln{
+  position:relative;counter-increment:xml-ln;min-height:1.62em;
+  padding:0 .85rem 0 calc(var(--xml-gutter) + .75rem + var(--xi,0) * 1ch);
+  text-indent:calc(var(--xi,0) * -1ch);
+  /* break-all (as in the JSON output): with normal breaking, a long token after
+     the indent would wrap at the indent itself and leave a blank-looking row */
+  white-space:pre-wrap;word-break:break-all;
+}
+.xml-ln:hover{background:var(--accent-bg)}
+.xml-ln::before{
+  content:counter(xml-ln);position:absolute;top:0;left:0;
+  width:var(--xml-gutter);padding-right:.55rem;box-sizing:border-box;
+  text-align:right;text-indent:0;color:var(--lnum);
+  -webkit-user-select:none;user-select:none;
+}
+
+/* empty / error placeholder */
+.xml-empty{
+  display:none;-webkit-flex:1;flex:1;
+  -webkit-align-items:center;align-items:center;
+  -webkit-justify-content:center;justify-content:center;
+  padding:2rem 1rem;text-align:center;font-size:.8rem;color:var(--txt3);
+}
+.xml-pane.is-empty .xml-out-wrap{display:none}
+.xml-pane.is-empty .xml-empty{display:-webkit-flex;display:flex}
+
+/* ── syntax colours (shared --t-* tokens, theme-aware) ── */
+.xh-punc{color:var(--t-punc)}
+.xh-tag{color:var(--t-key)}
+.xh-attr{color:var(--t-num)}
+.xh-val{color:var(--t-str)}
+.xh-ent{color:var(--t-null)}
+.xh-cdata{color:var(--t-flt)}
+.xh-pi,.xh-doctype{color:var(--t-bool)}
+.xh-comment{color:var(--txt2);font-style:italic}
+
+/* ── responsive: stack the panes ── */
+@media (max-width:768px){
+  .modal-xml{height:calc(100vh - 2rem);height:calc(100dvh - 2rem)}
+  .xml-split{-webkit-flex-direction:column;flex-direction:column}
+  .xml-pane + .xml-pane{border-left:none;border-top:1px solid var(--border)}
+  .xml-pane-head{padding:.4rem .5rem .4rem .7rem}
+}
+@media (max-width:480px){
+  /* icon-only buttons keep each pane header on one row (names stay in aria-label) */
+  .xml-btn-lbl{display:none}
+  .xml-pane-actions .m-btn{padding:.42rem .62rem}
+}

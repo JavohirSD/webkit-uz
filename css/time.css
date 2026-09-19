@@ -1,0 +1,398 @@
+/* ══════════════════════════════════════════
+   TIME TOOLS
+   Styles for the multi-tab Time modal. Reuses global tokens
+   (--accent, --glass-*, --txt*, fonts) and the global .btn / .modal
+   classes from style.css — only time-specific layout lives here.
+══════════════════════════════════════════ */
+.modal-time{max-width:680px}
+
+.time-body{
+  overflow-y:auto;-webkit-overflow-scrolling:touch;-webkit-flex:1;flex:1;
+  padding:.9rem 1.1rem 1.15rem;
+  display:-webkit-flex;display:flex;
+  -webkit-flex-direction:column;flex-direction:column;gap:1rem;
+}
+.time-body::-webkit-scrollbar{width:4px}
+.time-body::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* ── tabs ── */
+.time-tabs{
+  display:-webkit-flex;display:flex;gap:.35rem;-webkit-flex-wrap:wrap;flex-wrap:wrap;
+  border-bottom:1px solid var(--border);padding-bottom:.6rem;
+}
+.time-tab{
+  -webkit-flex:1 1 auto;flex:1 1 auto;min-width:0;
+  background:var(--bg3);border:1px solid var(--border2);border-radius:8px;
+  padding:.46rem .55rem;font-family:var(--font-ui);font-size:.72rem;font-weight:500;
+  color:var(--txt2);cursor:pointer;-webkit-transition:all .15s;transition:all .15s;
+  white-space:nowrap;text-align:center;-webkit-appearance:none;appearance:none;
+}
+.time-tab:hover{color:var(--txt);border-color:var(--accent2)}
+.time-tab.active{background:var(--accent-bg);color:var(--accent);border-color:var(--accent2);font-weight:600}
+
+/* ── panels ── */
+.time-panel{display:none;-webkit-flex-direction:column;flex-direction:column;gap:1rem}
+.time-panel.active{display:-webkit-flex;display:flex}
+
+/* ── generic glass card wrapper for sections ── */
+.time-conv{
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:.7rem;
+  background:var(--glass-bg);
+  -webkit-backdrop-filter:var(--glass-blur-sm);backdrop-filter:var(--glass-blur-sm);
+  border:1px solid var(--glass-border);border-radius:12px;
+  -webkit-box-shadow:var(--glass-shadow-sm);box-shadow:var(--glass-shadow-sm);
+  padding:.85rem .9rem;
+}
+.time-conv-title{
+  font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--txt3);font-weight:600;
+  align-self: center;
+}
+.time-conv-head{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  -webkit-justify-content:space-between;justify-content:space-between;
+  gap:.5rem;-webkit-flex-wrap:wrap;flex-wrap:wrap;
+}
+.time-tz-badge{
+  font-family:var(--font-code);font-size:.62rem;color:var(--txt2);
+  background:var(--bg2);border:1px solid var(--border2);border-radius:5px;
+  padding:.14rem .42rem;
+}
+.time-conv-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
+
+/* ── fields / inputs / outputs ── */
+.time-field{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;min-width:0}
+.time-field-label{font-size:.7rem;color:var(--txt2);font-weight:500;margin-bottom:.34rem}
+.time-input{
+  width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  padding:.52rem .65rem;font-family:var(--font-ui);font-size:.78rem;color:var(--txt);
+  outline:none;-webkit-transition:border-color .15s,box-shadow .15s;transition:border-color .15s,box-shadow .15s;
+  -webkit-appearance:none;appearance:none;
+}
+.time-input:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-bg)}
+.time-input::placeholder{color:var(--txt3)}
+.time-input.mono{font-family:var(--font-code);font-size:.74rem}
+.time-input.invalid{border-color:var(--err);box-shadow:0 0 0 2px var(--err-bg)}
+
+/* ── 12h ↔ 24h row ── */
+.time-conv-row{
+  display:-webkit-flex;display:flex;
+  -webkit-align-items:center;align-items:center;
+  gap:.65rem;-webkit-flex-wrap:nowrap;flex-wrap:nowrap;
+  align-self:center;
+}
+.time-conv-swap{
+  -webkit-flex-shrink:0;flex-shrink:0;color:var(--txt3);
+  display:-webkit-inline-flex;display:inline-flex;
+  -webkit-align-items:center;align-items:center;padding:0 .1rem;
+}
+/* ── time picker (h/m/s input groups) ── */
+.time-picker{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  gap:.28rem;-webkit-flex-shrink:0;flex-shrink:0;
+}
+.time-picker-num{
+  width:2.4em;min-width:0;text-align:center;box-sizing:border-box;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:7px;
+  padding:.46rem .1rem;font-family:var(--font-code);font-size:.82rem;color:var(--txt);
+  outline:none;-webkit-appearance:none;appearance:none;-moz-appearance:textfield;
+  -webkit-transition:border-color .15s,box-shadow .15s;transition:border-color .15s,box-shadow .15s;
+}
+.time-picker-num:focus{border-color:var(--accent);-webkit-box-shadow:0 0 0 2px var(--accent-bg);box-shadow:0 0 0 2px var(--accent-bg)}
+.time-picker-num::placeholder{color:var(--txt3);opacity:.5}
+.time-picker-num::-webkit-outer-spin-button,
+.time-picker-num::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.time-picker-colon{-webkit-flex:0 0 auto;flex:0 0 auto;color:var(--txt3);font-family:var(--font-code);font-size:.88rem}
+
+/* ── timezone select ── */
+.time-select-wrap{position:relative;-webkit-flex:1;flex:1;min-width:0}
+.time-select-icon{
+  position:absolute;left:.55rem;top:50%;-webkit-transform:translateY(-50%);transform:translateY(-50%);
+  width:14px;height:14px;stroke:var(--txt3);fill:none;stroke-width:2;
+  stroke-linecap:round;stroke-linejoin:round;pointer-events:none;
+}
+.time-select{
+  width:100%;background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  padding:.5rem 1.9rem .5rem .65rem;
+  font-family:var(--font-code);font-size:.74rem;color:var(--txt);
+  cursor:pointer;outline:none;-webkit-appearance:none;appearance:none;
+  -webkit-transition:border-color .15s,box-shadow .15s;transition:border-color .15s,box-shadow .15s;
+  /* custom chevron */
+  background-image:
+    -webkit-linear-gradient(45deg,transparent 50%,var(--txt3) 50%),
+    -webkit-linear-gradient(315deg,var(--txt3) 50%,transparent 50%);
+  background-image:
+    linear-gradient(45deg,transparent 50%,var(--txt3) 50%),
+    linear-gradient(135deg,var(--txt3) 50%,transparent 50%);
+  background-position:calc(100% - 14px) 50%,calc(100% - 9px) 50%;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat;
+}
+.time-select-wrap.has-icon .time-select{padding-left:1.85rem}
+.time-select:focus{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-bg)}
+/* searchable timezone is an <input> with a datalist — drop the select chevron */
+input.time-select{background-image:none;padding-right:.7rem;cursor:text}
+
+/* ── icon button (fullscreen) ── */
+.time-icon-btn{
+  -webkit-flex-shrink:0;flex-shrink:0;
+  display:-webkit-inline-flex;display:inline-flex;
+  -webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;
+  width:38px;height:38px;border:1px solid var(--border2);border-radius:8px;
+  background:var(--panel);color:var(--txt2);cursor:pointer;
+  -webkit-transition:all .15s;transition:all .15s;-webkit-appearance:none;appearance:none;
+}
+.time-icon-btn:hover{color:var(--accent);border-color:var(--accent2);background:var(--accent-bg)}
+.time-icon-btn svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ── CLOCK: live current-time card ── */
+.time-now-card{
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:.7rem;
+  -webkit-align-items:center;align-items:center;
+  background:-webkit-linear-gradient(top,var(--glass-tint),var(--glass-bg));
+  background:linear-gradient(180deg,var(--glass-tint),var(--glass-bg));
+  -webkit-backdrop-filter:var(--glass-blur-sm);backdrop-filter:var(--glass-blur-sm);
+  border:1px solid var(--glass-border);border-radius:14px;
+  -webkit-box-shadow:var(--glass-shadow-sm);box-shadow:var(--glass-shadow-sm);
+  padding:1rem .9rem 1.1rem;
+}
+.time-now-bar{
+  display:-webkit-flex;display:flex;-webkit-align-items:flex-end;align-items:flex-end;
+  gap:.5rem;width:100%;
+}
+.time-tz-field{
+  -webkit-flex:1;flex:1;min-width:0;
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;
+}
+.time-now-clock{
+  font-family:var(--font-code);font-weight:500;letter-spacing:.04em;color:var(--txt);
+  font-size:clamp(1.8rem,9vw,3.1rem);line-height:1.05;text-align:center;
+  font-variant-numeric:tabular-nums;
+}
+.time-now-meta{
+  display:-webkit-flex;display:flex;-webkit-flex-wrap:wrap;flex-wrap:wrap;
+  -webkit-justify-content:center;justify-content:center;
+  -webkit-align-items:center;align-items:center;gap:.4rem .9rem;
+  font-family:var(--font-code);font-size:.7rem;color:var(--txt2);
+}
+.time-now-unix strong{color:var(--accent);font-weight:600}
+.time-now-date{color:var(--txt3)}
+
+/* ── COUNTDOWN ── */
+.time-cd-controls{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  gap:.5rem;-webkit-flex-wrap:wrap;flex-wrap:wrap;
+}
+.time-cd-controls .time-input{-webkit-flex:1;flex:1;width:auto;min-width:160px}
+.time-cd-display{
+  font-family:var(--font-code);font-weight:500;letter-spacing:.04em;
+  font-size:clamp(1.7rem,9vw,3.4rem);line-height:1.05;text-align:center;
+  color:var(--txt);padding:.4rem 0;font-variant-numeric:tabular-nums;
+}
+.time-cd-display.done{color:var(--ok)}
+.time-cd-note{font-size:.68rem;color:var(--txt3);text-align:center;line-height:1.5;min-height:1em}
+.time-cd-note.err{color:var(--err)}
+.time-cd-note.ok{color:var(--ok)}
+
+/* ── STOPWATCH ── */
+.time-sw-display{
+  font-family:var(--font-code);font-weight:500;letter-spacing:.03em;
+  font-size:clamp(1.5rem,9vw,3.2rem);line-height:1.05;text-align:center;
+  color:var(--txt);padding:.3rem 0;font-variant-numeric:tabular-nums;
+}
+/* keep the big readouts inside their card on every viewport */
+.time-now-clock,.time-cd-display,.time-sw-display{
+  max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:clip;
+}
+.time-sw-controls{
+  display:-webkit-flex;display:flex;-webkit-justify-content:center;justify-content:center;
+  -webkit-align-items:center;align-items:center;gap:.5rem;-webkit-flex-wrap:wrap;flex-wrap:wrap;
+}
+.time-sw-controls .btn{min-width:74px;-webkit-justify-content:center;justify-content:center}
+.time-sw-controls .btn.running{border-color:var(--err);color:var(--err)}
+.time-sw-laps{
+  list-style:none;margin:0;padding:0;max-height:180px;overflow-y:auto;
+  display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:.25rem;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.time-sw-laps::-webkit-scrollbar{width:4px}
+.time-sw-laps::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.time-sw-lap{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;
+  -webkit-justify-content:space-between;justify-content:space-between;gap:.6rem;
+  padding:.35rem .55rem;background:var(--bg2);border:1px solid var(--border2);border-radius:7px;
+  font-family:var(--font-code);font-size:.72rem;
+}
+.time-sw-lap-n{color:var(--txt3);-webkit-flex-shrink:0;flex-shrink:0}
+.time-sw-lap-split{color:var(--accent);margin-left:auto}
+.time-sw-lap-total{color:var(--txt2);min-width:92px;text-align:right}
+
+/* ── WORLD CLOCKS ── */
+.time-world-list{display:-webkit-flex;display:flex;-webkit-flex-direction:column;flex-direction:column;gap:.9rem}
+.time-world-row{
+  display:-webkit-flex;display:flex;-webkit-align-items:center;align-items:center;gap:.7rem;
+  padding:.6rem .7rem;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:10px;
+}
+.time-world-row + .time-world-row{margin-top:.1rem}
+/* city selector takes a modest share; the time gets the rest, right-aligned */
+.time-world-row .time-select-wrap{-webkit-flex:0 1 58%;flex:0 1 58%}
+.time-world-time{
+  -webkit-flex:1;flex:1;min-width:0;
+  font-family:var(--font-code);font-weight:600;
+  font-size:clamp(1.1rem,5.5vw,1.6rem);letter-spacing:.06em;color:var(--accent);
+  font-variant-numeric:tabular-nums;text-align:right;
+}
+
+/* ══════════════════════════════════════════
+   FULLSCREEN OVERLAY (appended to <body>)
+══════════════════════════════════════════ */
+.time-fs{
+  position:fixed;inset:0;z-index:3000;
+  display:none;-webkit-flex-direction:column;flex-direction:column;
+  -webkit-align-items:center;align-items:center;-webkit-justify-content:center;justify-content:center;
+  gap:1.2rem;background:#000;color:#fff;
+  padding:calc(1rem + env(safe-area-inset-top,0px)) 1rem calc(1rem + env(safe-area-inset-bottom,0px));
+}
+.time-fs-close{
+  position:absolute;top:calc(.9rem + env(safe-area-inset-top,0px));right:1rem;
+  width:44px;height:44px;border-radius:10px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);
+  color:#fff;font-size:1.1rem;cursor:pointer;-webkit-appearance:none;appearance:none;
+  -webkit-transition:background .15s;transition:background .15s;
+}
+.time-fs-close:hover{background:rgba(255,255,255,.18)}
+.time-fs-label{
+  font-family:var(--font-ui);font-size:.8rem;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(255,255,255,.45);
+}
+.time-fs-main{
+  font-family:var(--font-code);font-weight:500;letter-spacing:.02em;line-height:1;
+  /* 12vw keeps the longest readout (00:00:00.000) inside the viewport on every device */
+  font-size:clamp(2rem,12vw,9rem);text-align:center;font-variant-numeric:tabular-nums;
+  max-width:96vw;white-space:nowrap;overflow:hidden;text-overflow:clip;
+  text-shadow:0 0 40px rgba(0,229,255,.25);
+}
+.time-fs-sub{
+  font-family:var(--font-code);font-size:clamp(.85rem,3.4vw,1.4rem);
+  color:rgba(255,255,255,.6);text-align:center;letter-spacing:.04em;
+}
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width:768px){
+  .time-body{padding:.8rem .85rem 1rem;gap:.85rem}
+  /* 5 tabs: three per row; a label that can't fit pushes itself to the next row */
+  .time-tab{-webkit-flex:1 1 calc(33.333% - .35rem);flex:1 1 calc(33.333% - .35rem);min-width:-webkit-max-content;min-width:max-content;font-size:.74rem;min-height:40px}
+  .time-conv-grid{grid-template-columns:1fr}
+  .time-icon-btn{width:42px;height:42px}
+  .time-cd-controls .btn{-webkit-flex:1 1 auto;flex:1 1 auto;min-height:42px;-webkit-justify-content:center;justify-content:center}
+  .time-cd-controls .time-input{-webkit-flex:1 1 100%;flex:1 1 100%}
+  .time-sw-controls .btn{-webkit-flex:1 1 auto;flex:1 1 auto;min-height:44px}
+}
+@media (max-width:480px){
+  .time-world-time{min-width:92px;font-size:1.1rem}
+  .time-world-row{gap:.5rem}
+  /* stack 12h↔24h pickers vertically on very narrow screens */
+  .time-conv-row{
+    -webkit-flex-direction:column;flex-direction:column;
+    -webkit-align-items:flex-start;align-items:flex-start;
+    gap:.5rem;
+    align-self: center;
+  }
+  .time-conv-swap{
+    padding-left:.2rem;
+    -webkit-transform:rotate(90deg);transform:rotate(90deg);
+  }
+}
+
+/* ══════════════════════════════════════════
+   CUSTOM SEARCHABLE SELECT  (tcs)
+   .tcs-drop is portaled to <body> via JS
+   with position:fixed so it escapes the
+   modal's overflow:auto clipping context.
+══════════════════════════════════════════ */
+.tcs-wrap{display:block;position:relative}
+.tcs-trigger{
+  display:-webkit-flex;display:flex;
+  -webkit-align-items:center;align-items:center;
+  width:100%;gap:.38rem;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:8px;
+  padding:.5rem .65rem;font-family:var(--font-code);font-size:.74rem;color:var(--txt);
+  cursor:pointer;outline:none;text-align:left;white-space:nowrap;
+  -webkit-transition:border-color .15s,box-shadow .15s;transition:border-color .15s,box-shadow .15s;
+  -webkit-appearance:none;appearance:none;
+}
+.tcs-trigger:focus,.tcs-wrap.tcs-open .tcs-trigger{
+  border-color:var(--accent);
+  -webkit-box-shadow:0 0 0 2px var(--accent-bg);box-shadow:0 0 0 2px var(--accent-bg);
+}
+.tcs-val{
+  -webkit-flex:1;flex:1;min-width:0;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.tcs-arrow{
+  -webkit-flex-shrink:0;flex-shrink:0;
+  display:-webkit-inline-flex;display:inline-flex;color:var(--txt3);
+}
+.tcs-arrow svg{
+  display:block;
+  -webkit-transition:-webkit-transform .18s;transition:transform .18s;
+}
+.tcs-wrap.tcs-open .tcs-arrow svg{-webkit-transform:rotate(180deg);transform:rotate(180deg)}
+
+/* dropdown panel — portaled, position:fixed */
+.tcs-drop{
+  position:fixed;z-index:9900;min-width:120px;
+  background:var(--glass-bg-strong);
+  -webkit-backdrop-filter:var(--glass-blur-sm);backdrop-filter:var(--glass-blur-sm);
+  border:1px solid var(--glass-border);border-radius:10px;
+  -webkit-box-shadow:var(--glass-shadow);box-shadow:var(--glass-shadow);
+  overflow:hidden;
+}
+.tcs-search-row{
+  padding:.44rem .5rem .35rem;
+  border-bottom:1px solid var(--border2);
+}
+.tcs-search{
+  display:block;width:100%;box-sizing:border-box;
+  background:var(--bg2);border:1px solid var(--border2);border-radius:6px;
+  padding:.37rem .52rem;font-family:var(--font-ui);font-size:.72rem;color:var(--txt);
+  outline:none;
+  -webkit-transition:border-color .15s;transition:border-color .15s;
+  -webkit-appearance:none;appearance:none;
+}
+.tcs-search:focus{border-color:var(--accent)}
+.tcs-search::placeholder{color:var(--txt3)}
+.tcs-list{
+  list-style:none;margin:0;padding:.24rem 0;
+  max-height:192px;overflow-y:auto;
+  scrollbar-width:thin;scrollbar-color:var(--border2) transparent;
+}
+.tcs-list::-webkit-scrollbar{width:4px}
+.tcs-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.tcs-item{
+  padding:.37rem .72rem;font-family:var(--font-code);font-size:.72rem;color:var(--txt2);
+  cursor:pointer;outline:none;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  -webkit-transition:background .1s,color .1s;transition:background .1s,color .1s;
+}
+.tcs-item:hover,.tcs-item:focus{background:var(--accent-bg);color:var(--accent)}
+.tcs-item-sel{color:var(--accent);font-weight:600}
+.tcs-item-sel::before{content:'\2713\00a0';opacity:.65;font-size:.65rem}
+
+/* ── per-component sizing ── */
+/* AM/PM: compact, two items, no search row */
+.time-picker-mer-wrap{
+  -webkit-flex:0 0 auto;flex:0 0 auto;margin-left:.22rem;
+}
+.time-picker-mer-wrap .tcs-trigger{
+  min-width:3.8em;padding:.5rem .38rem .5rem .48rem;
+  -webkit-justify-content:center;justify-content:center;
+  color:var(--accent);font-weight:600;font-size:.78rem;
+}
+/* timezone: indent for the globe icon */
+.time-select-wrap.has-icon .tcs-trigger{padding-left:1.85rem}
+/* world-clock rows: fill the select-wrap */
+.time-world-row .tcs-wrap{width:100%}
+.time-world-row .tcs-trigger{width:100%;font-size:.72rem}
