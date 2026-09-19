@@ -8,6 +8,7 @@ var CFG = {
   MAX_JSON_CHARS:      100000,
   MAX_B64_CHARS:       100000,
   MAX_TA_CHARS:        500000,
+  MAX_XML_CHARS:       500000,
   MAX_QR_CHARS:        500,
 
   /* File input limits (bytes) */
@@ -51,6 +52,33 @@ function execCopy(text){
   ta.focus(); ta.select();
   try{ document.execCommand('copy'); }catch(e){}
   document.body.removeChild(ta);
+}
+
+/* Paste clipboard text into a textarea/input (replacing its content), then fire 'input'.
+   execCommand('paste') is tried first; the async Clipboard API is the fallback.
+   onFail runs when neither is available or permission is denied — the field is
+   left focused and selected, so Ctrl+V still works. */
+function pasteInto(el, onDone, onFail){
+  el.focus();
+  el.select();
+  var ok = false;
+  try{ ok = document.execCommand('paste'); }catch(e){}
+  if(ok){
+    if(onDone) onDone(el.value);
+    el.dispatchEvent(new Event('input'));
+    return;
+  }
+  if(navigator.clipboard && navigator.clipboard.readText){
+    navigator.clipboard.readText()
+      .then(function(txt){
+        el.value = txt;
+        if(onDone) onDone(txt);
+        el.dispatchEvent(new Event('input'));
+      })
+      .catch(function(){ if(onFail) onFail(); });
+  } else if(onFail){
+    onFail();
+  }
 }
 
 function flashBtn(btn, label, ms){
@@ -137,17 +165,20 @@ function trapFocus(overlay, e){
   else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
 }
 
+// Overlays that close on Escape and keep keyboard focus trapped while open
+var MODAL_OVERLAYS = ['modalOverlay','ipModalOverlay','b64Overlay','taOverlay','qrOverlay','convOverlay','diffOverlay','tgOverlay','timeOverlay','xmlOverlay'];
+
 // Global Escape handler for all overlays
 document.addEventListener('keydown', function(e){
   if(e.key !== 'Escape') return;
-  ['modalOverlay','ipModalOverlay','b64Overlay','taOverlay','qrOverlay','convOverlay','diffOverlay','tgOverlay','timeOverlay'].forEach(function(id){
+  MODAL_OVERLAYS.forEach(function(id){
     var ov = $(id);
     if(ov && ov.classList.contains('open')) closeOverlay(id);
   });
 });
 
 // Focus trap for all overlays
-['modalOverlay','ipModalOverlay','b64Overlay','taOverlay','qrOverlay','convOverlay','diffOverlay','tgOverlay','timeOverlay'].forEach(function(id){
+MODAL_OVERLAYS.forEach(function(id){
   var ov = $(id);
   if(!ov) return;
   ov.setAttribute('aria-hidden','true');

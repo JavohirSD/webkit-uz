@@ -61,30 +61,6 @@ b64DecTa.addEventListener('input', function(){
   b64Updating = false;
 });
 
-// Reliable paste: execCommand fires on every user-gesture click without permission prompts.
-// Clipboard API used as fallback for browsers where execCommand paste is blocked.
-function pasteInto(el, onDone){
-  el.focus();
-  el.select(); // select all so paste replaces content
-  var ok = false;
-  try{ ok = document.execCommand('paste'); }catch(e){}
-  if(ok){
-    if(onDone) onDone(el.value);
-    el.dispatchEvent(new Event('input'));
-    return;
-  }
-  // Fallback: Clipboard API
-  if(navigator.clipboard && navigator.clipboard.readText){
-    navigator.clipboard.readText()
-      .then(function(txt){
-        el.value = txt;
-        if(onDone) onDone(txt);
-        el.dispatchEvent(new Event('input'));
-      })
-      .catch(function(){});
-  }
-}
-
 // Copy/Clear/Download helpers for each side
 function wireB64Toolbar(copyId, clearId, dlId, ta, dlName){
   $(copyId).addEventListener('click', function(){
